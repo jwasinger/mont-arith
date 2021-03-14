@@ -1,0 +1,146 @@
+package arith256
+
+import (
+	"math/big"
+	"math/bits"
+	"unsafe"
+	"errors"
+)
+
+{{ $limbCount := .LimbCount}}
+{{ $lastLimb := sub $limbCount 1}}
+
+type Element{{$limbCount}} [{{$limbCount}}]uint64
+var ZeroElement{{$limbCount}} = make(Element{{$limbCount}}, {{$limbCount}}, {{$limbCount}})
+
+func (z *Element{{$limbCount}}) MulModMont(x, y *Element{{$limbCount}}, modCtx *ModCtx) (error) {
+
+	//var t [4]uint64
+    var t Element{{$limbCount}}
+	var c [{{$limbCount}}]uint64
+	var sub_val *Element = modCtx.Modulus
+
+	if x[{{sub $limbCount 1}}] > mod[{{sub $limbCount 1}}] || y[{{sub $limbCount 1}}] > mod[{{sub $limbCount 1}}] {
+		return errors.New("x/y must be smaller than modulus")
+	}
+
+	{{- range $i := intRange 0 $limbCount}}
+		// round {{$i}}
+		v := x[{{$i}}]
+		{{- if eq $i 0}}
+			c[1], c[0] = bits.Mul64(v, y[0])
+			m := c[0] * modCtx.modInv
+			c[2] = madd0(m, mod[0], c[0])
+			{{- range $j := intRange 0 $limbCount }}
+				c[1], c[0] = madd1(v, y[$j][{{$i}}], c[1])
+				{{- if eq $j $lastLimb }}
+					t[{{$lastLimb}}], t[{{sub $j 1}}]  = madd3(m, mod[{{$i}}], c[0], c[2], c[1])
+				{{- else}}
+					c[2], t[{{sub $j 1}}] = madd2(m, mod[{{$i}}], c[2], c[0])
+				{{- end}}
+			{{- end}}
+		{{- else if eq $i $lastLimb}}
+			c[1], c[0] = madd1(v, {{$.V2}}[0], t[0])
+			m := c[0] * {{index $.all.QInverse 0}}
+			c[2] = madd0(m, {{index $.all.Q 0}}, c[0])
+			{{- range $j := $limbCount}}
+				c[1], c[0] = madd2(v, y[{{$j}}],  c[1], t[{{$j}}])
+				{{- if eq $j $lastLimb}}
+					z[{{$lastLimb}}], z[{{sub $j 1}}] = madd3(m, mod[{{$i}}], c[0], c[2], c[1])
+				{{- else}}
+					c[2], z[{{sub $j 1}}] = madd2(m, mod[{{$i}}],  c[2], c[0])
+				{{- end}}
+			{{- end}}
+		{{- else}}
+			c[1], c[0] = madd1(v, y[0], t[0])
+			m := c[0] * modContext.modInv 
+			c[2] = madd0(m, mod[0], c[0])
+			{{- range $j := intRange 0 $limbCount}}
+				c[1], c[0] = madd2(v, y[{{$i}}], c[1], t[{{$j}}])
+				{{- if eq $i $lastLimb}}
+					t[{{$lastLimb}}], t[{{sub $j 1}}] = madd3(m, mod[{{$i}}], c[0], c[2], c[1])
+				{{- else}}
+					c[2], t[{{sub $i 1}}] = madd2(m, mod[{{$j}}], c[2], c[0])
+				{{- end}}
+			{{- end}}
+		{{-  end }}
+	{{- end }}
+
+    /*
+	_, c[1] = bits.Sub64(z[0], mod[0], 0)
+	_, c[1] = bits.Sub64(z[1], mod[1], c[1])
+	_, c[1] = bits.Sub64(z[2], mod[2], c[1])
+	_, c[1] = bits.Sub64(z[3], mod[3], c[1])
+
+	if c[1] != 0 { // unnecessary sub
+		sub_val = &ZeroElement
+	}
+
+	z[0], c[0] = bits.Sub64(z[0], sub_val[0], 0)
+	z[1], c[0] = bits.Sub64(z[1], sub_val[1], c[0])
+	z[2], c[0] = bits.Sub64(z[2], sub_val[2], c[0])
+	z[3], c[0] = bits.Sub64(z[3], sub_val[3], c[0])
+    */
+
+	return nil
+}
+
+/*
+	Modular Addition
+*/
+/*
+func (out *Element) AddMod(x, y, mod *Element) (error) {
+	var c uint64
+	var tmp Element
+
+	if x[3] > mod[3] || y[3] > mod[3] {
+		return errors.New("x/y must be smaller than modulus")
+	}
+
+	tmp[0], c = bits.Add64(x[0], y[0], 0)
+	tmp[1], c = bits.Add64(x[1], y[1], c)
+	tmp[2], c = bits.Add64(x[2], y[2], c)
+	tmp[3], c = bits.Add64(x[3], y[3], c)
+
+	out[0], c = bits.Sub64(tmp[0], mod[0], 0)
+	out[1], c = bits.Sub64(tmp[1], mod[1], c)
+	out[2], c = bits.Sub64(tmp[2], mod[2], c)
+	out[3], c = bits.Sub64(tmp[3], mod[3], c)
+
+	if c != 0 { // unnecessary sub
+		*out = tmp
+	}
+
+	return nil
+}
+*/
+
+/*
+	Modular Subtraction
+*/
+/*
+func (out *Element) SubMod(x, y, mod *Element) (error) {
+	var c, c1 uint64
+	var tmp Element
+
+	if x[3] > mod[3] || y[3] > mod[3] {
+		return errors.New("x/y must be smaller than modulus")
+	}
+
+	tmp[0], c1 = bits.Sub64(x[0], y[0], 0)
+	tmp[1], c1 = bits.Sub64(x[1], y[1], c1)
+	tmp[2], c1 = bits.Sub64(x[2], y[2], c1)
+	tmp[3], c1 = bits.Sub64(x[3], y[3], c1)
+
+	out[0], c = bits.Add64(tmp[0], mod[0], 0)
+	out[1], c = bits.Add64(tmp[1], mod[1], c)
+	out[2], c = bits.Add64(tmp[2], mod[2], c)
+	out[3], c = bits.Add64(tmp[3], mod[3], c)
+
+	if c1 == 0 { // unnecessary add
+		*out = tmp
+	}
+
+	return nil
+}
+*/
