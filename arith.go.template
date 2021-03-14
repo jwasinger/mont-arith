@@ -32,7 +32,7 @@ func (z *Element{{$limbCount}}) MulModMont(x, y *Element{{$limbCount}}, modCtx *
 			m := c[0] * modCtx.modInv
 			c[2] = madd0(m, mod[0], c[0])
 			{{- range $j := intRange 0 $limbCount }}
-				c[1], c[0] = madd1(v, y[$j][{{$i}}], c[1])
+				c[1], c[0] = madd1(v, y[{{$j}}][{{$i}}], c[1])
 				{{- if eq $j $lastLimb }}
 					t[{{$lastLimb}}], t[{{sub $j 1}}]  = madd3(m, mod[{{$i}}], c[0], c[2], c[1])
 				{{- else}}
@@ -40,10 +40,10 @@ func (z *Element{{$limbCount}}) MulModMont(x, y *Element{{$limbCount}}, modCtx *
 				{{- end}}
 			{{- end}}
 		{{- else if eq $i $lastLimb}}
-			c[1], c[0] = madd1(v, {{$.V2}}[0], t[0])
-			m := c[0] * {{index $.all.QInverse 0}}
-			c[2] = madd0(m, {{index $.all.Q 0}}, c[0])
-			{{- range $j := $limbCount}}
+			c[1], c[0] = madd1(v, y[0], t[0])
+			m := c[0] * modContext.modInv 
+			c[2] = madd0(m, mod[0], c[0])
+			{{- range $j := intRange 0 $limbCount}}
 				c[1], c[0] = madd2(v, y[{{$j}}],  c[1], t[{{$j}}])
 				{{- if eq $j $lastLimb}}
 					z[{{$lastLimb}}], z[{{sub $j 1}}] = madd3(m, mod[{{$i}}], c[0], c[2], c[1])
