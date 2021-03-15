@@ -13,9 +13,17 @@ import (
 type Element{{$limbCount}} [{{$limbCount}}]uint64
 var ZeroElement{{$limbCount}} = make(Element{{$limbCount}}, {{$limbCount}}, {{$limbCount}})
 
-func (z *Element{{$limbCount}}) MulModMont(x, y *Element{{$limbCount}}, modCtx *ModCtx) (error) {
+func MulModMont(z, x, y []byte, modCtx *ModCtx) (error) {
+    z := (*Element{{$limbcount}})(unsafe.pointer(&x_bytes[0]))
+    x := (*Element{{$limbcount}})(unsafe.pointer(&x_bytes[0]))
+	y := (*Element{{$limbcount}})(unsafe.Pointer(&y_bytes[0]))
+	out := (*Element{{$limbcount}})(unsafe.Pointer(&out_bytes[0]))
+	mod := (*Element{{$limbcount}})(unsafe.Pointer(&modCxt.Modulus[0]))
 
-	//var t [4]uint64
+    return _MulModMont(z, x, out, y, modCtx.Modulus, modCtx.NInv)
+}
+
+func _MulModMont(z, x, y *Element{{$limbCount}}, mod *Element{{$limbcount}}, modinv uint64) (error) {
     var t Element{{$limbCount}}
 	var c [{{$limbCount}}]uint64
 	var sub_val *Element = modCtx.Modulus
@@ -66,21 +74,20 @@ func (z *Element{{$limbCount}}) MulModMont(x, y *Element{{$limbCount}}, modCtx *
 		{{-  end }}
 	{{- end }}
 
-    /*
 	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], c[1])
-	_, c[1] = bits.Sub64(z[2], mod[2], c[1])
-	_, c[1] = bits.Sub64(z[3], mod[3], c[1])
+    {{- range $i := intRange 1 $limbCount }}
+	    _, c[1] = bits.Sub64(z[{{$i}}], mod[{{$i}}], 0)
+    {{-end }}
 
 	if c[1] != 0 { // unnecessary sub
 		sub_val = &ZeroElement
 	}
 
-	z[0], c[0] = bits.Sub64(z[0], sub_val[0], 0)
-	z[1], c[0] = bits.Sub64(z[1], sub_val[1], c[0])
-	z[2], c[0] = bits.Sub64(z[2], sub_val[2], c[0])
-	z[3], c[0] = bits.Sub64(z[3], sub_val[3], c[0])
-    */
+	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
+
+    {{- range $i := intRange 1 $limbCount }}
+	    _, c[1] = bits.Sub64(z[{{$i}}], sub_val[{{$i}}], 0)
+    {{-end }}
 
 	return nil
 }

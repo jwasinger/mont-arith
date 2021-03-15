@@ -17,7 +17,6 @@ func loadTextFile(file_name string) string {
 		panic(err)
     }
 
-    // Convert []byte to string and print to screen
     return string(content)
 }
 
@@ -35,13 +34,31 @@ var funcs = template.FuncMap{
     },
 }
 
-func main() {
-    params := TemplateParams{3}
+func generateLimbImpl(maxLimbs int) {
+	f, err := os.Create(fmt.Sprintf("build/arith_impl%d.go", maxLimbs))
+	if err != nil {
+		log.Println("create file: ", err)
+		panic("fuck1")
+	}
+
+    params := TemplateParams{maxLimbs}
 	template_content := loadTextFile("arith.go.template")
 
 	tmpl := template.Must(template.New("").Funcs(funcs).Parse(template_content))
 
-	if err := tmpl.Execute(os.Stdout, params); err != nil {
+	if err := tmpl.Execute(f, params); err != nil {
 		log.Fatal(err)
+		panic("fuck2")
 	}
+
+	f.Close()
+}
+
+func main() {
+    var max_limbs int = 3
+
+    for i := 0; i < max_limbs; i++ {
+		generateLimbImpl(i)
+    }
+
 }
