@@ -1,0 +1,24 @@
+{{ $limbCount := .LimbCount}}
+{{ $lastLimb := sub $limbCount 1}}
+
+func RSquared(modulus [{{$limbCount}}]uint64) [{{$libCount}}]uint64 {
+	r2 := new(big.Int).SetString()
+}
+
+func One(size int) [{{$limbCount}}uint64 {
+	one := make([{{$limbCount}}uint64, size, size)
+	one[0] = 1
+	return one
+}
+
+func TestMulModMont_{{$limbCount}}limbs(t *testing.T) {
+
+}
+
+func TestAddMod_{{$limbCount}}limbs(t *testing.T) {
+
+}
+
+func TestSubMod_{{$limbCount}}limbs(t *testing.T) {
+
+}
