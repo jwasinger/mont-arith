@@ -1,7 +1,39 @@
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 
-func RSquared(modulus [{{$limbCount}}]uint64) [{{$libCount}}]uint64 {
+// max odd modulus for a given size
+func MaxModulus() [{{$limbCount}}]uint64 {
+	mod := make([{{$limbCount}}uint64, {{$limbCount}}, {{$limbCount}})
+	
+	for i := 0; i < {{$limbCount}} - 1; i++ {
+		mod[i] = 0xffffffffffffffff
+	}
+
+	mod[{{$lastLimb}}] = 0xfffffffffffffffe
+	return mod
+}
+
+func LimbsToInt(limbs []uint64) big.Int {
+	limbs_bytes := make([]byte, 8 * len(limbs), 8 * len(limbs))
+	for i := 0; i < len(limbs); i++ {
+		binary.BigEndian.PutUint64(limbs_bytes[i * 8:(i + 1) * 8], limbs[len(limbs) - (i + 1)])
+	}
+	
+	return *(new(big.Int).SetBytes(limbs_bytes))
+}
+
+// does the Python equivalent of pow(-modulus, -1, 1<<64)
+func MontConstant(modulus [{{$limbCount}}]uint64) uint64 {
+	mod_int := LimbsToInt(modulus)
+	
+	// 1<<64
+	aux_mod := new(big.Int).SetString("18446744073709551616", 10)
+
+	mod_int.Mul(mod_int, new(big.Int).SetString("-1", 10))
+	return mod_int.ModInverse(mod_int, aux_mod).Uint64()
+}
+
+func RSquared(modulus [{{$limbCount}}]uint64) [{{$limbCount}}]uint64 {
 	r2 := new(big.Int).SetString()
 }
 
@@ -11,8 +43,28 @@ func One(size int) [{{$limbCount}}uint64 {
 	return one
 }
 
-func TestMulModMont_{{$limbCount}}limbs(t *testing.T) {
+// test converting 3 to montgomery and back using MulModMont
+func TestMulModMontUnrolled_{{$limbCount}}limbs(t *testing.T) {
+	test_val := make([{{$limbCount}}]uint64, {{$limbCount}}, {{$limbCount}})
+	test_val[{{$lastLimb}}] = 3
 
+	intermediate_val := make([{{$limbCount}}]uint64, {{$limbCount}}, {{$limbCount}})
+
+	mod := MaxModulus()
+	mont_const := MontConstant(mod)
+	r_squared := RSquared(mod)
+
+	_MulModMont(intermediate_val, test_val, r_squared, mod, mont_const)
+
+	if Eq{{$limbCount}}Limbs(test_val, intermediate_val) {
+		t.Fatalf("conversion to montgomery should modify test val")
+	}
+
+	_MulModMont(intermediate_val, intermediate_val, one, mod, mont_const)
+
+	if !Eq{{$limbCount}}Limbs(test_val, intermediate_val) {
+		t.Fatalf("conversion back from montgomery failed")
+	}
 }
 
 func TestAddMod_{{$limbCount}}limbs(t *testing.T) {

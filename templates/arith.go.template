@@ -22,7 +22,7 @@ func MulModMont(z, x, y []byte, modCtx *ModCtx) (error) {
 	return _MulModMont(z, x, out, y, modCtx.Modulus, modCtx.NInv)
 }
 
-func _MulModMont(z, x, y [{{$limbCount}}]uint64, mod *[{{$limbCount}}]uint64, modinv uint64) (error) {
+func _MulModMont(z, x, y [{{$limbCount}}]uint64, mod [{{$limbCount}}]uint64, modinv uint64) (error) {
     var t [{{$limbCount}}]uint64
 	var c [{{$limbCount}}]uint64
 	var sub_val *Element = modCtx.Modulus
