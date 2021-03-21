@@ -31,14 +31,25 @@ func Eq_{{$limbCount}}limbs(x, y [{{$limbCount}}]uint64) bool {
 	return true
 }
 
-func LimbsToInt(val *big.Int) [{{$limbCount}}]uint64 {
-	// TODO
+func LimbsToInt_{{$limbCount}}Limbs(val *big.Int) [{{$limbCount}}]uint64 {
+	val_bytes := val.Bytes()
+	result := {{ makeZeroedLimbs $limbCount }}
+
+	if len(val_bytes) != {{$limbCount}} * 8 {
+		panic("bad sized number for {{$limbCount}}x64-bit limbs") 
+	}
+
+	for i := 0; i < {{$limbCount}}; i++ {
+		result[{{$limbCount}} - (i + 1)] = binary.LittleEndian.Uint64(val_bytes[i * 8: (i + 1) * 8])
+	}
+
+	return result
 }
 
 func LimbsToInt(limbs []uint64) big.Int {
 	limbs_bytes := make([]byte, 8 * len(limbs), 8 * len(limbs))
 	for i := 0; i < len(limbs); i++ {
-		binary.BigEndian.PutUint64(limbs_bytes[i * 8:(i + 1) * 8], limbs[len(limbs) - (i + 1)])
+		binary.LittleEndian.PutUint64(limbs_bytes[i * 8:(i + 1) * 8], limbs[len(limbs) - (i + 1)])
 	}
 	
 	return *(new(big.Int).SetBytes(limbs_bytes))
