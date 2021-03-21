@@ -9,8 +9,7 @@ import (
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 
-//var Zero[{{$limbCount}}]uint64 = make([{{$limbCount}}]uint64, {{$limbCount}}, {{$limbCount}})
-var Zero[{{$limbCount}}]uint64 = {{ makeZeroedLimbs $limbCount}}
+var Zero{{$limbCount}}Limbs [{{$limbCount}}]uint64 = {{ makeZeroedLimbs $limbCount}}
 
 func MulModMont(out_bytes, x_bytes, y_bytes []byte, modCtx *ModContext) (error) {
 	x := *(*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))
@@ -80,7 +79,7 @@ func _MulModMont(z, x, y [{{$limbCount}}]uint64, mod [{{$limbCount}}]uint64, mod
     {{- end }}
 
 	if c[1] != 0 { // unnecessary sub
-		sub_val = &ZeroElement
+		sub_val = Zero{{$limbCount}}Limbs
 	}
 
 	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)

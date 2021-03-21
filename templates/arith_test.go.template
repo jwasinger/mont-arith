@@ -11,8 +11,8 @@ import (
 
 // max odd modulus for a given size
 func MaxModulus() [{{$limbCount}}]uint64 {
-	mod := make([{{$limbCount}}]uint64, {{$limbCount}}, {{$limbCount}})
-	
+	mod := {{ makeZeroedLimbs $limbCount}}	
+
 	for i := 0; i < {{$limbCount}} - 1; i++ {
 		mod[i] = 0xffffffffffffffff
 	}
@@ -31,6 +31,10 @@ func Eq_{{$limbCount}}limbs(x, y [{{$limbCount}}]uint64) bool {
 	return true
 }
 
+func LimbsToInt(val *big.Int) [{{$limbCount}}]uint64 {
+	// TODO
+}
+
 func LimbsToInt(limbs []uint64) big.Int {
 	limbs_bytes := make([]byte, 8 * len(limbs), 8 * len(limbs))
 	for i := 0; i < len(limbs); i++ {
@@ -42,31 +46,38 @@ func LimbsToInt(limbs []uint64) big.Int {
 
 // does the Python equivalent of pow(-modulus, -1, 1<<64)
 func MontConstant(modulus [{{$limbCount}}]uint64) uint64 {
-	mod_int := LimbsToInt(modulus)
+	mod_int := LimbsToInt(modulus[:])
 	
 	// 1<<64
-	aux_mod := new(big.Int).SetString("18446744073709551616", 10)
+	aux_mod, _ := new(big.Int).SetString("18446744073709551616", 10)
+	negative_one, _ := new(big.Int).SetString("-1", 10)
 
-	mod_int.Mul(mod_int, new(big.Int).SetString("-1", 10))
-	return mod_int.ModInverse(mod_int, aux_mod).Uint64()
+	mod_int.Mul(&mod_int, negative_one)
+	return mod_int.ModInverse(&mod_int, aux_mod).Uint64()
 }
 
 func RSquared(modulus [{{$limbCount}}]uint64) [{{$limbCount}}]uint64 {
-	r2 := new(big.Int).SetString()
+	mod := LimbsToInt(modulus)
+	r := new(big.Int)
+	r.Exp(big.NewInt(2), big.NewInt({{$limbCount}}))
+	r.Mod(&r, mod)
+	r.Mul(&r, &r)
+	r.Mod(&r, mod)
+	return IntToLimbs(r)
 }
 
 func One(size int) [{{$limbCount}}]uint64 {
-	one := make([{{$limbCount}}]uint64, size, size)
+	one := {{ makeZeroedLimbs $limbCount}}
 	one[0] = 1
 	return one
 }
 
 // test converting 3 to montgomery and back using MulModMont
 func TestMulModMontUnrolled_{{$limbCount}}limbs(t *testing.T) {
-	test_val := make([{{$limbCount}}]uint64, {{$limbCount}}, {{$limbCount}})
+	test_val := {{ makeZeroedLimbs $limbCount}}
 	test_val[{{$lastLimb}}] = 3
 
-	intermediate_val := make([{{$limbCount}}]uint64, {{$limbCount}}, {{$limbCount}})
+	intermediate_val := {{ makeZeroedLimbs $limbCount}}
 
 	mod := MaxModulus()
 	mont_const := MontConstant(mod)
