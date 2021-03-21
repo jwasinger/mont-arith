@@ -1,7 +1,6 @@
-package arith256
+package evmmax_arith
 
 import (
-	"math/big"
 	"math/bits"
 	"unsafe"
 	"errors"
@@ -10,22 +9,22 @@ import (
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 
-var Zero[{{$limbCount}}]uint64 = make([{{$limbCount}}]uint64, {{$limbCount}}, {{$limbCount}})
+//var Zero[{{$limbCount}}]uint64 = make([{{$limbCount}}]uint64, {{$limbCount}}, {{$limbCount}})
+var Zero[{{$limbCount}}]uint64 = {{ makeZeroedLimbs $limbCount}}
 
-func MulModMont(z, x, y []byte, modCtx *ModCtx) (error) {
-	z := (*[{{$limbCount}}]uint64)(unsafe.pointer(&x_bytes[0]))
-	x := (*[{{$limbCount}}]uint64)(unsafe.pointer(&x_bytes[0]))
-	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))
-	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))
-	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCxt.Modulus[0]))
+func MulModMont(out_bytes, x_bytes, y_bytes []byte, modCtx *ModContext) (error) {
+	x := *(*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))
+	y := *(*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))
+	out := *(*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))
+	mod := *(*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))
 
-	return _MulModMont(z, x, out, y, modCtx.Modulus, modCtx.NInv)
+	return _MulModMont(out, x, y, mod, modCtx.NInv)
 }
 
 func _MulModMont(z, x, y [{{$limbCount}}]uint64, mod [{{$limbCount}}]uint64, modinv uint64) (error) {
     var t [{{$limbCount}}]uint64
 	var c [{{$limbCount}}]uint64
-	var sub_val *Element = modCtx.Modulus
+	var sub_val [{{$limbCount}}]uint64 = mod
 
 	if x[{{sub $limbCount 1}}] >= mod[{{sub $limbCount 1}}] || y[{{sub $limbCount 1}}] >= mod[{{sub $limbCount 1}}] {
 		return errors.New("x/y must be smaller than modulus")
@@ -33,13 +32,13 @@ func _MulModMont(z, x, y [{{$limbCount}}]uint64, mod [{{$limbCount}}]uint64, mod
 
 	{{- range $j := intRange 0 $limbCount}}
 		// round {{$j}}
-		v := x[{{$j}}]
 		{{- if eq $j 0}}
+			v := x[{{$j}}]
 			c[1], c[0] = bits.Mul64(v, y[0])
-			m := c[0] * modCtx.modInv
+			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 			{{- range $i := intRange 1 $limbCount }}
-				c[1], c[0] = madd1(v, y[{{$i}}][{{$i}}], c[1])
+				c[1], c[0] = madd1(v, y[{{$i}}], c[1])
 				{{- if eq $i $lastLimb }}
 					t[{{$lastLimb}}], t[{{sub $i 1}}]  = madd3(m, mod[{{$i}}], c[0], c[2], c[1])
 				{{- else}}
@@ -47,8 +46,9 @@ func _MulModMont(z, x, y [{{$limbCount}}]uint64, mod [{{$limbCount}}]uint64, mod
 				{{- end}}
 			{{- end}}
 		{{- else if eq $j $lastLimb}}
+			v = x[{{$j}}]
 			c[1], c[0] = madd1(v, y[0], t[0])
-			m := c[0] * modContext.modInv 
+			m = c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 			{{- range $i := intRange 1 $limbCount}}
 				c[1], c[0] = madd2(v, y[{{$i}}],  c[1], t[{{$i}}])
@@ -59,8 +59,9 @@ func _MulModMont(z, x, y [{{$limbCount}}]uint64, mod [{{$limbCount}}]uint64, mod
 				{{- end}}
 			{{- end}}
 		{{- else}}
+			v = x[{{$j}}]
 			c[1], c[0] = madd1(v, y[0], t[0])
-			m := c[0] * modContext.modInv 
+			m = c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 			{{- range $i := intRange 1 $limbCount}}
 				c[1], c[0] = madd2(v, y[{{$i}}], c[1], t[{{$i}}])

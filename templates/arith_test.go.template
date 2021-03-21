@@ -1,9 +1,17 @@
+package evmmax_arith
+
+import (
+	"testing"
+	"math/big"
+	"encoding/binary"
+)
+
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 
 // max odd modulus for a given size
 func MaxModulus() [{{$limbCount}}]uint64 {
-	mod := make([{{$limbCount}}uint64, {{$limbCount}}, {{$limbCount}})
+	mod := make([{{$limbCount}}]uint64, {{$limbCount}}, {{$limbCount}})
 	
 	for i := 0; i < {{$limbCount}} - 1; i++ {
 		mod[i] = 0xffffffffffffffff
@@ -11,6 +19,16 @@ func MaxModulus() [{{$limbCount}}]uint64 {
 
 	mod[{{$lastLimb}}] = 0xfffffffffffffffe
 	return mod
+}
+
+func Eq_{{$limbCount}}limbs(x, y [{{$limbCount}}]uint64) bool {
+	{{- range $j := intRange 0 $limbCount}}
+		if x[{{$j}}] != y[{{$j}}] {
+			return false
+		}
+	{{- end}}
+
+	return true
 }
 
 func LimbsToInt(limbs []uint64) big.Int {
@@ -37,8 +55,8 @@ func RSquared(modulus [{{$limbCount}}]uint64) [{{$limbCount}}]uint64 {
 	r2 := new(big.Int).SetString()
 }
 
-func One(size int) [{{$limbCount}}uint64 {
-	one := make([{{$limbCount}}uint64, size, size)
+func One(size int) [{{$limbCount}}]uint64 {
+	one := make([{{$limbCount}}]uint64, size, size)
 	one[0] = 1
 	return one
 }
