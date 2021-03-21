@@ -21,7 +21,7 @@ func MaxModulus() [{{$limbCount}}]uint64 {
 	return mod
 }
 
-func Eq_{{$limbCount}}limbs(x, y [{{$limbCount}}]uint64) bool {
+func Eq_{{$limbCount}}Limbs(x, y [{{$limbCount}}]uint64) bool {
 	{{- range $j := intRange 0 $limbCount}}
 		if x[{{$j}}] != y[{{$j}}] {
 			return false
@@ -31,7 +31,7 @@ func Eq_{{$limbCount}}limbs(x, y [{{$limbCount}}]uint64) bool {
 	return true
 }
 
-func LimbsToInt_{{$limbCount}}Limbs(val *big.Int) [{{$limbCount}}]uint64 {
+func IntToLimbs_{{$limbCount}}Limbs(val *big.Int) [{{$limbCount}}]uint64 {
 	val_bytes := val.Bytes()
 	result := {{ makeZeroedLimbs $limbCount }}
 
@@ -46,7 +46,7 @@ func LimbsToInt_{{$limbCount}}Limbs(val *big.Int) [{{$limbCount}}]uint64 {
 	return result
 }
 
-func LimbsToInt(limbs []uint64) big.Int {
+func LimbsToInt_{{$limbCount}}Limbs(limbs []uint64) big.Int {
 	limbs_bytes := make([]byte, 8 * len(limbs), 8 * len(limbs))
 	for i := 0; i < len(limbs); i++ {
 		binary.LittleEndian.PutUint64(limbs_bytes[i * 8:(i + 1) * 8], limbs[len(limbs) - (i + 1)])
@@ -57,7 +57,7 @@ func LimbsToInt(limbs []uint64) big.Int {
 
 // does the Python equivalent of pow(-modulus, -1, 1<<64)
 func MontConstant(modulus [{{$limbCount}}]uint64) uint64 {
-	mod_int := LimbsToInt(modulus[:])
+	mod_int := LimbsToInt_{{$limbCount}}Limbs(modulus[:])
 	
 	// 1<<64
 	aux_mod, _ := new(big.Int).SetString("18446744073709551616", 10)
@@ -68,13 +68,12 @@ func MontConstant(modulus [{{$limbCount}}]uint64) uint64 {
 }
 
 func RSquared(modulus [{{$limbCount}}]uint64) [{{$limbCount}}]uint64 {
-	mod := LimbsToInt(modulus)
+	mod := LimbsToInt_{{$limbCount}}Limbs(modulus[:])
 	r := new(big.Int)
-	r.Exp(big.NewInt(2), big.NewInt({{$limbCount}}))
-	r.Mod(&r, mod)
-	r.Mul(&r, &r)
-	r.Mod(&r, mod)
-	return IntToLimbs(r)
+	r.Exp(big.NewInt(2), big.NewInt({{$limbCount}}), &mod)
+	r.Mul(r, r)
+	r.Mod(r, &mod)
+	return IntToLimbs_{{$limbCount}}Limbs(r)
 }
 
 func One(size int) [{{$limbCount}}]uint64 {
@@ -96,13 +95,13 @@ func TestMulModMontUnrolled_{{$limbCount}}limbs(t *testing.T) {
 
 	_MulModMont(intermediate_val, test_val, r_squared, mod, mont_const)
 
-	if Eq{{$limbCount}}Limbs(test_val, intermediate_val) {
+	if Eq_{{$limbCount}}Limbs(test_val, intermediate_val) {
 		t.Fatalf("conversion to montgomery should modify test val")
 	}
 
-	_MulModMont(intermediate_val, intermediate_val, one, mod, mont_const)
+	_MulModMont(intermediate_val, intermediate_val, One({{$limbCount}}), mod, mont_const)
 
-	if !Eq{{$limbCount}}Limbs(test_val, intermediate_val) {
+	if !Eq_{{$limbCount}}Limbs(test_val, intermediate_val) {
 		t.Fatalf("conversion back from montgomery failed")
 	}
 }
