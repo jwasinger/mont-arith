@@ -10,11 +10,12 @@ import (
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 
-// max odd modulus for a given size
+// **NOTE** naming confusing.  actually the second-largest modulus (largest would have modinv as 1)
 func MaxModulus() [{{$limbCount}}]uint64 {
 	mod := {{ makeZeroedLimbs $limbCount}}	
 
-	for i := 0; i < {{$limbCount}}; i++ {
+	mod[0] = 0xfdffffffffffffff
+	for i := 1; i < {{$limbCount}}; i++ {
 		mod[i] = 0xffffffffffffffff
 	}
 
@@ -55,6 +56,7 @@ func LimbsToInt_{{$limbCount}}Limbs(limbs []uint64) big.Int {
 // does the Python equivalent of pow(-modulus, -1, 1<<64)
 func MontConstant(modulus [{{$limbCount}}]uint64) uint64 {
 	mod_int := LimbsToInt_{{$limbCount}}Limbs(modulus[:])
+	fmt.Println(mod_int.String())
 	
 	// 1<<64
 	aux_mod, _ := new(big.Int).SetString("18446744073709551616", 10)
