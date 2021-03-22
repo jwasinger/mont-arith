@@ -4,7 +4,6 @@ import (
 	"testing"
 	"math/big"
 	"encoding/binary"
-	"fmt"
 )
 
 {{ $limbCount := .LimbCount}}
@@ -14,7 +13,7 @@ import (
 func MaxModulus() [{{$limbCount}}]uint64 {
 	mod := {{ makeZeroedLimbs $limbCount}}	
 
-	mod[0] = 0xfdffffffffffffff
+	mod[0] = 0xfffffffffffffffd
 	for i := 1; i < {{$limbCount}}; i++ {
 		mod[i] = 0xffffffffffffffff
 	}
@@ -38,7 +37,7 @@ func IntToLimbs_{{$limbCount}}Limbs(val *big.Int) [{{$limbCount}}]uint64 {
 	val.FillBytes(val_bytes)
 
 	for i := 0; i < {{$limbCount}}; i++ {
-		result[{{$limbCount}} - (i + 1)] = binary.LittleEndian.Uint64(val_bytes[i * 8: (i + 1) * 8])
+		result[{{$limbCount}} - (i + 1)] = binary.BigEndian.Uint64(val_bytes[i * 8: (i + 1) * 8])
 	}
 
 	return result
@@ -47,7 +46,7 @@ func IntToLimbs_{{$limbCount}}Limbs(val *big.Int) [{{$limbCount}}]uint64 {
 func LimbsToInt_{{$limbCount}}Limbs(limbs []uint64) big.Int {
 	limbs_bytes := make([]byte, 8 * len(limbs), 8 * len(limbs))
 	for i := 0; i < len(limbs); i++ {
-		binary.LittleEndian.PutUint64(limbs_bytes[i * 8:(i + 1) * 8], limbs[len(limbs) - (i + 1)])
+		binary.BigEndian.PutUint64(limbs_bytes[i * 8:(i + 1) * 8], limbs[len(limbs) - (i + 1)])
 	}
 	
 	return *(new(big.Int).SetBytes(limbs_bytes))
@@ -90,14 +89,13 @@ func TestMulModMontUnrolled_{{$limbCount}}limbs(t *testing.T) {
 	mod := MaxModulus()
 	mont_const := MontConstant(mod)
 	r_squared := RSquared(mod)
-
+	
 	_MulModMont(&intermediate_val, &test_val, &r_squared, &mod, mont_const)
 
 	if Eq_{{$limbCount}}Limbs(test_val, intermediate_val) {
 		t.Fatalf("conversion to montgomery should modify test val")
 	}
 
-	fmt.Println(intermediate_val)
 	_MulModMont(&intermediate_val, &intermediate_val, One({{$limbCount}}), &mod, mont_const)
 
 	if !Eq_{{$limbCount}}Limbs(test_val, intermediate_val) {

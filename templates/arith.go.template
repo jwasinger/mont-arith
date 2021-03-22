@@ -1,6 +1,7 @@
 package evmmax_arith
 
 import (
+	"fmt"
 	"math/bits"
 	"unsafe"
 	"errors"
@@ -28,6 +29,12 @@ func _MulModMont(z, x, y *[{{$limbCount}}]uint64, mod *[{{$limbCount}}]uint64, m
 	if x[{{sub $limbCount 1}}] >= mod[{{sub $limbCount 1}}] || y[{{sub $limbCount 1}}] >= mod[{{sub $limbCount 1}}] {
 		panic(errors.New("x/y must be smaller than modulus"))
 	}
+
+	fmt.Println("hello there")
+	fmt.Println(x[0])
+	fmt.Println(y[0])
+	fmt.Println(modinv)
+	fmt.Println(mod)
 
 	{{- range $j := intRange 0 $limbCount}}
 		// round {{$j}}
