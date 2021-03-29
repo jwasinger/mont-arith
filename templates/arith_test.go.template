@@ -10,7 +10,7 @@ import (
 {{ $lastLimb := sub $limbCount 1}}
 
 // **NOTE** naming confusing.  actually the second-largest modulus (largest would have modinv as 1)
-func MaxModulus() [{{$limbCount}}]uint64 {
+func MaxModulus_{{$limbCount}}Limbs() [{{$limbCount}}]uint64 {
 	mod := {{ makeZeroedLimbs $limbCount}}	
 
 	mod[0] = 0xfffffffffffffffd
@@ -53,7 +53,7 @@ func LimbsToInt_{{$limbCount}}Limbs(limbs []uint64) big.Int {
 }
 
 // does the Python equivalent of pow(-modulus, -1, 1<<64)
-func MontConstant(modulus [{{$limbCount}}]uint64) uint64 {
+func MontConstant_{{$limbCount}}Limbs(modulus [{{$limbCount}}]uint64) uint64 {
 	mod_int := LimbsToInt_{{$limbCount}}Limbs(modulus[:])
 	
 	// 1<<64
@@ -64,7 +64,7 @@ func MontConstant(modulus [{{$limbCount}}]uint64) uint64 {
 	return mod_int.ModInverse(&mod_int, aux_mod).Uint64()
 }
 
-func RSquared(modulus [{{$limbCount}}]uint64) [{{$limbCount}}]uint64 {
+func RSquared_{{$limbCount}}Limbs(modulus [{{$limbCount}}]uint64) [{{$limbCount}}]uint64 {
 	mod := LimbsToInt_{{$limbCount}}Limbs(modulus[:])
 	r := new(big.Int)
 	r.Exp(big.NewInt(2), big.NewInt(4 * 64), &mod)
@@ -73,35 +73,37 @@ func RSquared(modulus [{{$limbCount}}]uint64) [{{$limbCount}}]uint64 {
 	return IntToLimbs_{{$limbCount}}Limbs(r)
 }
 
-func One(size int) *[{{$limbCount}}]uint64 {
+func One_{{$limbCount}}Limbs() *[{{$limbCount}}]uint64 {
 	one := {{ makeZeroedLimbs $limbCount}}
 	one[0] = 1
 	return &one
 }
 
 // test converting 3 to montgomery and back using MulModMont
+/*
 func TestMulModMontUnrolled_{{$limbCount}}limbs(t *testing.T) {
 	test_val := {{ makeZeroedLimbs $limbCount}}
 	test_val[0] = 3
 
 	intermediate_val := {{ makeZeroedLimbs $limbCount}}
 
-	mod := MaxModulus()
-	mont_const := MontConstant(mod)
-	r_squared := RSquared(mod)
+	mod := MaxModulus_{{$limbCount}}Limbs()
+	mont_const := MontConstant_{{$limbCount}}Limbs(mod)
+	r_squared := RSquared_{{$limbCount}}Limbs(mod)
 	
-	_MulModMont(&intermediate_val, &test_val, &r_squared, &mod, mont_const)
+	_MulModMont_{{$limbCount}}Limbs(&intermediate_val, &test_val, &r_squared, &mod, mont_const)
 
 	if Eq_{{$limbCount}}Limbs(test_val, intermediate_val) {
 		t.Fatalf("conversion to montgomery should modify test val")
 	}
 
-	_MulModMont(&intermediate_val, &intermediate_val, One({{$limbCount}}), &mod, mont_const)
+	_MulModMont_{{$limbCount}}Limbs(&intermediate_val, &intermediate_val, One_{{$limbCount}}Limbs(), &mod, mont_const)
 
 	if !Eq_{{$limbCount}}Limbs(test_val, intermediate_val) {
 		t.Fatalf("conversion back from montgomery failed")
 	}
 }
+*/
 
 func TestAddMod_{{$limbCount}}limbs(t *testing.T) {
 
@@ -109,4 +111,22 @@ func TestAddMod_{{$limbCount}}limbs(t *testing.T) {
 
 func TestSubMod_{{$limbCount}}limbs(t *testing.T) {
 
+}
+
+// test converting 3 to montgomery and back using MulModMont
+func BenchmarkMulModMontUnrolled_{{$limbCount}}limbs(b *testing.B) {
+	test_val := {{ makeZeroedLimbs $limbCount}}
+	test_val[0] = 3
+
+	intermediate_val := {{ makeZeroedLimbs $limbCount}}
+
+	mod := MaxModulus_{{$limbCount}}Limbs()
+	mont_const := MontConstant_{{$limbCount}}Limbs(mod)
+	r_squared := RSquared_{{$limbCount}}Limbs(mod)
+	
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_MulModMont_{{$limbCount}}Limbs(&intermediate_val, &test_val, &r_squared, &mod, mont_const)
+	}
 }

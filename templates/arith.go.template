@@ -1,7 +1,6 @@
 package evmmax_arith
 
 import (
-	"fmt"
 	"math/bits"
 	"unsafe"
 	"errors"
@@ -12,16 +11,16 @@ import (
 
 var Zero{{$limbCount}}Limbs [{{$limbCount}}]uint64 = {{ makeZeroedLimbs $limbCount}}
 
-func MulModMont(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
+func MulModMont_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
 	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))
 	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))
 	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))
 	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))
 
-	return _MulModMont(out, x, y, mod, modCtx.NInv)
+	return _MulModMont_{{$limbCount}}Limbs(out, x, y, mod, modCtx.MontParamInterleaved)
 }
 
-func _MulModMont(z, x, y *[{{$limbCount}}]uint64, mod *[{{$limbCount}}]uint64, modinv uint64) (error) {
+func _MulModMont_{{$limbCount}}Limbs(z, x, y *[{{$limbCount}}]uint64, mod *[{{$limbCount}}]uint64, modinv uint64) (error) {
     var t [{{$limbCount}}]uint64
 	var c [{{$limbCount}}]uint64
 	var sub_val [{{$limbCount}}]uint64 = *mod
@@ -29,12 +28,6 @@ func _MulModMont(z, x, y *[{{$limbCount}}]uint64, mod *[{{$limbCount}}]uint64, m
 	if x[{{sub $limbCount 1}}] >= mod[{{sub $limbCount 1}}] || y[{{sub $limbCount 1}}] >= mod[{{sub $limbCount 1}}] {
 		panic(errors.New("x/y must be smaller than modulus"))
 	}
-
-	fmt.Println("hello there")
-	fmt.Println(x[0])
-	fmt.Println(y[0])
-	fmt.Println(modinv)
-	fmt.Println(mod)
 
 	{{- range $j := intRange 0 $limbCount}}
 		// round {{$j}}

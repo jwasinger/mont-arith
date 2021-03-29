@@ -68,9 +68,10 @@ func generateLimbImpl(maxLimbs int) {
 }
 
 func main() {
-	var max_limbs int = 4
+	var min_limbs int = 4
+	var max_limbs int = 16
 
-	for i := max_limbs; i <= max_limbs; i++ {
+	for i := min_limbs; i <= max_limbs; i++ {
 		generateLimbImpl(i)
 	}
 

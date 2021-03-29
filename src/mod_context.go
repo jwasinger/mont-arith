@@ -1,6 +1,15 @@
 package evmmax_arith
 
+import (
+	"math/big"
+)
+
 type ModContext struct {
     Modulus []byte
-    NInv uint64
+    MontParamInterleaved uint64
+
+    MontParamNonInterleaved *big.Int
+    ModulusNonInterleaved *big.Int // just here for convenience
+
+    NumLimbs uint
 }

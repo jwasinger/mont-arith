@@ -8,4 +8,7 @@ build:
 	bash -c "gofmt -w build/*"
 
 test:
-	cd build && go test -run=.
+	cd build && go test -v -run=.
+
+benchmark:
+	cd build && go test -bench=.
