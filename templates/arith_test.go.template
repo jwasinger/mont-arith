@@ -18,13 +18,13 @@ func TestMulModMontUnrolled_{{$limbCount}}limbs(t *testing.T) {
 	mont_const := MontConstant_Interleaved(mod)
 	r_squared := RSquared(mod)
 
-	_MulModMont_{{$limbCount}}Limbs(intermediate_val, test_val, r_squared, mod, mont_const)
+	mulmodMont_{{$limbCount}}Limbs(intermediate_val, test_val, r_squared, mod, mont_const)
 
 	if LimbsEq(test_val, intermediate_val) {
 		t.Fatalf("conversion to montgomery should modify test val")
 	}
 
-	_MulModMont_{{$limbCount}}Limbs(intermediate_val, intermediate_val, One({{$limbCount}}), mod, mont_const)
+	mulmodMont_{{$limbCount}}Limbs(intermediate_val, intermediate_val, One({{$limbCount}}), mod, mont_const)
 
 	if !LimbsEq(test_val, intermediate_val) {
 		t.Fatalf("conversion back from montgomery failed")
@@ -53,6 +53,6 @@ func BenchmarkMulModMontUnrolled_{{$limbCount}}limbs(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_MulModMont_{{$limbCount}}Limbs(intermediate_val[:], test_val, r_squared[:], mod[:], mont_const)
+		mulmodMont_{{$limbCount}}Limbs(intermediate_val[:], test_val, r_squared[:], mod[:], mont_const)
 	}
 }

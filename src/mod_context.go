@@ -6,6 +6,7 @@ import (
 	"errors"
 )
 
+// TODO change to MontArithContext?
 type ModContext struct {
     Modulus []byte
     ModulusNonInterleaved *big.Int // just here for convenience

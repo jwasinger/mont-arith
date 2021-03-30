@@ -17,7 +17,8 @@ func SubMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *Mod
 	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
 	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))[:]
 
-	return submod_{{$limbCount}}Limbs(out, x, y, mod)
+	submod_{{$limbCount}}Limbs(out, x, y, mod)
+	return nil
 }
 
 func AddMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
@@ -26,7 +27,8 @@ func AddMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *Mod
 	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
 	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))[:]
 
-	return addmod_{{$limbCount}}Limbs(out, x, y, mod)
+	addmod_{{$limbCount}}Limbs(out, x, y, mod)
+	return nil
 }
 
 func MulModMont_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
@@ -117,7 +119,7 @@ func mulmodMont_{{$limbCount}}Limbs(z, x, y, mod []uint64, modinv uint64) (error
 	Modular Addition
 */
 
-func addmod_{{$limbCount}Limbs(z, x, y, mod []uint64) {
+func addmod_{{$limbCount}}Limbs(z, x, y, mod []uint64) {
 	var c uint64
 	tmp := {{ makeZeroedLimbs $limbCount}}
 
@@ -146,7 +148,7 @@ func addmod_{{$limbCount}Limbs(z, x, y, mod []uint64) {
 	}
 }
 
-func submod_{{$limbCount}Limbs(z, x, y, mod []uint64) {
+func submod_{{$limbCount}}Limbs(z, x, y, mod []uint64) {
 	var c, c1 uint64
 	tmp := {{ makeZeroedLimbs $limbCount}}
 
@@ -164,9 +166,9 @@ func submod_{{$limbCount}Limbs(z, x, y, mod []uint64) {
 
 	{{- range $i := intRange 0 $limbCount }}
 		{{- if eq $i 0}}
-			out[{{$i}}], c1 = bits.Add64(tmp[{{$i}}], mod[{{$i}}], 0)
+			z[{{$i}}], c1 = bits.Add64(tmp[{{$i}}], mod[{{$i}}], 0)
 		{{- else}}
-			out[{{$i}}], c1 = bits.Add64(tmp[{{$i}}], mod[{{$i}}], c1)
+			z[{{$i}}], c1 = bits.Add64(tmp[{{$i}}], mod[{{$i}}], c1)
 		{{- end}}
 	{{- end }}
 
@@ -175,33 +177,3 @@ func submod_{{$limbCount}Limbs(z, x, y, mod []uint64) {
 	}
 
 }
-
-/*
-	Modular Subtraction
-*/
-/*
-func (out *Element) SubMod(x, y, mod *Element) (error) {
-	var c, c1 uint64
-	var tmp Element
-
-	if x[3] > mod[3] || y[3] > mod[3] {
-		return errors.New("x/y must be smaller than modulus")
-	}
-
-	tmp[0], c1 = bits.Sub64(x[0], y[0], 0)
-	tmp[1], c1 = bits.Sub64(x[1], y[1], c1)
-	tmp[2], c1 = bits.Sub64(x[2], y[2], c1)
-	tmp[3], c1 = bits.Sub64(x[3], y[3], c1)
-
-	out[0], c = bits.Add64(tmp[0], mod[0], 0)
-	out[1], c = bits.Add64(tmp[1], mod[1], c)
-	out[2], c = bits.Add64(tmp[2], mod[2], c)
-	out[3], c = bits.Add64(tmp[3], mod[3], c)
-
-	if c1 == 0 { // unnecessary add
-		*out = tmp
-	}
-
-	return nil
-}
-*/
