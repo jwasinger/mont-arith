@@ -11,17 +11,38 @@ import (
 
 var Zero{{$limbCount}}Limbs []uint64 = make([]uint64, {{$limbCount}}, {{$limbCount}})
 
+func SubMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
+	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
+	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
+	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))[:]
+
+	return submod_{{$limbCount}}Limbs(out, x, y, mod)
+}
+
+func AddMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
+	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
+	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
+	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))[:]
+
+	return addmod_{{$limbCount}}Limbs(out, x, y, mod)
+}
+
 func MulModMont_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
 	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
 	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
 	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
 	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))[:]
 
-	return _MulModMont_{{$limbCount}}Limbs(out, x, y, mod, modCtx.MontParamInterleaved)
+	return mulmodMont_{{$limbCount}}Limbs(out, x, y, mod, modCtx.MontParamInterleaved)
 }
 
-// NOTE: len(z) == len(x) == len(y) == len(mod) && x,y < mod assumed
-func _MulModMont_{{$limbCount}}Limbs(z, x, y, mod []uint64, modinv uint64) (error) {
+/* NOTE: addmod/submod/mulmodmont assume:
+	len(z) == len(x) == len(y) == len(mod)
+*/
+
+func mulmodMont_{{$limbCount}}Limbs(z, x, y, mod []uint64, modinv uint64) (error) {
     var t [{{$limbCount}}]uint64
 	var c [{{$limbCount}}]uint64
 	var sub_val []uint64 = mod
@@ -95,32 +116,65 @@ func _MulModMont_{{$limbCount}}Limbs(z, x, y, mod []uint64, modinv uint64) (erro
 /*
 	Modular Addition
 */
-/*
-func (out *Element) AddMod(x, y, mod *Element) (error) {
+
+func addmod_{{$limbCount}Limbs(z, x, y, mod []uint64) {
 	var c uint64
-	var tmp Element
+	tmp := {{ makeZeroedLimbs $limbCount}}
 
-	if x[3] > mod[3] || y[3] > mod[3] {
-		return errors.New("x/y must be smaller than modulus")
+	if x[{{$lastLimb}}] >= mod[{{$lastLimb}}] || y[{{$lastLimb}}] >= mod[{{$lastLimb}}] {
+		panic(errors.New("x/y must be smaller than modulus"))
 	}
 
-	tmp[0], c = bits.Add64(x[0], y[0], 0)
-	tmp[1], c = bits.Add64(x[1], y[1], c)
-	tmp[2], c = bits.Add64(x[2], y[2], c)
-	tmp[3], c = bits.Add64(x[3], y[3], c)
+	{{- range $i := intRange 0 $limbCount }}
+		{{- if eq $i 0}}
+			tmp[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], 0)
+		{{- else}}
+			tmp[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], c)
+		{{- end}}
+	{{- end }}
 
-	out[0], c = bits.Sub64(tmp[0], mod[0], 0)
-	out[1], c = bits.Sub64(tmp[1], mod[1], c)
-	out[2], c = bits.Sub64(tmp[2], mod[2], c)
-	out[3], c = bits.Sub64(tmp[3], mod[3], c)
+	{{- range $i := intRange 0 $limbCount }}
+		{{- if eq $i 0}}
+			tmp[{{$i}}], c = bits.Sub64(tmp[{{$i}}], mod[{{$i}}], 0)
+		{{- else}}
+			tmp[{{$i}}], c = bits.Sub64(tmp[{{$i}}], mod[{{$i}}], c)
+		{{- end}}
+	{{- end }}
 
-	if c != 0 { // unnecessary sub
-		*out = tmp
+	if c != 0 {
+		copy(z, tmp[:]) // assumed all of tmp is copied into z
 	}
-
-	return nil
 }
-*/
+
+func submod_{{$limbCount}Limbs(z, x, y, mod []uint64) {
+	var c, c1 uint64
+	tmp := {{ makeZeroedLimbs $limbCount}}
+
+	if x[{{$lastLimb}}] >= mod[{{$lastLimb}}] || y[{{$lastLimb}}] >= mod[{{$lastLimb}}] {
+		panic(errors.New("x/y must be smaller than modulus"))
+	}
+
+	{{- range $i := intRange 0 $limbCount }}
+		{{- if eq $i 0}}
+			tmp[{{$i}}], c = bits.Sub64(x[{{$i}}], y[{{$i}}], 0)
+		{{- else}}
+			tmp[{{$i}}], c = bits.Sub64(x[{{$i}}], y[{{$i}}], c)
+		{{- end}}
+	{{- end }}
+
+	{{- range $i := intRange 0 $limbCount }}
+		{{- if eq $i 0}}
+			out[{{$i}}], c1 = bits.Add64(tmp[{{$i}}], mod[{{$i}}], 0)
+		{{- else}}
+			out[{{$i}}], c1 = bits.Add64(tmp[{{$i}}], mod[{{$i}}], c1)
+		{{- end}}
+	{{- end }}
+
+	if c1 != 0 {
+		copy(z, tmp[:]) // assumed all of tmp is copied into z
+	}
+
+}
 
 /*
 	Modular Subtraction
