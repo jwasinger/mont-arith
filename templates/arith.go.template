@@ -9,21 +9,22 @@ import (
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 
-var Zero{{$limbCount}}Limbs [{{$limbCount}}]uint64 = {{ makeZeroedLimbs $limbCount}}
+var Zero{{$limbCount}}Limbs []uint64 = make([]uint64, {{$limbCount}}, {{$limbCount}})
 
 func MulModMont_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
-	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))
-	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))
-	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))
-	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))
+	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
+	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
+	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))[:]
 
 	return _MulModMont_{{$limbCount}}Limbs(out, x, y, mod, modCtx.MontParamInterleaved)
 }
 
-func _MulModMont_{{$limbCount}}Limbs(z, x, y *[{{$limbCount}}]uint64, mod *[{{$limbCount}}]uint64, modinv uint64) (error) {
+// NOTE: len(z) == len(x) == len(y) == len(mod) && x,y < mod assumed
+func _MulModMont_{{$limbCount}}Limbs(z, x, y, mod []uint64, modinv uint64) (error) {
     var t [{{$limbCount}}]uint64
 	var c [{{$limbCount}}]uint64
-	var sub_val [{{$limbCount}}]uint64 = *mod
+	var sub_val []uint64 = mod
 
 	if x[{{sub $limbCount 1}}] >= mod[{{sub $limbCount 1}}] || y[{{sub $limbCount 1}}] >= mod[{{sub $limbCount 1}}] {
 		panic(errors.New("x/y must be smaller than modulus"))

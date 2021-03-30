@@ -43,18 +43,9 @@ func IntToLimbs_{{$limbCount}}Limbs(val *big.Int) [{{$limbCount}}]uint64 {
 	return result
 }
 
-func LimbsToInt_{{$limbCount}}Limbs(limbs []uint64) big.Int {
-	limbs_bytes := make([]byte, 8 * len(limbs), 8 * len(limbs))
-	for i := 0; i < len(limbs); i++ {
-		binary.BigEndian.PutUint64(limbs_bytes[i * 8:(i + 1) * 8], limbs[len(limbs) - (i + 1)])
-	}
-	
-	return *(new(big.Int).SetBytes(limbs_bytes))
-}
-
 // does the Python equivalent of pow(-modulus, -1, 1<<64)
 func MontConstant_{{$limbCount}}Limbs(modulus [{{$limbCount}}]uint64) uint64 {
-	mod_int := LimbsToInt_{{$limbCount}}Limbs(modulus[:])
+	mod_int := LimbsToInt(modulus[:])
 	
 	// 1<<64
 	aux_mod, _ := new(big.Int).SetString("18446744073709551616", 10)
@@ -65,7 +56,7 @@ func MontConstant_{{$limbCount}}Limbs(modulus [{{$limbCount}}]uint64) uint64 {
 }
 
 func RSquared_{{$limbCount}}Limbs(modulus [{{$limbCount}}]uint64) [{{$limbCount}}]uint64 {
-	mod := LimbsToInt_{{$limbCount}}Limbs(modulus[:])
+	mod := LimbsToInt(modulus[:])
 	r := new(big.Int)
 	r.Exp(big.NewInt(2), big.NewInt(4 * 64), &mod)
 	r.Mul(r, r)
@@ -115,7 +106,7 @@ func TestSubMod_{{$limbCount}}limbs(t *testing.T) {
 
 // test converting 3 to montgomery and back using MulModMont
 func BenchmarkMulModMontUnrolled_{{$limbCount}}limbs(b *testing.B) {
-	test_val := {{ makeZeroedLimbs $limbCount}}
+	test_val := make([]uint64, {{$limbCount}})
 	test_val[0] = 3
 
 	intermediate_val := {{ makeZeroedLimbs $limbCount}}
@@ -127,6 +118,6 @@ func BenchmarkMulModMontUnrolled_{{$limbCount}}limbs(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_MulModMont_{{$limbCount}}Limbs(&intermediate_val, &test_val, &r_squared, &mod, mont_const)
+		_MulModMont_{{$limbCount}}Limbs(intermediate_val[:], test_val, r_squared[:], mod[:], mont_const)
 	}
 }
