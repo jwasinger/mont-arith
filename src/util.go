@@ -37,3 +37,56 @@ func IntToLimbs(val *big.Int) []uint64 {
 
 	return result
 }
+
+// **NOTE** naming confusing.  actually the second-largest modulus (largest would have modinv as 1)
+func MaxModulus(limbCount uint) []uint64 {
+	mod := make([]uint64, limbCount, limbCount)
+
+	mod[0] = 0xfffffffffffffffd
+	for i := uint(1); i < limbCount; i++ {
+		mod[i] = 0xffffffffffffffff
+	}
+
+	return mod
+}
+
+func LimbsEq(x, y []uint64) bool {
+	if len(x) != len(y) {
+		panic("unequally-sized elements")
+	}
+
+	for i := 0; i < len(x); i++ {
+		if x[i] != y[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+func One(limbCount uint) []uint64 {
+	one := make([]uint64, limbCount, limbCount)
+	one[0] = 1
+	return one
+}
+
+func RSquared(modulus []uint64) []uint64 {
+	mod := LimbsToInt(modulus[:])
+	r := new(big.Int)
+	r.Exp(big.NewInt(2), big.NewInt(4 * 64), &mod)
+	r.Mul(r, r)
+	r.Mod(r, &mod)
+	return IntToLimbs(r)
+}
+
+// does the Python equivalent of pow(-modulus, -1, 1<<64)
+func MontConstant_Interleaved(modulus []uint64) uint64 {
+	mod_int := LimbsToInt(modulus)
+
+	// 1<<64
+	aux_mod, _ := new(big.Int).SetString("18446744073709551616", 10)
+	negative_one, _ := new(big.Int).SetString("-1", 10)
+
+	mod_int.Mul(&mod_int, negative_one)
+	return mod_int.ModInverse(&mod_int, aux_mod).Uint64()
+}

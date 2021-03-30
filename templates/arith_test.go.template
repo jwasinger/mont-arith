@@ -2,73 +2,14 @@ package evmmax_arith
 
 import (
 	"testing"
-	"math/big"
-	"encoding/binary"
 )
 
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 
-// **NOTE** naming confusing.  actually the second-largest modulus (largest would have modinv as 1)
-func MaxModulus_{{$limbCount}}Limbs() [{{$limbCount}}]uint64 {
-	mod := {{ makeZeroedLimbs $limbCount}}	
 
-	mod[0] = 0xfffffffffffffffd
-	for i := 1; i < {{$limbCount}}; i++ {
-		mod[i] = 0xffffffffffffffff
-	}
 
-	return mod
-}
 
-func Eq_{{$limbCount}}Limbs(x, y [{{$limbCount}}]uint64) bool {
-	{{- range $j := intRange 0 $limbCount}}
-		if x[{{$j}}] != y[{{$j}}] {
-			return false
-		}
-	{{- end}}
-
-	return true
-}
-
-func IntToLimbs_{{$limbCount}}Limbs(val *big.Int) [{{$limbCount}}]uint64 {
-	val_bytes := make([]byte, {{$limbCount}} * 8, {{$limbCount}} * 8)
-	result := {{ makeZeroedLimbs $limbCount }}
-	val.FillBytes(val_bytes)
-
-	for i := 0; i < {{$limbCount}}; i++ {
-		result[{{$limbCount}} - (i + 1)] = binary.BigEndian.Uint64(val_bytes[i * 8: (i + 1) * 8])
-	}
-
-	return result
-}
-
-// does the Python equivalent of pow(-modulus, -1, 1<<64)
-func MontConstant_{{$limbCount}}Limbs(modulus [{{$limbCount}}]uint64) uint64 {
-	mod_int := LimbsToInt(modulus[:])
-	
-	// 1<<64
-	aux_mod, _ := new(big.Int).SetString("18446744073709551616", 10)
-	negative_one, _ := new(big.Int).SetString("-1", 10)
-
-	mod_int.Mul(&mod_int, negative_one)
-	return mod_int.ModInverse(&mod_int, aux_mod).Uint64()
-}
-
-func RSquared_{{$limbCount}}Limbs(modulus [{{$limbCount}}]uint64) [{{$limbCount}}]uint64 {
-	mod := LimbsToInt(modulus[:])
-	r := new(big.Int)
-	r.Exp(big.NewInt(2), big.NewInt(4 * 64), &mod)
-	r.Mul(r, r)
-	r.Mod(r, &mod)
-	return IntToLimbs_{{$limbCount}}Limbs(r)
-}
-
-func One_{{$limbCount}}Limbs() *[{{$limbCount}}]uint64 {
-	one := {{ makeZeroedLimbs $limbCount}}
-	one[0] = 1
-	return &one
-}
 
 // test converting 3 to montgomery and back using MulModMont
 /*
@@ -111,9 +52,9 @@ func BenchmarkMulModMontUnrolled_{{$limbCount}}limbs(b *testing.B) {
 
 	intermediate_val := {{ makeZeroedLimbs $limbCount}}
 
-	mod := MaxModulus_{{$limbCount}}Limbs()
-	mont_const := MontConstant_{{$limbCount}}Limbs(mod)
-	r_squared := RSquared_{{$limbCount}}Limbs(mod)
+	mod := MaxModulus({{$limbCount}})
+	mont_const := MontConstant_Interleaved(mod)
+	r_squared := RSquared(mod)
 	
 	b.ResetTimer()
 
