@@ -1,22 +1,20 @@
 package evmmax_arith
 
 import (
-	"unsafe"
-	"math/big"
-	"math"
 	"encoding/binary"
+	"math"
+	"math/big"
+	"unsafe"
 )
 
 func LimbsToInt(limbs []uint64) big.Int {
-	limbs_bytes := make([]byte, 8 * len(limbs), 8 * len(limbs))
+	limbs_bytes := make([]byte, 8*len(limbs), 8*len(limbs))
 	for i := 0; i < len(limbs); i++ {
-		binary.BigEndian.PutUint64(limbs_bytes[i * 8:(i + 1) * 8], limbs[len(limbs) - (i + 1)])
+		binary.BigEndian.PutUint64(limbs_bytes[i*8:(i+1)*8], limbs[len(limbs)-(i+1)])
 	}
 
 	return *(new(big.Int).SetBytes(limbs_bytes))
 }
-
-
 
 func IntToLimbs(val *big.Int, num_limbs uint) []uint64 {
 	// TODO move to global
@@ -36,7 +34,7 @@ func IntToLimbs(val *big.Int, num_limbs uint) []uint64 {
 	val.FillBytes(val_bytes)
 
 	for i := uint(0); i < num_limbs; i++ {
-		result[num_limbs - (i + 1)] = binary.BigEndian.Uint64(val_bytes[i * 8: (i + 1) * 8])
+		result[num_limbs-(i+1)] = binary.BigEndian.Uint64(val_bytes[i*8 : (i+1)*8])
 	}
 
 	return result
@@ -77,7 +75,7 @@ func One(limbCount uint) []uint64 {
 func RSquared(modulus []uint64) []uint64 {
 	mod := LimbsToInt(modulus[:])
 	r := new(big.Int)
-	r.Exp(big.NewInt(2), big.NewInt(int64(len(modulus)) * 64), &mod)
+	r.Exp(big.NewInt(2), big.NewInt(int64(len(modulus))*64), &mod)
 	r.Mul(r, r)
 	r.Mod(r, &mod)
 

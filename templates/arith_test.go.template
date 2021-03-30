@@ -7,35 +7,29 @@ import (
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 
-
-
-
-
 // test converting 3 to montgomery and back using MulModMont
-/*
 func TestMulModMontUnrolled_{{$limbCount}}limbs(t *testing.T) {
-	test_val := {{ makeZeroedLimbs $limbCount}}
+	test_val := make([]uint64, {{$limbCount}}, {{$limbCount}})
 	test_val[0] = 3
 
-	intermediate_val := {{ makeZeroedLimbs $limbCount}}
+	intermediate_val := make([]uint64, {{$limbCount}}, {{$limbCount}})
 
-	mod := MaxModulus_{{$limbCount}}Limbs()
-	mont_const := MontConstant_{{$limbCount}}Limbs(mod)
-	r_squared := RSquared_{{$limbCount}}Limbs(mod)
-	
-	_MulModMont_{{$limbCount}}Limbs(&intermediate_val, &test_val, &r_squared, &mod, mont_const)
+	mod := MaxModulus({{$limbCount}})
+	mont_const := MontConstant_Interleaved(mod)
+	r_squared := RSquared(mod)
 
-	if Eq_{{$limbCount}}Limbs(test_val, intermediate_val) {
+	_MulModMont_{{$limbCount}}Limbs(intermediate_val, test_val, r_squared, mod, mont_const)
+
+	if LimbsEq(test_val, intermediate_val) {
 		t.Fatalf("conversion to montgomery should modify test val")
 	}
 
-	_MulModMont_{{$limbCount}}Limbs(&intermediate_val, &intermediate_val, One_{{$limbCount}}Limbs(), &mod, mont_const)
+	_MulModMont_{{$limbCount}}Limbs(intermediate_val, intermediate_val, One({{$limbCount}}), mod, mont_const)
 
-	if !Eq_{{$limbCount}}Limbs(test_val, intermediate_val) {
+	if !LimbsEq(test_val, intermediate_val) {
 		t.Fatalf("conversion back from montgomery failed")
 	}
 }
-*/
 
 func TestAddMod_{{$limbCount}}limbs(t *testing.T) {
 

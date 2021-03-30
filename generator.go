@@ -70,7 +70,7 @@ func generateLimbImpl(maxLimbs int) {
 func main() {
 	var min_limbs int = 4
 	//var max_limbs int = 12
-	var max_limbs int = 4
+	var max_limbs int = 12
 
 	for i := min_limbs; i <= max_limbs; i++ {
 		generateLimbImpl(i)
