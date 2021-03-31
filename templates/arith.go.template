@@ -11,33 +11,33 @@ import (
 
 var Zero{{$limbCount}}Limbs []uint64 = make([]uint64, {{$limbCount}}, {{$limbCount}})
 
-func SubMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
+func SubMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes, modulus *[]byte) (error) {
 	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
 	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
 	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
-	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*modulus)[0]))[:]
 
 	submod_{{$limbCount}}Limbs(out, x, y, mod)
 	return nil
 }
 
-func AddMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
+func AddMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes, modulus *[]byte) (error) {
 	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
 	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
 	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
-	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*modulus)[0]))[:]
 
 	addmod_{{$limbCount}}Limbs(out, x, y, mod)
 	return nil
 }
 
-func MulModMont_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) (error) {
+func MulModMont_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes, modulus *[]byte, modinv uint64) (error) {
 	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
 	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
 	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
-	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*modulus)[0]))[:]
 
-	return mulmodMont_{{$limbCount}}Limbs(out, x, y, mod, modCtx.MontParamInterleaved)
+	return mulmodMont_{{$limbCount}}Limbs(out, x, y, mod, modinv)
 }
 
 /* NOTE: addmod/submod/mulmodmont assume:

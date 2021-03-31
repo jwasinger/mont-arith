@@ -1,8 +1,23 @@
 package evmmax
 
-type EVMMAXImplFunc = func (out []byte, x []byte, y []byte, mod_ctx *MontCtx) nil
+{{ $limbCount := .LimbCount}}
+{{ $limbBits := .LimbBits}}
 
-type MontgomeryContext struct {
-    Modulus []byte,
-    NInv uint64
+type ModArithFunc = func (out []byte, x []byte, y []byte, mod_ctx *MontCtx) nil
+
+
+func AddModImpls() []ModArithFunc {
+
+}
+
+func SubModImpls() []ModArithFunc {
+	result := []ModArithFunc {
+		{{- range $i := intRange 1 $limbCount}}
+			AddMod{{mul $limbCount $limbBits}}
+		{{- end}}
+	}
+}
+
+func MulModMontImpls() []ModArithFunc {
+
 }

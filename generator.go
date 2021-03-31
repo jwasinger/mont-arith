@@ -11,6 +11,7 @@ import (
 
 type TemplateParams struct {
 	LimbCount int
+	LimbBits int
 }
 
 func loadTextFile(file_name string) string {
@@ -61,7 +62,7 @@ func buildTemplate(dest_path, template_path string, params *TemplateParams) {
 }
 
 func generateLimbImpl(maxLimbs int) {
-	params := TemplateParams{maxLimbs}
+	params := TemplateParams{maxLimbs, 64}
 
 	buildTemplate(fmt.Sprintf("build/arith_%dlimbs.go", maxLimbs), "templates/arith.go.template", &params)
 	buildTemplate(fmt.Sprintf("build/arith_%dlimbs_test.go", maxLimbs), "templates/arith_test.go.template", &params)

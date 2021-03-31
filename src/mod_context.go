@@ -6,9 +6,13 @@ import (
 	"errors"
 )
 
+type ModArithFunc func (out, x, y, mod []byte)
+type MulModMontFunc func (out, x, y, mod []byte, modinv uint64)
+type MulModWrapperFunc func(out, x, y []byte, m *MontArithContext)
+
 type MontArithContext struct {
 // TODO make most of these private and the arith operations methods of this struct
-    Modulus []uint64
+    Modulus []byte
     ModulusNonInterleaved *big.Int // just here for convenience
 
     MontParamInterleaved uint64
@@ -22,24 +26,33 @@ type MontArithContext struct {
     mulModMontFunc MulModMontFunc
 }
 
-func MulModMontInterleavedWrapper(out, x, y []byte, m *ModContext) {
-	m.mulModMontFunc(out, x, y, m.ModulusInterleaved, m.ModInvInterleaved)
+func MulModMontInterleavedWrapper(out, x, y []byte, m *MontArithContext) {
+	m.mulModMontFunc(out, x, y, m.Modulus, m.MontParamInterleaved)
 }
 
-func MulModMontNonInterleavedWrapper(out, x, y []byte, m *ModContext) {
-	MulModMontNonInterleaved(out, x, y, m.ModulusNonInterleaved, m.MontConstNonInterleaved)
+func MulModMontNonInterleavedWrapper(out, x, y []byte, m *MontArithContext) {
+	// TODO replace with something more performant than big.Int
+	// this is just a reference implementation for the higher bitwidths.
+
+/*
+	MulModMontNonInterleaved(out, x, y, m.ModulusNonInterleaved, m.MontConstNonInterleaved, m.NumLimbs)
+*/
 }
 
-func NewModContext() *ModContext {
-	result := ModContext {
+func NewMontArithContext() *MontArithContext {
+	result := MontArithContext {
 		nil,
 		nil,
 		0,
 		nil,
 		0,
+		nil,
+		nil,
 		nil,
 		nil,
 	}
+
+	return &result
 }
 
 func (m *MontArithContext) AddMod(out, x, y []byte) {
@@ -52,14 +65,14 @@ func (m *MontArithContext) SubMod(out, x, y []byte) {
 
 func (m *MontArithContext) MulModMont(out, x, y []byte) {
 	// pass m explicityl b/c mulModMontWrapperFunc is a struct member
-	m.mulModMontWrapperFunc(m, out, x, y)
+	m.mulModMontWrapperFunc(out, x, y, m)
 }
 
 func (m *MontArithContext) ModIsSet() bool {
 	return m.NumLimbs != 0
 }
 
-func (m *MontArithContext) SetMod(modulus string, base int) (*ModContext, error) {
+func (m *MontArithContext) SetMod(modulus string, base int) (*MontArithContext, error) {
 	mod, success := new(big.Int).SetString(modulus, base)
 	if !success {
 		return nil, errors.New("SetString failed for modulus/base")
@@ -86,7 +99,7 @@ func (m *MontArithContext) SetMod(modulus string, base int) (*ModContext, error)
 
 	// mod % (1 << limb_count_bits)  == mod % (1 << limb_count_bytes * 8)
 	m.ModulusNonInterleaved = mod
-	m.Modulus = IntToLimbs(mod)
+	m.Modulus = IntToLEBytes_Uint64Limbs(mod)
 	m.MontParamNonInterleaved = rVal
 	m.MontParamInterleaved = rVal.Uint64()
 	m.NumLimbs = len(m.Modulus)
@@ -104,6 +117,6 @@ func (m *MontArithContext) SetMod(modulus string, base int) (*ModContext, error)
 		m.mulModMontFunc = mulModMontImpls[limbCount - 1]
 	} else {
 		m.MulModWrapper = MulModMontNonInterleavedWrapper
-		m.MulModMontFunc = MulModMontNonInterleaved
+		m.MulModMontFunc = nil // non-interleaved mulmodmont called by wrapper has a different function signature
 	}
 }

@@ -16,7 +16,9 @@ func LimbsToInt(limbs []uint64) big.Int {
 	return *(new(big.Int).SetBytes(limbs_bytes))
 }
 
+func IntToLEBytes_Uint64Limbs(val *big.Int) []byte {
 
+}
 
 func IntToLimbs(val *big.Int, num_limbs uint) []uint64 {
 	// TODO move to global

@@ -5,21 +5,7 @@ import (
 	"fmt"
 )
 
-func MulModMontNonInterleaved(z_bytes, x_bytes, y_bytes []byte, ctx *ModContext) {
-
-	// sadly, no non-hacky way to create a big.Int from a pre-allocated array
-	// this is just a stub implementation
-
-	z := new(big.Int)
-	x := new(big.Int)
-	y := new(big.Int)
-
-	mulModMontNonInterleaved(z, x, y, ctx)
-
-	// TODO convert to evmmax format and move bytes to z_bytes
-}
-
-func mulModMontNonInterleaved(z, x, y *big.Int, ctx *ModContext) {
+func MulModMontNonInterleaved(z, x, y, mod, montParam *big.Int, limbCount uint) {
 	//x := new(big.Int).SetBytes(
 
 	// length x == y assumed
@@ -34,13 +20,14 @@ func mulModMontNonInterleaved(z, x, y *big.Int, ctx *ModContext) {
 
 	// if t > N: t <- T - N
 	product := new(big.Int)
+	var limbBits uint = 64
 
 	product.Mul(x, y)
-	x.Lsh(product, ctx.NumLimbs * 64)
-	x.Mul(x, ctx.MontParamNonInterleaved)
-	x.Lsh(x, ctx.NumLimbs * 64)
+	x.Lsh(product, limbCount * limbBits)
+	x.Mul(x, montParam)
+	x.Lsh(x, limbCount * limbBits)
 
-	x.Mul(x, ctx.ModulusNonInterleaved)
+	x.Mul(x, mod)
 	product.Add(product, x)
 
 	// take top bits instead of shift
