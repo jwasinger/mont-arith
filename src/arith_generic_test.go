@@ -1,4 +1,4 @@
-package evmmax_arith
+package modext
 
 /*
 import (

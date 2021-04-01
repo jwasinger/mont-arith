@@ -1,4 +1,4 @@
-package evmmax_arith
+package modext
 
 import (
 	"math/big"
@@ -43,6 +43,7 @@ func MulModMontNonInterleavedWrapper(out, x, y []byte, m *MontArithContext) {
 /*
 	MulModMontNonInterleaved(out, x, y, m.ModulusNonInterleaved, m.MontConstNonInterleaved, m.NumLimbs)
 */
+	panic("plz implement me")
 }
 
 func NewMontArithContext() *MontArithContext {
