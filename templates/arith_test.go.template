@@ -5,10 +5,11 @@ import (
 )
 
 {{ $limbCount := .LimbCount}}
+{{ $limbBits := .LimbBits}}
 {{ $lastLimb := sub $limbCount 1}}
 
 // test converting 3 to montgomery and back using MulModMont
-func TestMulModMontUnrolled_{{$limbCount}}limbs(t *testing.T) {
+func TestMulModMontUnrolled{{mul $limbCount $limbBits}}(t *testing.T) {
 	test_val := make([]uint64, {{$limbCount}}, {{$limbCount}})
 	test_val[0] = 3
 
@@ -18,29 +19,29 @@ func TestMulModMontUnrolled_{{$limbCount}}limbs(t *testing.T) {
 	mont_const := MontConstant_Interleaved(mod)
 	r_squared := RSquared(mod)
 
-	mulmodMont_{{$limbCount}}Limbs(intermediate_val, test_val, r_squared, mod, mont_const)
+	mulmodMont{{mul $limbCount $limbBits}}(intermediate_val, test_val, r_squared, mod, mont_const)
 
 	if LimbsEq(test_val, intermediate_val) {
 		t.Fatalf("conversion to montgomery should modify test val")
 	}
 
-	mulmodMont_{{$limbCount}}Limbs(intermediate_val, intermediate_val, One({{$limbCount}}), mod, mont_const)
+	mulmodMont{{mul $limbCount $limbBits}}(intermediate_val, intermediate_val, One({{$limbCount}}), mod, mont_const)
 
 	if !LimbsEq(test_val, intermediate_val) {
 		t.Fatalf("conversion back from montgomery failed")
 	}
 }
 
-func TestAddMod_{{$limbCount}}limbs(t *testing.T) {
+func TestAddMod{{mul $limbCount $limbBits}}(t *testing.T) {
 
 }
 
-func TestSubMod_{{$limbCount}}limbs(t *testing.T) {
+func TestSubMod{{mul $limbCount $limbBits}}(t *testing.T) {
 
 }
 
 // test converting 3 to montgomery and back using MulModMont
-func BenchmarkMulModMontUnrolled_{{$limbCount}}limbs(b *testing.B) {
+func BenchmarkMulModMontUnrolled{{mul $limbCount $limbBits}}(b *testing.B) {
 	test_val := make([]uint64, {{$limbCount}})
 	test_val[0] = 3
 
@@ -53,6 +54,6 @@ func BenchmarkMulModMontUnrolled_{{$limbCount}}limbs(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		mulmodMont_{{$limbCount}}Limbs(intermediate_val[:], test_val, r_squared[:], mod[:], mont_const)
+		mulmodMont{{mul $limbCount $limbBits}}(intermediate_val[:], test_val, r_squared[:], mod[:], mont_const)
 	}
 }

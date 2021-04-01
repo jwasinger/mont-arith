@@ -6,8 +6,8 @@ import (
 	"errors"
 )
 
-type ModArithFunc func (out, x, y, mod []byte)
-type MulModMontFunc func (out, x, y, mod []byte, modinv uint64)
+type ModArithFunc func (out, x, y, mod []byte) (error)
+type MulModMontFunc func (out, x, y, mod []byte, modinv uint64) (error)
 type MulModWrapperFunc func(out, x, y []byte, m *MontArithContext)
 
 type MontArithContext struct {
@@ -19,11 +19,17 @@ type MontArithContext struct {
     MontParamNonInterleaved *big.Int
 
     NumLimbs uint
+
+    // currently active addmod/submod/mulmodmont for a set NumLimbs
     addModFunc ModArithFunc
     subModFunc ModArithFunc
-
     mulModMontWrapperFunc MulModWrapperFunc
     mulModMontFunc MulModMontFunc
+
+    // store list of all generated unrolled implementations (TODO use generic implementation at higher bitwidth)
+    addmodImpls []ModArithFunc
+    submodImpls []ModArithFunc
+    mulmodMontImpls []MulModMontFunc
 }
 
 func MulModMontInterleavedWrapper(out, x, y []byte, m *MontArithContext) {
@@ -47,6 +53,10 @@ func NewMontArithContext() *MontArithContext {
 		nil,
 		0,
 		nil,
+		nil,
+		nil,
+		nil,
+
 		nil,
 		nil,
 		nil,
@@ -102,21 +112,23 @@ func (m *MontArithContext) SetMod(modulus string, base int) (*MontArithContext, 
 	m.Modulus = IntToLEBytes_Uint64Limbs(mod)
 	m.MontParamNonInterleaved = rVal
 	m.MontParamInterleaved = rVal.Uint64()
-	m.NumLimbs = len(m.Modulus)
+	m.NumLimbs = uint(len(m.Modulus))
 
-	addModImpls := AddModImpls()
-	subModImpls := SubModImpls()
+	m.addmodImpls = AddModImpls()
+	m.submodImpls = SubModImpls()
+	m.mulmodMontImpls = MulModMontImpls()
 
-	m.addModFunc = addModImpls[limbCount - 1]
-	m.subModFunc = subModImpls[limbCount - 1]
+	m.addModFunc = m.addmodImpls[limbCount - 1]
+	m.subModFunc = m.submodImpls[limbCount - 1]
 
 	// limb count of 10 is the threshold where goff's mulmodmont impl blows up in runtime
 	if limbCount < 10 {
-		mulModMontImpls := MulModMontImpls()
-		m.MulModWrapper = MulModMontInterleavedWrapper
-		m.mulModMontFunc = mulModMontImpls[limbCount - 1]
+		m.mulModMontWrapperFunc = MulModMontInterleavedWrapper
+		m.mulModMontFunc = m.mulmodMontImpls[limbCount - 1]
 	} else {
-		m.MulModWrapper = MulModMontNonInterleavedWrapper
-		m.MulModMontFunc = nil // non-interleaved mulmodmont called by wrapper has a different function signature
+		m.mulModMontWrapperFunc = MulModMontNonInterleavedWrapper
+		m.mulModMontFunc = nil // non-interleaved mulmodmont called by wrapper has a different function signature
 	}
+
+	return m, nil
 }

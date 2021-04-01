@@ -35,6 +35,9 @@ var funcs = template.FuncMap{
 	"sub": func(val, v2 int) int {
 		return val - v2
 	},
+	"mul": func(val, v2 int) int {
+		return val * v2
+	},
 	// returns "[x]uint64 {0, 0, 0, ......, 0}"
 	"makeZeroedLimbs": func(numLimbs int) string {
 		result := fmt.Sprintf("[%d]uint64 {", numLimbs)
@@ -61,6 +64,11 @@ func buildTemplate(dest_path, template_path string, params *TemplateParams) {
 	f.Close()
 }
 
+func generateLimbFuncList(maxLimbs int) {
+	params := TemplateParams{maxLimbs, 64}
+	buildTemplate("build/entrypoint.go", "templates/entrypoint.go.template", &params)
+}
+
 func generateLimbImpl(maxLimbs int) {
 	params := TemplateParams{maxLimbs, 64}
 
@@ -72,6 +80,10 @@ func main() {
 	var min_limbs int = 4
 	//var max_limbs int = 12
 	var max_limbs int = 12
+
+	generateLimbFuncList(max_limbs)
+
+	fmt.Println("generating limb impls")
 
 	for i := min_limbs; i <= max_limbs; i++ {
 		generateLimbImpl(i)

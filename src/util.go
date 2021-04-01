@@ -17,7 +17,8 @@ func LimbsToInt(limbs []uint64) big.Int {
 }
 
 func IntToLEBytes_Uint64Limbs(val *big.Int) []byte {
-
+	panic("not implemented")
+	return nil
 }
 
 func IntToLimbs(val *big.Int, num_limbs uint) []uint64 {

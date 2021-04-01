@@ -1,23 +1,34 @@
-package evmmax
+package evmmax_arith
 
 {{ $limbCount := .LimbCount}}
 {{ $limbBits := .LimbBits}}
 
-type ModArithFunc = func (out []byte, x []byte, y []byte, mod_ctx *MontCtx) nil
-
-
 func AddModImpls() []ModArithFunc {
+	result := []ModArithFunc {
+		{{- range $i := intRange 1 $limbCount}}
+			AddMod{{mul $limbCount $limbBits}},
+		{{- end}}
+	}
 
+	return result
 }
 
 func SubModImpls() []ModArithFunc {
 	result := []ModArithFunc {
 		{{- range $i := intRange 1 $limbCount}}
-			AddMod{{mul $limbCount $limbBits}}
+			SubMod{{mul $limbCount $limbBits}},
 		{{- end}}
 	}
+
+	return result
 }
 
-func MulModMontImpls() []ModArithFunc {
+func MulModMontImpls() []MulModMontFunc {
+	result := []MulModMontFunc {
+		{{- range $i := intRange 1 $limbCount}}
+			MulModMont{{mul $limbCount $limbBits}},
+		{{- end}}
+	}
 
+	return result
 }

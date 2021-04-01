@@ -8,43 +8,44 @@ import (
 
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
+{{ $limbBits := .LimbBits}}
 
 var Zero{{$limbCount}}Limbs []uint64 = make([]uint64, {{$limbCount}}, {{$limbCount}})
 
-func SubMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes, modulus *[]byte) (error) {
-	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
-	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
-	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
-	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*modulus)[0]))[:]
+func SubMod{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes, modulus []byte) (error) {
+	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
+	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
+	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modulus[0]))[:]
 
-	submod_{{$limbCount}}Limbs(out, x, y, mod)
+	submod{{mul $limbCount $limbBits}}(out, x, y, mod)
 	return nil
 }
 
-func AddMod_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes, modulus *[]byte) (error) {
-	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
-	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
-	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
-	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*modulus)[0]))[:]
+func AddMod{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes, modulus []byte) (error) {
+	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
+	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
+	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modulus[0]))[:]
 
-	addmod_{{$limbCount}}Limbs(out, x, y, mod)
+	addmod{{mul $limbCount $limbBits}}(out, x, y, mod)
 	return nil
 }
 
-func MulModMont_{{$limbCount}}Limbs(out_bytes, x_bytes, y_bytes, modulus *[]byte, modinv uint64) (error) {
-	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
-	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
-	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
-	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&(*modulus)[0]))[:]
+func MulModMont{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes, modulus []byte, modinv uint64) (error) {
+	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
+	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
+	out := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&modulus[0]))[:]
 
-	return mulmodMont_{{$limbCount}}Limbs(out, x, y, mod, modinv)
+	return mulmodMont{{mul $limbCount $limbBits}}(out, x, y, mod, modinv)
 }
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
 */
 
-func mulmodMont_{{$limbCount}}Limbs(z, x, y, mod []uint64, modinv uint64) (error) {
+func mulmodMont{{mul $limbCount $limbBits}}(z, x, y, mod []uint64, modinv uint64) (error) {
     var t [{{$limbCount}}]uint64
 	var c [{{$limbCount}}]uint64
 	var sub_val []uint64 = mod
@@ -119,7 +120,7 @@ func mulmodMont_{{$limbCount}}Limbs(z, x, y, mod []uint64, modinv uint64) (error
 	Modular Addition
 */
 
-func addmod_{{$limbCount}}Limbs(z, x, y, mod []uint64) {
+func addmod{{mul $limbCount $limbBits}}(z, x, y, mod []uint64) {
 	var c uint64
 	tmp := {{ makeZeroedLimbs $limbCount}}
 
@@ -148,7 +149,7 @@ func addmod_{{$limbCount}}Limbs(z, x, y, mod []uint64) {
 	}
 }
 
-func submod_{{$limbCount}}Limbs(z, x, y, mod []uint64) {
+func submod{{mul $limbCount $limbBits}}(z, x, y, mod []uint64) {
 	var c, c1 uint64
 	tmp := {{ makeZeroedLimbs $limbCount}}
 
