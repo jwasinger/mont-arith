@@ -1,4 +1,4 @@
-# mont-arith: 
+# mont-arith 
 
 Library for Modular Addition, Subtraction and Montgomery Multiplication.  Supports values between 0 and 16384 bits.
 
