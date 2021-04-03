@@ -49,7 +49,7 @@ func buildTemplate(dest_path, template_path string, params *TemplateParams) {
 	f, err := os.Create(dest_path)
 	if err != nil {
 		log.Println("create file: ", err)
-		panic("fuck1")
+		panic("")
 	}
 
 	template_content := loadTextFile(template_path)
@@ -58,7 +58,7 @@ func buildTemplate(dest_path, template_path string, params *TemplateParams) {
 
 	if err := tmpl.Execute(f, *params); err != nil {
 		log.Fatal(err)
-		panic("fuck2")
+		panic("")
 	}
 
 	f.Close()
@@ -71,15 +71,13 @@ func generateLimbFuncList(maxLimbs int) {
 
 func generateLimbImpl(maxLimbs int) {
 	params := TemplateParams{maxLimbs, 64}
-
 	buildTemplate(fmt.Sprintf("build/arith_%dlimbs.go", maxLimbs), "templates/arith.go.template", &params)
-	buildTemplate(fmt.Sprintf("build/arith_%dlimbs_test.go", maxLimbs), "templates/arith_test.go.template", &params)
 }
 
 func main() {
 	var min_limbs int = 4
 	//var max_limbs int = 12
-	var max_limbs int = 20
+	var max_limbs int = 11
 
 	generateLimbFuncList(max_limbs)
 

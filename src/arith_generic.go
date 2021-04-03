@@ -2,15 +2,14 @@ package modext
 
 import (
 	"math/big"
-	"fmt"
 )
 
-func MulModMontNonInterleaved(z, x, y, mod, montParam *big.Int, limbCount uint) {
+func MulModMontNonInterleaved(z, x, y, mod, montParam *big.Int, limbBits uint) {
 	//x := new(big.Int).SetBytes(
 
 	// length x == y assumed
 
-	// TODO see if pre-allocating product and zeroing after use is faster
+	// TODO see if pre-allocating product space and zeroing after use is faster for higher widths
 
 	// m <- ((T mod R)N`) mod R
 	// m is the low product of x*y (T) and N`
@@ -20,19 +19,16 @@ func MulModMontNonInterleaved(z, x, y, mod, montParam *big.Int, limbCount uint) 
 
 	// if t > N: t <- T - N
 	product := new(big.Int)
-	var limbBits uint = 64
 
 	product.Mul(x, y)
-	x.Lsh(product, limbCount * limbBits)
+	x.Lsh(product, limbBits)
 	x.Mul(x, montParam)
-	x.Lsh(x, limbCount * limbBits)
+	x.Lsh(x, limbBits)
 
 	x.Mul(x, mod)
 	product.Add(product, x)
 
 	// take top bits instead of shift
-
-	fmt.Println(product.String())
 
 	// TODO
 	_ = z

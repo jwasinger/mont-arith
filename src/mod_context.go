@@ -2,7 +2,6 @@ package modext
 
 import (
 	"math/big"
-	"unsafe"
 	"errors"
 )
 
@@ -20,6 +19,9 @@ type MontArithContext struct {
 
     NumLimbs uint
 
+    r *big.Int
+    rInv *big.Int
+
     // currently active addmod/submod/mulmodmont for a set NumLimbs
     addModFunc ModArithFunc
     subModFunc ModArithFunc
@@ -32,18 +34,49 @@ type MontArithContext struct {
     mulmodMontImpls []MulModMontFunc
 }
 
+func (m *MontArithContext) ToMont(dst, src []uint64) {
+	if len(dst) != len(src) || uint(len(dst)) != m.NumLimbs {
+		panic("dst and src length must be equal to number of limbs for modulus")
+	}
+
+	dst_val := new(big.Int)
+	src_val := LimbsToInt(src)
+	dst_val.Mul(src_val, m.r)
+	dst_val.Mod(dst_val, MAXBytesToInt(m.Modulus))
+
+	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
+}
+
+func (m *MontArithContext) ToNorm(dst, src []uint64) {
+	if len(dst) != len(src) || uint(len(dst)) != m.NumLimbs {
+		panic("dst and src length must be equal to number of limbs for modulus")
+	}
+
+	dst_val := new(big.Int)
+	src_val := LimbsToInt(src)
+	dst_val.Mul(src_val, m.rInv)
+	dst_val.Mod(dst_val, MAXBytesToInt(m.Modulus))
+
+	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
+}
+
 func MulModMontInterleavedWrapper(out, x, y []byte, m *MontArithContext) {
 	m.mulModMontFunc(out, x, y, m.Modulus, m.MontParamInterleaved)
 }
 
-func MulModMontNonInterleavedWrapper(out, x, y []byte, m *MontArithContext) {
-	// TODO replace with something more performant than big.Int
+func MulModMontNonInterleavedWrapper(out_bytes, x_bytes, y_bytes []byte, m *MontArithContext) {
+	// TODO replace with something more performant than big.Int (and with less or no copying)
 	// this is just a reference implementation for the higher bitwidths.
 
-/*
-	MulModMontNonInterleaved(out, x, y, m.ModulusNonInterleaved, m.MontConstNonInterleaved, m.NumLimbs)
-*/
-	panic("plz implement me")
+	x := MAXBytesToInt(x_bytes)
+	y := MAXBytesToInt(y_bytes)
+	out := new(big.Int)
+
+	MulModMontNonInterleaved(out, x, y, m.ModulusNonInterleaved, m.MontParamNonInterleaved, m.NumLimbs * 64)
+
+	out_MAX := LimbsToMAXBytes(IntToLimbs(out, m.NumLimbs))
+
+	copy(out_bytes, out_MAX)
 }
 
 func NewMontArithContext() *MontArithContext {
@@ -52,7 +85,11 @@ func NewMontArithContext() *MontArithContext {
 		nil,
 		0,
 		nil,
+
 		0,
+		nil,
+		nil,
+
 		nil,
 		nil,
 		nil,
@@ -76,27 +113,33 @@ func (m *MontArithContext) SubMod(out, x, y []byte) {
 
 func (m *MontArithContext) MulModMont(out, x, y []byte) {
 	// pass m explicityl b/c mulModMontWrapperFunc is a struct member
+
+
+
 	m.mulModMontWrapperFunc(out, x, y, m)
+
 }
 
 func (m *MontArithContext) ModIsSet() bool {
 	return m.NumLimbs != 0
 }
 
-func (m *MontArithContext) SetMod(modulus string, base int) (*MontArithContext, error) {
+func (m *MontArithContext) SetMod(modulus []uint64) error {
+/*
 	mod, success := new(big.Int).SetString(modulus, base)
 	if !success {
 		return nil, errors.New("SetString failed for modulus/base")
 	}
-
-	var x uint
-	limbSize := uint(unsafe.Sizeof(x))
-	limbCount := uint(len(mod.Bytes())) / limbSize
-	_ = x
+*/
+	limbCount := uint(len(modulus))
+	var limbSize uint = 8
 
 	if limbCount == 0 {
-		return nil, errors.New("can't have 0 as modulus")
+		return errors.New("can't have 0 as modulus")
 	}
+
+	mod := LimbsToInt(modulus)
+
 
 	// r val chosen as max representable value for limbCount + 1: 0x1000...000
 	rVal := new(big.Int)
@@ -104,32 +147,47 @@ func (m *MontArithContext) SetMod(modulus string, base int) (*MontArithContext, 
 
 	montParamNonInterleaved := new(big.Int)
 	montParamNonInterleaved = montParamNonInterleaved.Mul(mod, big.NewInt(-1))
+	montParamNonInterleaved.Mod(montParamNonInterleaved, rVal)
+
 	if montParamNonInterleaved.ModInverse(montParamNonInterleaved, rVal) == nil {
-		return nil, errors.New("modinverse failed")
+		return errors.New("modinverse failed")
 	}
+
+	rVal.Mod(rVal, mod)
+
+
+	rInv := new(big.Int)
+	if rInv.ModInverse(rVal, mod) == nil {
+		return errors.New("modinverse to compute rInv failed")
+	}
+
+	m.NumLimbs = limbCount
+	m.r = rVal
+	m.rInv = rInv
 
 	// mod % (1 << limb_count_bits)  == mod % (1 << limb_count_bytes * 8)
 	m.ModulusNonInterleaved = mod
-	m.Modulus = IntToLEBytes_Uint64Limbs(mod)
-	m.MontParamNonInterleaved = rVal
-	m.MontParamInterleaved = rVal.Uint64()
-	m.NumLimbs = uint(len(m.Modulus))
+	m.Modulus = LimbsToMAXBytes(IntToLimbs(mod, m.NumLimbs))
+	m.MontParamNonInterleaved = montParamNonInterleaved
+	m.MontParamInterleaved = montParamNonInterleaved.Uint64()
 
 	m.addmodImpls = AddModImpls()
 	m.submodImpls = SubModImpls()
 	m.mulmodMontImpls = MulModMontImpls()
 
-	m.addModFunc = m.addmodImpls[limbCount - 1]
-	m.subModFunc = m.submodImpls[limbCount - 1]
-
 	// limb count of 10 is the threshold where goff's mulmodmont impl blows up in runtime
 	if limbCount < 10 {
 		m.mulModMontWrapperFunc = MulModMontInterleavedWrapper
-		m.mulModMontFunc = m.mulmodMontImpls[limbCount - 1]
+		m.mulModMontFunc = m.mulmodMontImpls[0]
+
+		m.addModFunc = m.addmodImpls[limbCount - 1]
+		m.subModFunc = m.submodImpls[limbCount - 1]
 	} else {
 		m.mulModMontWrapperFunc = MulModMontNonInterleavedWrapper
 		m.mulModMontFunc = nil // non-interleaved mulmodmont called by wrapper has a different function signature
+
+		// TODO generic addmod/submod or more unrolled impls ?
 	}
 
-	return m, nil
+	return nil
 }

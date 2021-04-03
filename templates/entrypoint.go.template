@@ -5,8 +5,8 @@ package modext
 
 func AddModImpls() []ModArithFunc {
 	result := []ModArithFunc {
-		{{- range $i := intRange 1 $limbCount}}
-			AddMod{{mul $limbCount $limbBits}},
+		{{- range $i := intRange 4 $limbCount}}
+			AddMod{{mul $i $limbBits}},
 		{{- end}}
 	}
 
@@ -15,8 +15,8 @@ func AddModImpls() []ModArithFunc {
 
 func SubModImpls() []ModArithFunc {
 	result := []ModArithFunc {
-		{{- range $i := intRange 1 $limbCount}}
-			SubMod{{mul $limbCount $limbBits}},
+		{{- range $i := intRange 4 $limbCount}}
+			SubMod{{mul $i $limbBits}},
 		{{- end}}
 	}
 
@@ -25,8 +25,8 @@ func SubModImpls() []ModArithFunc {
 
 func MulModMontImpls() []MulModMontFunc {
 	result := []MulModMontFunc {
-		{{- range $i := intRange 1 $limbCount}}
-			MulModMont{{mul $limbCount $limbBits}},
+		{{- range $i := intRange 4 $limbCount}}
+			MulModMont{{mul $i $limbBits}},
 		{{- end}}
 	}
 

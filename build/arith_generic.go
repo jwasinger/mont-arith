@@ -1,16 +1,15 @@
-package evmmax_arith
+package modext
 
 import (
-	"fmt"
 	"math/big"
 )
 
-func MulModMontNonInterleaved(z, x, y *big.Int, ctx *ModContext) {
+func MulModMontNonInterleaved(z, x, y, mod, montParam *big.Int, limbBits uint) {
 	//x := new(big.Int).SetBytes(
 
 	// length x == y assumed
 
-	// TODO see if pre-allocating product and zeroing after use is faster
+	// TODO see if pre-allocating product space and zeroing after use is faster for higher widths
 
 	// m <- ((T mod R)N`) mod R
 	// m is the low product of x*y (T) and N`
@@ -22,16 +21,14 @@ func MulModMontNonInterleaved(z, x, y *big.Int, ctx *ModContext) {
 	product := new(big.Int)
 
 	product.Mul(x, y)
-	x.Lsh(product, ctx.NumLimbs*64)
-	x.Mul(x, ctx.MontParamNonInterleaved)
-	x.Lsh(x, ctx.NumLimbs*64)
+	x.Lsh(product, limbBits)
+	x.Mul(x, montParam)
+	x.Lsh(x, limbBits)
 
-	x.Mul(x, ctx.ModulusNonInterleaved)
+	x.Mul(x, mod)
 	product.Add(product, x)
 
 	// take top bits instead of shift
-
-	fmt.Println(product.String())
 
 	// TODO
 	_ = z

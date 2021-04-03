@@ -1,4 +1,4 @@
-package evmmax_arith
+package modext
 
 import (
 	"errors"
@@ -8,17 +8,40 @@ import (
 
 var Zero5Limbs []uint64 = make([]uint64, 5, 5)
 
-func MulModMont_5Limbs(out_bytes, x_bytes, y_bytes *[]byte, modCtx *ModContext) error {
-	x := (*[5]uint64)(unsafe.Pointer(&(*x_bytes)[0]))[:]
-	y := (*[5]uint64)(unsafe.Pointer(&(*y_bytes)[0]))[:]
-	out := (*[5]uint64)(unsafe.Pointer(&(*out_bytes)[0]))[:]
-	mod := (*[5]uint64)(unsafe.Pointer(&modCtx.Modulus[0]))[:]
+func SubMod320(out_bytes, x_bytes, y_bytes, modulus []byte) error {
+	x := (*[5]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
+	y := (*[5]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
+	out := (*[5]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
+	mod := (*[5]uint64)(unsafe.Pointer(&modulus[0]))[:]
 
-	return _MulModMont_5Limbs(out, x, y, mod, modCtx.MontParamInterleaved)
+	submod320(out, x, y, mod)
+	return nil
 }
 
-// NOTE: len(z) == len(x) == len(y) == len(mod) && x,y < mod assumed
-func _MulModMont_5Limbs(z, x, y, mod []uint64, modinv uint64) error {
+func AddMod320(out_bytes, x_bytes, y_bytes, modulus []byte) error {
+	x := (*[5]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
+	y := (*[5]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
+	out := (*[5]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
+	mod := (*[5]uint64)(unsafe.Pointer(&modulus[0]))[:]
+
+	addmod320(out, x, y, mod)
+	return nil
+}
+
+func MulModMont320(out_bytes, x_bytes, y_bytes, modulus []byte, modinv uint64) error {
+	x := (*[5]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
+	y := (*[5]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
+	out := (*[5]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
+	mod := (*[5]uint64)(unsafe.Pointer(&modulus[0]))[:]
+
+	return mulmodMont320(out, x, y, mod, modinv)
+}
+
+/* NOTE: addmod/submod/mulmodmont assume:
+len(z) == len(x) == len(y) == len(mod)
+*/
+
+func mulmodMont320(z, x, y, mod []uint64, modinv uint64) error {
 	var t [5]uint64
 	var c [5]uint64
 	var sub_val []uint64 = mod
@@ -114,59 +137,50 @@ func _MulModMont_5Limbs(z, x, y, mod []uint64, modinv uint64) error {
 /*
 	Modular Addition
 */
-/*
-func (out *Element) AddMod(x, y, mod *Element) (error) {
+
+func addmod320(z, x, y, mod []uint64) {
 	var c uint64
-	var tmp Element
+	tmp := [5]uint64{0, 0, 0, 0, 0}
 
-	if x[3] > mod[3] || y[3] > mod[3] {
-		return errors.New("x/y must be smaller than modulus")
+	if x[4] >= mod[4] || y[4] >= mod[4] {
+		panic(errors.New("x/y must be smaller than modulus"))
 	}
-
 	tmp[0], c = bits.Add64(x[0], y[0], 0)
 	tmp[1], c = bits.Add64(x[1], y[1], c)
 	tmp[2], c = bits.Add64(x[2], y[2], c)
 	tmp[3], c = bits.Add64(x[3], y[3], c)
+	tmp[4], c = bits.Add64(x[4], y[4], c)
+	tmp[0], c = bits.Sub64(tmp[0], mod[0], 0)
+	tmp[1], c = bits.Sub64(tmp[1], mod[1], c)
+	tmp[2], c = bits.Sub64(tmp[2], mod[2], c)
+	tmp[3], c = bits.Sub64(tmp[3], mod[3], c)
+	tmp[4], c = bits.Sub64(tmp[4], mod[4], c)
 
-	out[0], c = bits.Sub64(tmp[0], mod[0], 0)
-	out[1], c = bits.Sub64(tmp[1], mod[1], c)
-	out[2], c = bits.Sub64(tmp[2], mod[2], c)
-	out[3], c = bits.Sub64(tmp[3], mod[3], c)
-
-	if c != 0 { // unnecessary sub
-		*out = tmp
+	if c != 0 {
+		copy(z, tmp[:]) // assumed all of tmp is copied into z
 	}
-
-	return nil
 }
-*/
 
-/*
-	Modular Subtraction
-*/
-/*
-func (out *Element) SubMod(x, y, mod *Element) (error) {
+func submod320(z, x, y, mod []uint64) {
 	var c, c1 uint64
-	var tmp Element
+	tmp := [5]uint64{0, 0, 0, 0, 0}
 
-	if x[3] > mod[3] || y[3] > mod[3] {
-		return errors.New("x/y must be smaller than modulus")
+	if x[4] >= mod[4] || y[4] >= mod[4] {
+		panic(errors.New("x/y must be smaller than modulus"))
+	}
+	tmp[0], c = bits.Sub64(x[0], y[0], 0)
+	tmp[1], c = bits.Sub64(x[1], y[1], c)
+	tmp[2], c = bits.Sub64(x[2], y[2], c)
+	tmp[3], c = bits.Sub64(x[3], y[3], c)
+	tmp[4], c = bits.Sub64(x[4], y[4], c)
+	z[0], c1 = bits.Add64(tmp[0], mod[0], 0)
+	z[1], c1 = bits.Add64(tmp[1], mod[1], c1)
+	z[2], c1 = bits.Add64(tmp[2], mod[2], c1)
+	z[3], c1 = bits.Add64(tmp[3], mod[3], c1)
+	z[4], c1 = bits.Add64(tmp[4], mod[4], c1)
+
+	if c1 != 0 {
+		copy(z, tmp[:]) // assumed all of tmp is copied into z
 	}
 
-	tmp[0], c1 = bits.Sub64(x[0], y[0], 0)
-	tmp[1], c1 = bits.Sub64(x[1], y[1], c1)
-	tmp[2], c1 = bits.Sub64(x[2], y[2], c1)
-	tmp[3], c1 = bits.Sub64(x[3], y[3], c1)
-
-	out[0], c = bits.Add64(tmp[0], mod[0], 0)
-	out[1], c = bits.Add64(tmp[1], mod[1], c)
-	out[2], c = bits.Add64(tmp[2], mod[2], c)
-	out[3], c = bits.Add64(tmp[3], mod[3], c)
-
-	if c1 == 0 { // unnecessary add
-		*out = tmp
-	}
-
-	return nil
 }
-*/

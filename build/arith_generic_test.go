@@ -1,10 +1,13 @@
-package evmmax_arith
+package modext
 
+/*
 import (
 	"math/big"
 	"testing"
 )
+*/
 
+/*
 func BenchmarkMulModMontNonInterleaved(b *testing.B) {
 	modCtx, err := NewModContext("1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab", 16)
 	_ = modCtx
@@ -34,6 +37,7 @@ func BenchmarkMulModMontNonInterleaved(b *testing.B) {
 		z.Mul(x, y)
 	}
 }
+*/
 
 /*
 func rSquared(limbCount uint) Element {
