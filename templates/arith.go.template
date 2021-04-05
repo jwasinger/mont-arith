@@ -130,9 +130,9 @@ func addmod{{mul $limbCount $limbBits}}(z, x, y, mod []uint64) {
 
 	{{- range $i := intRange 0 $limbCount }}
 		{{- if eq $i 0}}
-			tmp[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], 0)
+			z[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], 0)
 		{{- else}}
-			tmp[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], c)
+			z[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], c)
 		{{- end}}
 	{{- end }}
 
@@ -144,8 +144,8 @@ func addmod{{mul $limbCount $limbBits}}(z, x, y, mod []uint64) {
 		{{- end}}
 	{{- end }}
 
-	if c != 0 {
-		copy(z, tmp[:]) // assumed all of tmp is copied into z
+	if c == 0 {
+		copy(z, tmp[:])
 	}
 }
 
@@ -169,12 +169,12 @@ func submod{{mul $limbCount $limbBits}}(z, x, y, mod []uint64) {
 		{{- if eq $i 0}}
 			z[{{$i}}], c1 = bits.Add64(tmp[{{$i}}], mod[{{$i}}], 0)
 		{{- else}}
-			z[{{$i}}], c1 = bits.Add64(tmp[{{$i}}], mod[{{$i}}], c1)
+			z[{{$i}}], c1  = bits.Add64(tmp[{{$i}}], mod[{{$i}}], c1)
 		{{- end}}
 	{{- end }}
 
-	if c1 != 0 {
-		copy(z, tmp[:]) // assumed all of tmp is copied into z
+	if c == 0 {
+		copy(z, tmp[:])
 	}
 
 }

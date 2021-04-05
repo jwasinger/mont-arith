@@ -76,15 +76,13 @@ func generateLimbImpl(maxLimbs int) {
 
 func main() {
 	var min_limbs int = 4
-	//var max_limbs int = 12
+	//var max_limbs int = 11
 	var max_limbs int = 11
 
 	generateLimbFuncList(max_limbs)
 
-	fmt.Println("generating limb impls")
-
 	for i := min_limbs; i <= max_limbs; i++ {
-		fmt.Println(fmt.Sprintf("generating limb impl for %dx64-bit limbs", i))
+		fmt.Println(fmt.Sprintf("generating arithmetic implementation for %d-bit widths", i * 64))
 		generateLimbImpl(i)
 	}
 

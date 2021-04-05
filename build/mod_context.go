@@ -173,11 +173,15 @@ func (m *MontArithContext) SetMod(modulus []uint64) error {
 
 	// limb count of 10 is the threshold where goff's mulmodmont impl blows up in runtime
 	if limbCount < 10 {
-		m.mulModMontWrapperFunc = MulModMontInterleavedWrapper
-		m.mulModMontFunc = m.mulmodMontImpls[0]
 
-		m.addModFunc = m.addmodImpls[limbCount-1]
-		m.subModFunc = m.submodImpls[limbCount-1]
+		if limbCount < 4 {
+			panic("limb counts less than 4 not implemented")
+		}
+
+		m.mulModMontWrapperFunc = MulModMontInterleavedWrapper
+		m.mulModMontFunc = m.mulmodMontImpls[limbCount-4]
+		m.addModFunc = m.addmodImpls[limbCount-4]
+		m.subModFunc = m.submodImpls[limbCount-4]
 	} else {
 		m.mulModMontWrapperFunc = MulModMontNonInterleavedWrapper
 		m.mulModMontFunc = nil // non-interleaved mulmodmont called by wrapper has a different function signature

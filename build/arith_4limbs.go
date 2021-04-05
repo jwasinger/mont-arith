@@ -122,17 +122,17 @@ func addmod256(z, x, y, mod []uint64) {
 	if x[3] >= mod[3] || y[3] >= mod[3] {
 		panic(errors.New("x/y must be smaller than modulus"))
 	}
-	tmp[0], c = bits.Add64(x[0], y[0], 0)
-	tmp[1], c = bits.Add64(x[1], y[1], c)
-	tmp[2], c = bits.Add64(x[2], y[2], c)
-	tmp[3], c = bits.Add64(x[3], y[3], c)
+	z[0], c = bits.Add64(x[0], y[0], 0)
+	z[1], c = bits.Add64(x[1], y[1], c)
+	z[2], c = bits.Add64(x[2], y[2], c)
+	z[3], c = bits.Add64(x[3], y[3], c)
 	tmp[0], c = bits.Sub64(tmp[0], mod[0], 0)
 	tmp[1], c = bits.Sub64(tmp[1], mod[1], c)
 	tmp[2], c = bits.Sub64(tmp[2], mod[2], c)
 	tmp[3], c = bits.Sub64(tmp[3], mod[3], c)
 
-	if c != 0 {
-		copy(z, tmp[:]) // assumed all of tmp is copied into z
+	if c == 0 {
+		copy(z, tmp[:])
 	}
 }
 
@@ -152,8 +152,8 @@ func submod256(z, x, y, mod []uint64) {
 	z[2], c1 = bits.Add64(tmp[2], mod[2], c1)
 	z[3], c1 = bits.Add64(tmp[3], mod[3], c1)
 
-	if c1 != 0 {
-		copy(z, tmp[:]) // assumed all of tmp is copied into z
+	if c == 0 {
+		copy(z, tmp[:])
 	}
 
 }
