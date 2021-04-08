@@ -35,6 +35,16 @@ var funcs = template.FuncMap{
 	"sub": func(val, v2 int) int {
 		return val - v2
 	},
+	"max": func(val, val2 int) int {
+		if val > val2 {
+			return val
+		} else {
+			return val2
+		}
+	},
+	"gte": func(v1, v2 int) bool {
+		return v1 >= v2
+	},
 	"mul": func(val, v2 int) int {
 		return val * v2
 	},
@@ -69,21 +79,57 @@ func generateLimbFuncList(maxLimbs int) {
 	buildTemplate("build/entrypoint.go", "templates/entrypoint.go.template", &params)
 }
 
-func generateLimbImpl(maxLimbs int) {
-	params := TemplateParams{maxLimbs, 64}
-	buildTemplate(fmt.Sprintf("build/arith_%dlimbs.go", maxLimbs), "templates/arith.go.template", &params)
+func generateMulModMontImpl(limbCount int) {
+	params := TemplateParams{limbCount, 64}
+	buildTemplate(fmt.Sprintf("build/mulmodmont%d.go", limbCount * 64), "templates/mulmodmont.go.template", &params)
 }
 
-func main() {
-	var min_limbs int = 4
+func generateAddModImpl(limbCount int) {
+	params := TemplateParams{limbCount, 64}
+	buildTemplate(fmt.Sprintf("build/addmod%d.go", limbCount * 64), "templates/addmod.go.template", &params)
+}
+
+func generateSubModImpl(limbCount int) {
+	params := TemplateParams{limbCount, 64}
+	buildTemplate(fmt.Sprintf("build/submod%d.go", limbCount * 64), "templates/submod.go.template", &params)
+}
+
+func genMulModMontImpls() {
+	var min_limbs int = 2
 	//var max_limbs int = 11
 	var max_limbs int = 11
 
-	generateLimbFuncList(max_limbs)
+	for i := min_limbs; i <= max_limbs; i++ {
+		fmt.Println(fmt.Sprintf("generating mulmodmont implementation for %d-bit width", i * 64))
+		generateMulModMontImpl(i)
+	}
+}
+
+func genAddModImpls() {
+	var min_limbs int = 2
+	//var max_limbs int = 11
+	var max_limbs int = 128
 
 	for i := min_limbs; i <= max_limbs; i++ {
-		fmt.Println(fmt.Sprintf("generating arithmetic implementation for %d-bit widths", i * 64))
-		generateLimbImpl(i)
+		fmt.Println(fmt.Sprintf("generating addmod implementation for %d-bit width", i * 64))
+		generateAddModImpl(i)
 	}
+}
 
+func genSubModImpls() {
+	var min_limbs int = 2
+	//var max_limbs int = 11
+	var max_limbs int = 128
+
+	for i := min_limbs; i <= max_limbs; i++ {
+		fmt.Println(fmt.Sprintf("generating submod implementation for %d-bit width", i * 64))
+		generateSubModImpl(i)
+	}
+}
+
+func main() {
+	generateLimbFuncList(128)
+	genMulModMontImpls()
+	genAddModImpls()
+	genSubModImpls()
 }

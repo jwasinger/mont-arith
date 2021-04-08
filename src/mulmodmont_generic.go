@@ -2,34 +2,37 @@ package modext
 
 import (
 	"math/big"
+	"errors"
 )
 
-func MulModMontNonInterleaved(z, x, y, mod, montParam *big.Int, limbBits uint) {
-	//x := new(big.Int).SetBytes(
-
+func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithContext) (error) {
 	// length x == y assumed
 
-	// TODO see if pre-allocating product space and zeroing after use is faster for higher widths
+	product := new(big.Int)
+	x := MAXBytesToInt(x_bytes)
+	y := MAXBytesToInt(y_bytes)
 
-	// m <- ((T mod R)N`) mod R
-	// m is the low product of x*y (T) and N`
+/*
+	if x[m.NumLimbs - 1] <= m.ModulusNonInterleaved[m.NumLimbs - 1] || y[m.NumLimbs - 1] <= m.ModulusNonInterleaved[m.NumLimbs - 1] {
+		return errors.New("x/y >= modulus")
+	}
+*/
+	if x.Cmp(m.ModulusNonInterleaved) > 0 || y.Cmp(m.ModulusNonInterleaved) > 0 {
+		return errors.New("x/y >= modulus")
+	}
+
+        // m <- ((x*y mod R)N`) mod R
+        product.Mul(x, y)
+        x.And(product, m.mask)
+        x.Mul(x, m.MontParamNonInterleaved)
+        x.And(x, m.mask)
 
 	// t <- (T + mN) / R
-	// add T and mN and shift by R
+	x.Mul(x, m.ModulusNonInterleaved)
+	x.Add(x, product)
+	x.Rsh(x, m.NumLimbs * 64)
 
-	// if t > N: t <- T - N
-	product := new(big.Int)
+	copy(out_bytes, LimbsToMAXBytes(IntToLimbs(x, m.NumLimbs)))
 
-	product.Mul(x, y)
-	x.Lsh(product, limbBits)
-	x.Mul(x, montParam)
-	x.Lsh(x, limbBits)
-
-	x.Mul(x, mod)
-	product.Add(product, x)
-
-	// take top bits instead of shift
-
-	// TODO
-	_ = z
+	return nil
 }

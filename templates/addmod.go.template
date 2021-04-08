@@ -1,0 +1,48 @@
+package modext
+
+import (
+	"math/bits"
+	"unsafe"
+	"errors"
+)
+
+
+{{ $limbCount := .LimbCount}}
+{{ $lastLimb := sub $limbCount 1}}
+{{ $limbBits := .LimbBits}}
+
+func AddMod{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
+	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
+	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
+	z := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+
+	var c uint64
+	tmp := {{ makeZeroedLimbs $limbCount}}
+
+	if x[{{$lastLimb}}] >= mod[{{$lastLimb}}] || y[{{$lastLimb}}] >= mod[{{$lastLimb}}] {
+		panic(errors.New("x/y must be smaller than modulus"))
+	}
+
+	{{- range $i := intRange 0 $limbCount }}
+		{{- if eq $i 0}}
+			z[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], 0)
+		{{- else}}
+			z[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], c)
+		{{- end}}
+	{{- end }}
+
+	{{- range $i := intRange 0 $limbCount }}
+		{{- if eq $i 0}}
+			tmp[{{$i}}], c = bits.Sub64(tmp[{{$i}}], mod[{{$i}}], 0)
+		{{- else}}
+			tmp[{{$i}}], c = bits.Sub64(tmp[{{$i}}], mod[{{$i}}], c)
+		{{- end}}
+	{{- end }}
+
+	if c == 0 {
+		copy(z, tmp[:])
+	}
+
+	return nil
+}
