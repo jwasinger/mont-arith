@@ -11,4 +11,4 @@ test:
 	cd build && go test -v -run=.
 
 benchmark:
-	cd build && go test -bench=.
+	cd build && go test -bench=MulModMont -v

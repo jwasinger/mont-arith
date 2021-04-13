@@ -12,11 +12,6 @@ func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithCo
 	x := MAXBytesToInt(x_bytes)
 	y := MAXBytesToInt(y_bytes)
 
-	/*
-		if x[m.NumLimbs - 1] <= m.ModulusNonInterleaved[m.NumLimbs - 1] || y[m.NumLimbs - 1] <= m.ModulusNonInterleaved[m.NumLimbs - 1] {
-			return errors.New("x/y >= modulus")
-		}
-	*/
 	if x.Cmp(m.ModulusNonInterleaved) > 0 || y.Cmp(m.ModulusNonInterleaved) > 0 {
 		return errors.New("x/y >= modulus")
 	}

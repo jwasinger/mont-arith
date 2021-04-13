@@ -1,23 +1,9 @@
 package modext
 
 import (
-	"unsafe"
 	"math/big"
-	"math"
 	"encoding/binary"
 )
-
-func LimbsToInt(limbs []uint64) *big.Int {
-	limbs_bytes := make([]byte, 8 * len(limbs), 8 * len(limbs))
-	for i := 0; i < len(limbs); i++ {
-		startIdx := (len(limbs) * 8) - ((i + 1) * 8)
-		endIdx := (len(limbs) * 8) - (i * 8)
-
-		binary.BigEndian.PutUint64(limbs_bytes[startIdx:endIdx], limbs[i])
-	}
-
-	return new(big.Int).SetBytes(limbs_bytes)
-}
 
 /* 
 Methods for converting between Go big-int (64bit little-endian limbs, big-endian limb ordering) 
@@ -56,28 +42,38 @@ func LimbsToMAXBytes(val []uint64) []byte {
 	return result
 }
 
+// convert big.Int (big-endian) to little-endian limbs
 func IntToLimbs(val *big.Int, num_limbs uint) []uint64 {
-	// TODO move to global
-	var foo uint
-	LimbSize := uint(unsafe.Sizeof(foo))
-	_ = foo
+	val_bytes := val.Bytes()
 
-	val_limbs := uint(math.Ceil(float64(len(val.Bytes())) / float64(unsafe.Sizeof(foo))))
-	if val_limbs > num_limbs {
-		panic("val cannot fit inside specified limb count")
+	// pad length to be a multiple of 64bits
+	pad_len := len(val_bytes) - len(val_bytes) % 8
+	if pad_len > 0 {
+		pad := make([]byte, pad_len, pad_len)
+		val_bytes = append(val_bytes, pad...)
 	}
 
-	num_bytes := num_limbs * LimbSize
+	result := make([]uint64, len(val_bytes) / 8, len(val_bytes) / 8)
 
-	val_bytes := make([]byte, num_bytes, num_bytes)
-	result := make([]uint64, num_limbs, num_limbs)
-	val.FillBytes(val_bytes)
-
-	for i := uint(0); i < num_limbs; i++ {
-		result[num_limbs - (i + 1)] = binary.BigEndian.Uint64(val_bytes[i * 8: (i + 1) * 8])
+	// place byteswapped (little-endian) val into result
+	for i := 0; i < len(val_bytes); i += 8 {
+		binary.LittleEndian.PutUint64(val_bytes[len(val_bytes) - 1 - i:(len(val_bytes) - 1 - i)+8], result[i/8])
 	}
 
 	return result
+}
+
+// convert little-endian limbs to big.Int
+func LimbsToInt(limbs []uint64) *big.Int {
+	limbs_bytes := make([]byte, 8 * len(limbs), 8 * len(limbs))
+	for i := 0; i < len(limbs); i++ {
+		startIdx := (len(limbs) - (i + 1)) * 8
+		endIdx   := (len(limbs) - i) * 8
+
+		binary.BigEndian.PutUint64(limbs_bytes[startIdx:endIdx], limbs[i])
+	}
+
+	return new(big.Int).SetBytes(limbs_bytes)
 }
 
 // **NOTE** naming confusing.  actually the second-largest modulus (largest would have modinv as 1)

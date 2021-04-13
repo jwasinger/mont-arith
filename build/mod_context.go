@@ -3,6 +3,7 @@ package modext
 import (
 	"errors"
 	"math/big"
+	//"fmt"
 )
 
 type ModArithFunc func(out, x, y []byte, m *MontArithContext) error
@@ -132,7 +133,7 @@ func (m *MontArithContext) SetMod(modulus []uint64) error {
 		return errors.New("modinverse failed")
 	}
 
-	rVal.Mod(rVal, mod)
+	//rVal.Mod(rVal, mod)
 
 	rInv := new(big.Int)
 	if rInv.ModInverse(rVal, mod) == nil {

@@ -3,6 +3,7 @@ package modext
 import (
 	"math/big"
 	"errors"
+	//"fmt"
 )
 
 type ModArithFunc func (out, x, y []byte, m *MontArithContext) (error)
@@ -117,7 +118,6 @@ func (m *MontArithContext) SetMod(modulus []uint64) error {
 
 	mod := LimbsToInt(modulus)
 
-
 	// r val chosen as max representable value for limbCount + 1: 0x1000...000
 	rVal := new(big.Int)
 	rVal.Lsh(big.NewInt(1), limbCount * limbSize * 8)
@@ -133,7 +133,7 @@ func (m *MontArithContext) SetMod(modulus []uint64) error {
 		return errors.New("modinverse failed")
 	}
 
-	rVal.Mod(rVal, mod)
+	//rVal.Mod(rVal, mod)
 
 
 	rInv := new(big.Int)
