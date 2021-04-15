@@ -9,8 +9,8 @@ func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithCo
 	// length x == y assumed
 
 	product := new(big.Int)
-	x := MAXBytesToInt(x_bytes)
-	y := MAXBytesToInt(y_bytes)
+	x := LEBytesToInt(x_bytes)
+	y := LEBytesToInt(y_bytes)
 
 	if x.Cmp(m.ModulusNonInterleaved) > 0 || y.Cmp(m.ModulusNonInterleaved) > 0 {
 		return errors.New("x/y >= modulus")
@@ -27,7 +27,7 @@ func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithCo
 	x.Add(x, product)
 	x.Rsh(x, m.NumLimbs*64)
 
-	copy(out_bytes, LimbsToMAXBytes(IntToLimbs(x, m.NumLimbs)))
+	copy(out_bytes, LimbsToLEBytes(IntToLimbs(x, m.NumLimbs)))
 
 	return nil
 }

@@ -34,18 +34,20 @@ func testMulModMont(t *testing.T, limbCount uint) {
 
 	out_bytes := make([]byte, montCtx.NumLimbs*8)
 
-	x_bytes := LimbsToMAXBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToMAXBytes(IntToLimbs(y, limbCount))
+	fmt.Println("testMulModMont")
+	fmt.Println(montCtx.Modulus)
+	fmt.Println(IntToLimbs(x, limbCount))
+	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
+	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
+	fmt.Println(x_bytes)
 
 	montCtx.MulModMont(out_bytes, x_bytes, y_bytes)
 
-	result := MAXBytesToInt(out_bytes)
+	result := LEBytesToInt(out_bytes)
 	if result.Cmp(expected) != 0 {
-		/*
-			fmt.Println(result.String())
-			fmt.Println(expected.String())
-			t.Fail()
-		*/
+		fmt.Println(result.String())
+		fmt.Println(expected.String())
+		t.Fail()
 	}
 }
 
@@ -67,12 +69,12 @@ func testAddMod(t *testing.T, limbCount uint) {
 
 	out_bytes := make([]byte, montCtx.NumLimbs*8)
 
-	x_bytes := LimbsToMAXBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToMAXBytes(IntToLimbs(y, limbCount))
+	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
+	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
 
 	montCtx.AddMod(out_bytes, x_bytes, y_bytes)
 
-	result := MAXBytesToInt(out_bytes)
+	result := LEBytesToInt(out_bytes)
 
 	if result.Cmp(expected) != 0 {
 		t.Fail()
@@ -99,12 +101,12 @@ func testSubMod(t *testing.T, limbCount uint) {
 
 	out_bytes := make([]byte, montCtx.NumLimbs*8)
 
-	x_bytes := LimbsToMAXBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToMAXBytes(IntToLimbs(y, limbCount))
+	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
+	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
 
 	montCtx.SubMod(out_bytes, x_bytes, y_bytes)
 
-	result := MAXBytesToInt(out_bytes)
+	result := LEBytesToInt(out_bytes)
 
 	if result.Cmp(expected) != 0 {
 
@@ -114,7 +116,7 @@ func testSubMod(t *testing.T, limbCount uint) {
 }
 
 func TestMulModMont(t *testing.T) {
-	for i := 1; i < 128; i++ {
+	for i := 1; i < 2; i++ {
 		testMulModMont(t, uint(i))
 	}
 }
@@ -176,10 +178,10 @@ func benchmarkMulModMont(b *testing.B, limbCount uint) {
 
 	out_bytes := make([]byte, montCtx.NumLimbs*8)
 
-	x_bytes := LimbsToMAXBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToMAXBytes(IntToLimbs(y, limbCount))
+	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
+	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
 
-	x_int := MAXBytesToInt(x_bytes)
+	x_int := LEBytesToInt(x_bytes)
 	_ = x_int
 
 	b.ResetTimer()
@@ -205,8 +207,8 @@ func benchmarkAddMod(b *testing.B, limbCount uint) {
 
 	out_bytes := make([]byte, montCtx.NumLimbs*8)
 
-	x_bytes := LimbsToMAXBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToMAXBytes(IntToLimbs(y, limbCount))
+	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
+	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
 
 	b.ResetTimer()
 

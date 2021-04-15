@@ -3,7 +3,6 @@ package modext
 import (
 	"math/big"
 	"errors"
-	//"fmt"
 )
 
 type ModArithFunc func (out, x, y []byte, m *MontArithContext) (error)
@@ -43,7 +42,7 @@ func (m *MontArithContext) ToMont(dst, src []uint64) {
 	dst_val := new(big.Int)
 	src_val := LimbsToInt(src)
 	dst_val.Mul(src_val, m.r)
-	dst_val.Mod(dst_val, MAXBytesToInt(m.Modulus))
+	dst_val.Mod(dst_val, LEBytesToInt(m.Modulus))
 
 	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
 }
@@ -56,7 +55,7 @@ func (m *MontArithContext) ToNorm(dst, src []uint64) {
 	dst_val := new(big.Int)
 	src_val := LimbsToInt(src)
 	dst_val.Mul(src_val, m.rInv)
-	dst_val.Mod(dst_val, MAXBytesToInt(m.Modulus))
+	dst_val.Mod(dst_val, LEBytesToInt(m.Modulus))
 
 	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
 }
@@ -109,6 +108,7 @@ func (m *MontArithContext) SetMod(modulus []uint64) error {
 		return nil, errors.New("SetString failed for modulus/base")
 	}
 */
+
 	limbCount := uint(len(modulus))
 	var limbSize uint = 8
 
@@ -117,6 +117,11 @@ func (m *MontArithContext) SetMod(modulus []uint64) error {
 	}
 
 	mod := LimbsToInt(modulus)
+/*
+	fmt.Println(mod.String())
+	fmt.Println(IntToLimbs(mod, m.NumLimbs))
+	fmt.Println(LimbsToLEBytes(IntToLimbs(mod, m.NumLimbs)))
+*/
 
 	// r val chosen as max representable value for limbCount + 1: 0x1000...000
 	rVal := new(big.Int)
@@ -148,7 +153,10 @@ func (m *MontArithContext) SetMod(modulus []uint64) error {
 
 	// mod % (1 << limb_count_bits)  == mod % (1 << limb_count_bytes * 8)
 	m.ModulusNonInterleaved = mod
-	m.Modulus = LimbsToMAXBytes(IntToLimbs(mod, m.NumLimbs))
+
+
+	m.Modulus = LimbsToLEBytes(IntToLimbs(mod, m.NumLimbs))
+
 	m.MontParamNonInterleaved = montParamNonInterleaved
 	m.MontParamInterleaved = montParamNonInterleaved.Uint64()
 

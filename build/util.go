@@ -2,6 +2,7 @@ package modext
 
 import (
 	"encoding/binary"
+	"fmt"
 	"math/big"
 )
 
@@ -9,7 +10,7 @@ import (
 Methods for converting between Go big-int (64bit little-endian limbs, big-endian limb ordering)
 and the bigint representation expected here: 64bit little-endian limbs, little-endian ordered
 */
-func MAXBytesToInt(v []byte) *big.Int {
+func LEBytesToInt(v []byte) *big.Int {
 	result := new(big.Int)
 
 	if len(v)%8 != 0 {
@@ -21,21 +22,21 @@ func MAXBytesToInt(v []byte) *big.Int {
 
 	// byteswap 8 bytes at a time
 	for i := 0; i < len(val)/2; i++ {
-		tmp := val[i]
-		val[i] = val[len(val)-1-i]
-		val[len(val)-1-i] = tmp
+		val[i], val[len(val)-1-i] = val[len(val)-1-i], val[i]
 	}
 
 	result.SetBytes(val)
 	return result
 }
 
-func LimbsToMAXBytes(val []uint64) []byte {
+func LimbsToLEBytes(val []uint64) []byte {
 	result := make([]byte, len(val)*8)
 
 	for i := 0; i < len(val); i++ {
+		startIdx := i * 8
+
 		for j := 0; j < 8; j++ {
-			result[i*8+j] = byte(val[i] >> (j * 8))
+			result[startIdx+j] = byte(val[i] >> (j * 8))
 		}
 	}
 
@@ -46,18 +47,26 @@ func LimbsToMAXBytes(val []uint64) []byte {
 func IntToLimbs(val *big.Int, num_limbs uint) []uint64 {
 	val_bytes := val.Bytes()
 
+	fmt.Println("IntToLimbs")
+	fmt.Println(val_bytes)
+
 	// pad length to be a multiple of 64bits
-	pad_len := len(val_bytes) - len(val_bytes)%8
-	if pad_len > 0 {
+	if len(val_bytes)%8 != 0 {
+		pad_len := 8 - len(val_bytes)%8
 		pad := make([]byte, pad_len, pad_len)
-		val_bytes = append(val_bytes, pad...)
+		val_bytes = append(pad, val_bytes...)
 	}
 
 	result := make([]uint64, len(val_bytes)/8, len(val_bytes)/8)
 
 	// place byteswapped (little-endian) val into result
-	for i := 0; i < len(val_bytes); i += 8 {
-		binary.LittleEndian.PutUint64(val_bytes[len(val_bytes)-1-i:(len(val_bytes)-1-i)+8], result[i/8])
+	for i := 0; i < len(result); i++ {
+		startIdx := (len(result) - (i + 1)) * 8
+		endIdx := (len(result) - i) * 8
+
+		// TODO: this assumes that the system is little-endian.  is that okay?
+		// on a LE system, this swaps big-endian to little-endian
+		result[i] = binary.BigEndian.Uint64(val_bytes[startIdx:endIdx])
 	}
 
 	return result

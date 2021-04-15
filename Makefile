@@ -8,7 +8,7 @@ build:
 	bash -c "gofmt -w build/*"
 
 test:
-	cd build && go test -v -run=.
+	cd build && go test -v -run=MulModMont
 
 benchmark:
 	cd build && go test -bench=MulModMont -v
