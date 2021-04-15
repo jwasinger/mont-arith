@@ -2,7 +2,6 @@ package modext
 
 import (
 	"encoding/binary"
-	"fmt"
 	"math/big"
 )
 
@@ -47,14 +46,13 @@ func LimbsToLEBytes(val []uint64) []byte {
 func IntToLimbs(val *big.Int, num_limbs uint) []uint64 {
 	val_bytes := val.Bytes()
 
-	fmt.Println("IntToLimbs")
-	fmt.Println(val_bytes)
-
 	// pad length to be a multiple of 64bits
-	if len(val_bytes)%8 != 0 {
-		pad_len := 8 - len(val_bytes)%8
+	if len(val_bytes) < 8*int(num_limbs) {
+		pad_len := 8*int(num_limbs) - len(val_bytes)
 		pad := make([]byte, pad_len, pad_len)
 		val_bytes = append(pad, val_bytes...)
+	} else if len(val_bytes) > 8*int(num_limbs) {
+		panic("val too big to fit in specified number of limbs")
 	}
 
 	result := make([]uint64, len(val_bytes)/8, len(val_bytes)/8)

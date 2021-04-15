@@ -35,12 +35,9 @@ func testMulModMont(t *testing.T, limbCount uint) {
 
 	out_bytes := make([]byte, montCtx.NumLimbs * 8)
 
-	fmt.Println("testMulModMont")
-	fmt.Println(montCtx.Modulus)
-	fmt.Println(IntToLimbs(x, limbCount))
+
 	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
 	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
-	fmt.Println(x_bytes)
 
 	montCtx.MulModMont(out_bytes, x_bytes, y_bytes)
 
@@ -119,7 +116,7 @@ func testSubMod(t *testing.T, limbCount uint) {
 }
 
 func TestMulModMont(t *testing.T) {
-	for i := 1; i < 2; i++ {
+	for i := 1; i < 20; i++ {
 		testMulModMont(t, uint(i))
 	}
 }
