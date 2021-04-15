@@ -1,14 +1,14 @@
 .PHONY: build
 
 build:
-	rm -rf build
-	mkdir build 
-	cp src/* build/
-	./evmmax-arith-generator
-	bash -c "gofmt -w build/*"
+	rm -rf arith
+	mkdir arith
+	cp src/* arith/
+	./arith_generator/arith_generator
+	bash -c "gofmt -w arith/*"
 
 test:
-	cd build && go test -v -run=MulModMont
+	go test -v -run=.
 
 benchmark:
-	cd build && go test -bench=MulModMont -v
+	go test -bench=MulModMont -v
