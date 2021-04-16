@@ -12,9 +12,10 @@ func DefaultPreset() ([]ModArithFunc, []ModArithFunc, []ModArithFunc) {
 	return MulModMontImpls(), AddModUnrolledImpls(), SubModImpls()
 }
 
-func AddModUnrolledImpls() []ModArithFunc {
+func AddModNonUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc {
-		{{- range $i := intRange 1 $limbCount}}
+		AddMod64,
+		{{- range $i := intRange 2 $limbCount}}
 			AddModNonUnrolled{{mul $i $limbBits}},
 		{{- end}}
 	}
@@ -24,7 +25,8 @@ func AddModUnrolledImpls() []ModArithFunc {
 
 func AddModUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc {
-		{{- range $i := intRange 1 $limbCount}}
+		AddMod64,
+		{{- range $i := intRange 2 $limbCount}}
 			AddModUnrolled{{mul $i $limbBits}},
 		{{- end}}
 	}

@@ -8,9 +8,9 @@ func DefaultPreset() ([]ModArithFunc, []ModArithFunc, []ModArithFunc) {
 	return MulModMontImpls(), AddModUnrolledImpls(), SubModImpls()
 }
 
-func AddModUnrolledImpls() []ModArithFunc {
+func AddModNonUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc{
-		AddModNonUnrolled64,
+		AddMod64,
 		AddModNonUnrolled128,
 		AddModNonUnrolled192,
 		AddModNonUnrolled256,
@@ -144,7 +144,7 @@ func AddModUnrolledImpls() []ModArithFunc {
 
 func AddModUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc{
-		AddModUnrolled64,
+		AddMod64,
 		AddModUnrolled128,
 		AddModUnrolled192,
 		AddModUnrolled256,

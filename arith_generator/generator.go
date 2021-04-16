@@ -79,8 +79,8 @@ func genAddModImpls(minLimbs, maxLimbs int) {
 	headerTemplateContent := loadTextFile("templates/header.go.template")
 	headerTemplate := template.Must(template.New("").Funcs(funcs).Parse(headerTemplateContent))
 
-	addModTemplateContent := loadTextFile("templates/addmod_unrolled.go.template")
-	addModTemplate := template.Must(template.New("").Funcs(funcs).Parse(addModTemplateContent))
+	addModUnrolledTemplateContent := loadTextFile("templates/addmod_unrolled.go.template")
+	addModUnrolledTemplate := template.Must(template.New("").Funcs(funcs).Parse(addModUnrolledTemplateContent))
 
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
@@ -98,7 +98,37 @@ func genAddModImpls(minLimbs, maxLimbs int) {
 
 	for i := minLimbs; i < maxLimbs; i++ {
 		params = TemplateParams{i, 64}
-		if err := addModTemplate.Execute(buf, params); err != nil {
+		if err := addModUnrolledTemplate.Execute(buf, params); err != nil {
+			log.Fatal(err)
+			panic("")
+		}
+	}
+
+	if n, err := f.Write(buf.Bytes()); err != nil || n != len(buf.Bytes()) {
+		panic(err)
+	}
+
+	// non-unrolled version
+
+	buf.Reset()
+
+	f, err = os.Create("arith/addmod_nonunrolled.go")
+	if err != nil {
+		log.Fatal(err)
+		panic("")
+	}
+
+	if err := headerTemplate.Execute(buf, params); err != nil {
+		log.Fatal(err)
+		panic("")
+	}
+
+	addModNonUnrolledTemplateContent := loadTextFile("templates/addmod_nonunrolled.go.template")
+	addModNonUnrolledTemplate := template.Must(template.New("").Funcs(funcs).Parse(addModNonUnrolledTemplateContent))
+
+	for i := minLimbs; i < maxLimbs; i++ {
+		params = TemplateParams{i, 64}
+		if err := addModNonUnrolledTemplate.Execute(buf, params); err != nil {
 			log.Fatal(err)
 			panic("")
 		}
