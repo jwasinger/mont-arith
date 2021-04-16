@@ -1,0 +1,34 @@
+{{ $limbCount := .LimbCount}}
+{{ $lastLimb := sub $limbCount 1}}
+{{ $limbBits := .LimbBits}}
+
+func AddModNonUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
+	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
+	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
+	z := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+
+	var c uint64 = 0
+	tmp := {{ makeZeroedLimbs $limbCount}}
+
+	if x[{{$lastLimb}}] >= mod[{{$lastLimb}}] || y[{{$lastLimb}}] >= mod[{{$lastLimb}}] {
+		panic(errors.New("x/y must be smaller than modulus"))
+	}
+
+	for i := 0; i < {{$limbCount}}; i++ {
+		z[i], c = bits.Add64(x[i], y[i], c)
+	}
+
+	c = 0
+
+	for i := 0; i < {{$limbCount}}; i++ {
+		tmp[i], c = bits.Sub64(x[i], y[i], c)
+	}
+
+	if c == 0 {
+		copy(z, tmp[:])
+	}
+
+	return nil
+}
+

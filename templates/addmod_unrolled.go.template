@@ -1,17 +1,9 @@
-package arith
-
-import (
-	"math/bits"
-	"unsafe"
-	"errors"
-)
-
 
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 {{ $limbBits := .LimbBits}}
 
-func AddMod{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
+func AddModUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -46,3 +38,4 @@ func AddMod{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx 
 
 	return nil
 }
+

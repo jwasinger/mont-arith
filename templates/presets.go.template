@@ -4,14 +4,28 @@ package arith
 {{ $limbBits := .LimbBits}}
 {{ $unrolledCutoff := 11}}
 
-func DefaultPreset() ([]ModArithFunc, []ModArithFunc, []ModArithFunc) {
-	return MulModMontImpls(), AddModImpls(), SubModImpls()
+func NonUnrolledPreset()  ([]ModArithFunc, []ModArithFunc, []ModArithFunc) {
+	return MulModMontImpls(), AddModNonUnrolledImpls(), SubModImpls()
 }
 
-func AddModImpls() []ModArithFunc {
+func DefaultPreset() ([]ModArithFunc, []ModArithFunc, []ModArithFunc) {
+	return MulModMontImpls(), AddModUnrolledImpls(), SubModImpls()
+}
+
+func AddModUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc {
 		{{- range $i := intRange 1 $limbCount}}
-			AddMod{{mul $i $limbBits}},
+			AddModNonUnrolled{{mul $i $limbBits}},
+		{{- end}}
+	}
+
+	return result
+}
+
+func AddModUnrolledImpls() []ModArithFunc {
+	result := []ModArithFunc {
+		{{- range $i := intRange 1 $limbCount}}
+			AddModUnrolled{{mul $i $limbBits}},
 		{{- end}}
 	}
 
