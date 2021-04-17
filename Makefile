@@ -11,4 +11,4 @@ test:
 	go test -v -run=.
 
 benchmark:
-	go test -bench=MulModMont -v
+	go test -bench=AddMod

@@ -214,7 +214,6 @@ func benchmarkAddMod(b *testing.B, limbCount uint) {
 	}
 }
 
-/*
 func BenchmarkAddMod(b *testing.B) {
 	for i := 1; i < 128; i++ {
 		// TODO
@@ -225,7 +224,6 @@ func BenchmarkAddMod(b *testing.B) {
 	}
 
 }
-*/
 
 func BenchmarkMulModMont(b *testing.B) {
 	for i := 100; i < 128; i++ {
