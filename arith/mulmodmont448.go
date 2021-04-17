@@ -22,7 +22,7 @@ func MulModMont448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[6] >= mod[6] || y[6] >= mod[6] {
+	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
 	}
 	// round 0

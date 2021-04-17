@@ -18,8 +18,11 @@ func testMulModMont(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 	}
 
 
-	x := big.NewInt(3)
-	y := big.NewInt(4)
+	x := arith.LimbsToInt(mod)
+	x = x.Sub(x, big.NewInt(10))
+
+	y := arith.LimbsToInt(mod)
+	y = y.Sub(y, big.NewInt(15))
 
 	// convert x/y to montgomery
 
@@ -58,8 +61,11 @@ func testAddMod(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 		panic("error")
 	}
 
-	x := big.NewInt(3)
-	y := big.NewInt(4)
+	x := arith.LimbsToInt(mod)
+	x = x.Sub(x, big.NewInt(10))
+
+	y := arith.LimbsToInt(mod)
+	y = y.Sub(y, big.NewInt(15))
 
 	expected := new(big.Int)
 	expected.Add(x, y)
@@ -75,7 +81,7 @@ func testAddMod(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 	result := arith.LEBytesToInt(out_bytes)
 
 	if result.Cmp(expected) != 0 {
-		t.Fail()
+		t.Fatalf("%s != %s", result.String(), expected.String())
 	}
 }
 
@@ -88,8 +94,11 @@ func testSubMod(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 		panic("error")
 	}
 
-	x := big.NewInt(3)
-	y := big.NewInt(4)
+	x := arith.LimbsToInt(mod)
+	x = x.Sub(x, big.NewInt(10))
+
+	y := arith.LimbsToInt(mod)
+	y = y.Sub(y, big.NewInt(15))
 
 	// convert x/y to montgomery
 
@@ -192,7 +201,7 @@ func TestAddMod(t *testing.T) {
 	test := func(t *testing.T, preset *arith.ArithPreset, name string) {
 		for i := 1; i < 20; i++ {
 			// test x/y >= modulus
-			t.Run(fmt.Sprintf("/%s/%d-bit", name, i), func(t *testing.T) {
+			t.Run(fmt.Sprintf("/%s/%d-bit", name, i * 64), func(t *testing.T) {
 				testAddMod(t, preset, uint(i))
 			})
 		}

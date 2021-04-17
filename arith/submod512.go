@@ -15,7 +15,7 @@ func SubMod512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 	var c, c1 uint64
 	tmp := [8]uint64{0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[7] >= mod[7] || y[7] >= mod[7] {
+	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
 	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)

@@ -12,7 +12,7 @@ func AddModUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []by
 	var c uint64
 	tmp := {{ makeZeroedLimbs $limbCount}}
 
-	if x[{{$lastLimb}}] >= mod[{{$lastLimb}}] || y[{{$lastLimb}}] >= mod[{{$lastLimb}}] {
+	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
 	}
 
