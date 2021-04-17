@@ -28,10 +28,7 @@ type MontArithContext struct {
     subModFunc ModArithFunc
     mulModMontFunc ModArithFunc
 
-    // store list of all generated unrolled implementations (TODO use generic implementation at higher bitwidth)
-    addmodImpls []ModArithFunc
-    submodImpls []ModArithFunc
-    mulmodMontImpls []ModArithFunc
+    arithImpl ArithPreset
 }
 
 func (m *MontArithContext) RVal() *big.Int {
@@ -68,7 +65,7 @@ func (m *MontArithContext) ToNorm(dst, src []uint64) {
 	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
 }
 
-func NewMontArithContext() *MontArithContext {
+func NewMontArithContext(preset *ArithPreset) *MontArithContext {
 	result := MontArithContext {
 		nil,
 		nil,
@@ -84,15 +81,14 @@ func NewMontArithContext() *MontArithContext {
 		nil,
 		nil,
 
-		nil,
-		nil,
-		nil,
+		*preset,
 	}
 
 	return &result
 }
 
 func (m *MontArithContext) AddMod(out, x, y []byte) {
+	// pass m explicitly b/c mulModMontWrapperFunc is a struct member
 	m.addModFunc(out, x, y, m)
 }
 
@@ -101,7 +97,6 @@ func (m *MontArithContext) SubMod(out, x, y []byte) {
 }
 
 func (m *MontArithContext) MulModMont(out, x, y []byte) {
-	// pass m explicitly b/c mulModMontWrapperFunc is a struct member
 	m.mulModMontFunc(out, x, y, m)
 }
 
@@ -168,11 +163,10 @@ func (m *MontArithContext) SetMod(modulus []uint64) error {
 	m.MontParamNonInterleaved = montParamNonInterleaved
 	m.MontParamInterleaved = montParamNonInterleaved.Uint64()
 
-	m.mulmodMontImpls, m.addmodImpls, m.submodImpls = DefaultPreset()
 
-	m.mulModMontFunc = m.mulmodMontImpls[limbCount - 1]
-	m.addModFunc = m.addmodImpls[limbCount - 1]
-	m.subModFunc = m.submodImpls[limbCount - 1]
+	m.mulModMontFunc = m.arithImpl.MulModMontImpls[limbCount - 1]
+	m.addModFunc = m.arithImpl.AddModImpls[limbCount - 1]
+	m.subModFunc = m.arithImpl.SubModImpls[limbCount - 1]
 
 	return nil
 }

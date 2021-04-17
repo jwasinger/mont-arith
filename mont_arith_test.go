@@ -7,10 +7,10 @@ import (
 	"github.com/jwasinger/mont-arith/arith"
 )
 
-func testMulModMont(t *testing.T, limbCount uint) {
+func testMulModMont(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 
 	mod := arith.MaxModulus(limbCount)
-	montCtx := arith.NewMontArithContext()
+	montCtx := arith.NewMontArithContext(preset)
 
 	err := montCtx.SetMod(mod)
 	if err != nil {
@@ -49,9 +49,9 @@ func testMulModMont(t *testing.T, limbCount uint) {
 	}
 }
 
-func testAddMod(t *testing.T, limbCount uint) {
+func testAddMod(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 	mod := arith.MaxModulus(limbCount)
-	montCtx := arith.NewMontArithContext()
+	montCtx := arith.NewMontArithContext(preset)
 
 	err := montCtx.SetMod(mod)
 	if err != nil {
@@ -79,9 +79,9 @@ func testAddMod(t *testing.T, limbCount uint) {
 	}
 }
 
-func testSubMod(t *testing.T, limbCount uint) {
+func testSubMod(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 	mod := arith.MaxModulus(limbCount)
-	montCtx := arith.NewMontArithContext()
+	montCtx := arith.NewMontArithContext(preset)
 
 	err := montCtx.SetMod(mod)
 	if err != nil {
@@ -113,37 +113,9 @@ func testSubMod(t *testing.T, limbCount uint) {
 
 }
 
-func TestMulModMont(t *testing.T) {
-	for i := 1; i < 20; i++ {
-		testMulModMont(t, uint(i))
-	}
-}
-
-func TestAddMod(t *testing.T) {
-	for i := 1; i < 128; i++ {
-		// TODO:
-		// test overflow
-		// test value in middle of the range
-		// test x/y = 0
-		// test no-clobber x/y
-		testAddMod(t, uint(i))
-	}
-}
-
-func TestSubMod(t *testing.T) {
-	for i := 1; i < 128; i++ {
-		// TODO:
-		// test underflow 
-		// test value in middle of the range
-		// test x/y = 0
-		// test no-clobber x/y
-		testSubMod(t, uint(i))
-	}
-}
-
-func benchmarkMulModMont(b *testing.B, limbCount uint) {
+func benchmarkMulModMont(b *testing.B, preset *arith.ArithPreset, limbCount uint) {
 	mod := arith.MaxModulus(limbCount)
-	montCtx := arith.NewMontArithContext()
+	montCtx := arith.NewMontArithContext(preset)
 
 	err := montCtx.SetMod(mod)
 	if err != nil {
@@ -190,9 +162,9 @@ func benchmarkMulModMont(b *testing.B, limbCount uint) {
 	}
 }
 
-func benchmarkAddMod(b *testing.B, limbCount uint) {
+func benchmarkAddMod(b *testing.B, preset *arith.ArithPreset, limbCount uint) {
 	mod := arith.MaxModulus(limbCount)
-	montCtx := arith.NewMontArithContext()
+	montCtx := arith.NewMontArithContext(preset)
 
 	err := montCtx.SetMod(mod)
 	if err != nil {
@@ -214,23 +186,60 @@ func benchmarkAddMod(b *testing.B, limbCount uint) {
 	}
 }
 
-func BenchmarkAddMod(b *testing.B) {
-	for i := 1; i < 128; i++ {
-		// TODO
-		// test x/y >= modulus
-		b.Run(fmt.Sprintf("num_limbs=%d", i), func(b *testing.B) {
-			benchmarkAddMod(b, uint(i))
-		})
+// --------------------------------------
+
+func TestAddMod(t *testing.T) {
+	test := func(t *testing.T, preset *arith.ArithPreset, name string) {
+		for i := 1; i < 20; i++ {
+			// test x/y >= modulus
+			t.Run(fmt.Sprintf("/%s/%d-bit", name, i), func(t *testing.T) {
+				testAddMod(t, preset, uint(i))
+			})
+		}
 	}
 
+	test(t, arith.DefaultPreset(), "unrolled")
+	test(t, arith.NonUnrolledPreset(), "non-unrolled")
+}
+
+func TestMulModMont(t *testing.T) {
+	test := func(t *testing.T, preset *arith.ArithPreset, name string) {
+		for i := 1; i < 20; i++ {
+			// test x/y >= modulus
+			t.Run(fmt.Sprintf("%s/%d-bit", name, i * 64), func(t *testing.T) {
+				testMulModMont(t, preset, uint(i))
+			})
+		}
+	}
+
+	test(t, arith.DefaultPreset(), "unrolled")
+	test(t, arith.NonUnrolledPreset(), "non-unrolled")
 }
 
 func BenchmarkMulModMont(b *testing.B) {
-	for i := 100; i < 128; i++ {
-		// TODO
-		// test x/y >= modulus
-		b.Run(fmt.Sprintf("num_limbs=%d", i), func(b *testing.B) {
-			benchmarkMulModMont(b, uint(i))
-		})
+	bench := func(b *testing.B, preset *arith.ArithPreset, name string) {
+		for i := 1; i < 20; i++ {
+			// test x/y >= modulus
+			b.Run(fmt.Sprintf("%s/%d-bit", name, i * 64), func(b *testing.B) {
+				benchmarkMulModMont(b, preset, uint(i))
+			})
+		}
 	}
+
+	bench(b, arith.DefaultPreset(), "unrolled")
+	bench(b, arith.NonUnrolledPreset(), "non-unrolled")
+}
+
+func BenchmarkAddMod(b *testing.B) {
+	bench := func(b *testing.B, preset *arith.ArithPreset, name string) {
+		for i := 1; i < 20; i++ {
+			// test x/y >= modulus
+			b.Run(fmt.Sprintf("%s/%d-bit", name, i * 64), func(b *testing.B) {
+				benchmarkAddMod(b, preset, uint(i))
+			})
+		}
+	}
+
+	bench(b, arith.DefaultPreset(), "unrolled")
+	bench(b, arith.NonUnrolledPreset(), "non-unrolled")
 }
