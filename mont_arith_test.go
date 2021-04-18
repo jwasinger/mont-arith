@@ -12,20 +12,27 @@ func testMulModMont(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 	mod := arith.MaxModulus(limbCount)
 	montCtx := arith.NewMontArithContext(preset)
 
+	fmt.Println(mod)
 	fmt.Printf("%x\n", arith.LimbsToInt(mod))
+
 	err := montCtx.SetMod(mod)
 	if err != nil {
 		panic("error")
 	}
 
 
+	// these inputs fail
 	x := arith.LimbsToInt(mod)
 	x = x.Sub(x, big.NewInt(10))
 
 	y := arith.LimbsToInt(mod)
 	y = y.Sub(y, big.NewInt(15))
 
-	// convert x/y to montgomery
+	// these inputs pass
+/*
+	x := big.NewInt(10)
+	y := big.NewInt(13)
+*/
 
 	x.Mul(x, montCtx.RVal())
 	x.Mod(x, arith.LimbsToInt(mod))
@@ -50,15 +57,11 @@ func testMulModMont(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 	x_bytes := arith.LimbsToLEBytes(arith.IntToLimbs(x, limbCount))
 	y_bytes := arith.LimbsToLEBytes(arith.IntToLimbs(y, limbCount))
 
-	fmt.Println("yo")
 	montCtx.MulModMont(out_bytes, x_bytes, y_bytes)
 
 	result := arith.LEBytesToInt(out_bytes)
 	if result.Cmp(expected) != 0 {
-		fmt.Printf("%x != %x\n", result, expected)
-		fmt.Printf("%x,%x,%x,%x\n", x_bytes, y_bytes, out_bytes, arith.LimbsToInt(mod))
-		fmt.Println()
-		t.Fail()
+		t.Fatalf("result (%x) != expected (%x)\n", result, expected)
 	}
 }
 
