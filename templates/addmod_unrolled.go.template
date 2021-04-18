@@ -9,8 +9,8 @@ func AddModUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []by
 	z := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
 	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 
-	var c uint64
-	tmp := {{ makeZeroedLimbs $limbCount}}
+	var c, c1 uint64
+	tmp := make([]uint64, {{$limbCount}}, {{$limbCount}})
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -18,21 +18,21 @@ func AddModUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []by
 
 	{{- range $i := intRange 0 $limbCount }}
 		{{- if eq $i 0}}
-			z[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], 0)
+			tmp[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], 0)
 		{{- else}}
-			z[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], c)
+			tmp[{{$i}}], c = bits.Add64(x[{{$i}}], y[{{$i}}], c)
 		{{- end}}
 	{{- end }}
 
 	{{- range $i := intRange 0 $limbCount }}
 		{{- if eq $i 0}}
-			tmp[{{$i}}], c = bits.Sub64(tmp[{{$i}}], mod[{{$i}}], 0)
+			z[{{$i}}], c1 = bits.Sub64(tmp[{{$i}}], mod[{{$i}}], 0)
 		{{- else}}
-			tmp[{{$i}}], c = bits.Sub64(tmp[{{$i}}], mod[{{$i}}], c)
+			z[{{$i}}], c1 = bits.Sub64(tmp[{{$i}}], mod[{{$i}}], c1)
 		{{- end}}
 	{{- end }}
 
-	if c == 0 {
+	if c == 0 || c != 0 && c1 == 0 {
 		copy(z, tmp[:])
 	}
 

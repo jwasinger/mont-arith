@@ -92,6 +92,7 @@ func MaxModulus(limbCount uint) []uint64 {
 		mod[i] = 0xffffffffffffffff
 	}
 
+
 	return mod
 }
 

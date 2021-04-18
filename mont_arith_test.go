@@ -12,6 +12,7 @@ func testMulModMont(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 	mod := arith.MaxModulus(limbCount)
 	montCtx := arith.NewMontArithContext(preset)
 
+	fmt.Printf("%x\n", arith.LimbsToInt(mod))
 	err := montCtx.SetMod(mod)
 	if err != nil {
 		panic("error")
@@ -32,6 +33,13 @@ func testMulModMont(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 	y.Mul(y, montCtx.RVal())
 	y.Mod(y, arith.LimbsToInt(mod))
 
+/*
+	fmt.Println("x/y/mod")
+	fmt.Println(x.String())
+	fmt.Println(y.String())
+	fmt.Println(arith.LimbsToInt(mod))
+*/
+
 	expected := new(big.Int)
 	expected.Mul(x, y)
 	expected.Mul(expected, montCtx.RInv())
@@ -42,12 +50,14 @@ func testMulModMont(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 	x_bytes := arith.LimbsToLEBytes(arith.IntToLimbs(x, limbCount))
 	y_bytes := arith.LimbsToLEBytes(arith.IntToLimbs(y, limbCount))
 
+	fmt.Println("yo")
 	montCtx.MulModMont(out_bytes, x_bytes, y_bytes)
 
 	result := arith.LEBytesToInt(out_bytes)
 	if result.Cmp(expected) != 0 {
-		fmt.Println(result.String())
-		fmt.Println(expected.String())
+		fmt.Printf("%x != %x\n", result, expected)
+		fmt.Printf("%x,%x,%x,%x\n", x_bytes, y_bytes, out_bytes, arith.LimbsToInt(mod))
+		fmt.Println()
 		t.Fail()
 	}
 }
@@ -81,7 +91,8 @@ func testAddMod(t *testing.T, preset *arith.ArithPreset, limbCount uint) {
 	result := arith.LEBytesToInt(out_bytes)
 
 	if result.Cmp(expected) != 0 {
-		t.Fatalf("%s != %s", result.String(), expected.String())
+		fmt.Printf("%x,%x,%x\n", x, y, arith.LimbsToInt(mod))
+		t.Fatalf("%x != %x", result, expected)
 	}
 }
 
@@ -199,7 +210,7 @@ func benchmarkAddMod(b *testing.B, preset *arith.ArithPreset, limbCount uint) {
 
 func TestAddMod(t *testing.T) {
 	test := func(t *testing.T, preset *arith.ArithPreset, name string) {
-		for i := 1; i < 20; i++ {
+		for i := 1; i < 64; i++ {
 			// test x/y >= modulus
 			t.Run(fmt.Sprintf("/%s/%d-bit", name, i * 64), func(t *testing.T) {
 				testAddMod(t, preset, uint(i))
@@ -213,7 +224,7 @@ func TestAddMod(t *testing.T) {
 
 func TestMulModMont(t *testing.T) {
 	test := func(t *testing.T, preset *arith.ArithPreset, name string) {
-		for i := 1; i < 20; i++ {
+		for i := 2; i < 3; i++ {
 			// test x/y >= modulus
 			t.Run(fmt.Sprintf("%s/%d-bit", name, i * 64), func(t *testing.T) {
 				testMulModMont(t, preset, uint(i))
@@ -227,7 +238,7 @@ func TestMulModMont(t *testing.T) {
 
 func BenchmarkMulModMont(b *testing.B) {
 	bench := func(b *testing.B, preset *arith.ArithPreset, name string) {
-		for i := 1; i < 20; i++ {
+		for i := 2; i < 3; i++ {
 			// test x/y >= modulus
 			b.Run(fmt.Sprintf("%s/%d-bit", name, i * 64), func(b *testing.B) {
 				benchmarkMulModMont(b, preset, uint(i))

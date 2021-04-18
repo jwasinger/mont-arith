@@ -8,7 +8,7 @@ build:
 	bash -c "gofmt -w arith/*"
 
 test:
-	go test -run=.
+	go test -run=AddMod
 
 benchmark:
 	go test -bench=AddMod
