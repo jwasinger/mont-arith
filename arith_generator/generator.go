@@ -252,8 +252,6 @@ func main() {
 	genAddModImpls(2, 64)
 	genSubModImpls(2, 64)
 
-	// only generate unrolled addmod/submod at some bitwidths
-	// unrolling doesn't give a speed boost 
-	genAddModUnrolledImpls(2, 20)
-	genSubModUnrolledImpls(2, 20)
+	genAddModUnrolledImpls(2, 64)
+	genSubModUnrolledImpls(2, 64)
 }

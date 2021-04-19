@@ -33,7 +33,7 @@ func AddModNonUnrolledImpls() []ModArithFunc {
 func AddModUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc {
 		AddMod64,
-		{{- range $i := intRange 2 21}}
+		{{- range $i := intRange 2 $limbCountPlusOne}}
 			AddModUnrolled{{mul $i $limbBits}},
 		{{- end}}
 	}
@@ -54,7 +54,8 @@ func SubModNonUnrolledImpls() []ModArithFunc {
 
 func SubModUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc {
-		{{- range $i := intRange 2 21}}
+		SubMod64,
+		{{- range $i := intRange 2 $limbCountPlusOne}}
 			SubModUnrolled{{mul $i $limbBits}},
 		{{- end}}
 	}
