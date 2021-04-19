@@ -1,10 +1,3 @@
-package arith
-
-import (
-	"math/bits"
-	"unsafe"
-	"errors"
-)
 
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
@@ -19,7 +12,7 @@ func SubMod{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx 
 	var c, c1 uint64
 	tmp := {{ makeZeroedLimbs $limbCount}}
 
-	if x[{{sub $limbCount 1}}] >= mod[{{sub $limbCount 1}}] || y[{{sub $limbCount 1}}] >= mod[{{sub $limbCount 1}}] {
+	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
 	}
 
@@ -45,3 +38,4 @@ func SubMod{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx 
 
 	return nil
 }
+

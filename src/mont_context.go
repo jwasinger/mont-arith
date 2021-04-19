@@ -163,7 +163,6 @@ func (m *MontArithContext) SetMod(modulus []uint64) error {
 	m.MontParamNonInterleaved = montParamNonInterleaved
 	m.MontParamInterleaved = montParamNonInterleaved.Uint64()
 
-
 	m.mulModMontFunc = m.arithImpl.MulModMontImpls[limbCount - 1]
 	m.addModFunc = m.arithImpl.AddModImpls[limbCount - 1]
 	m.subModFunc = m.arithImpl.SubModImpls[limbCount - 1]

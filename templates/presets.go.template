@@ -3,6 +3,7 @@ package arith
 {{ $limbCount := .LimbCount}}
 {{ $limbBits := .LimbBits}}
 {{ $unrolledCutoff := 11}}
+{{ $limbCountPlusOne := add .LimbCount 1}}
 
 type ArithPreset struct {
 	AddModImpls []ModArithFunc
@@ -11,17 +12,17 @@ type ArithPreset struct {
 }
 
 func NonUnrolledPreset() *ArithPreset {
-	return &ArithPreset{AddModNonUnrolledImpls(), SubModImpls(), MulModMontImpls()}
+	return &ArithPreset{AddModNonUnrolledImpls(), SubModNonUnrolledImpls(), MulModMontImpls()}
 }
 
 func DefaultPreset() *ArithPreset {
-	return &ArithPreset{AddModUnrolledImpls(), SubModImpls(), MulModMontImpls()}
+	return &ArithPreset{AddModUnrolledImpls(), SubModUnrolledImpls(), MulModMontImpls()}
 }
 
 func AddModNonUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc {
 		AddMod64,
-		{{- range $i := intRange 2 $limbCount}}
+		{{- range $i := intRange 2 $limbCountPlusOne}}
 			AddModNonUnrolled{{mul $i $limbBits}},
 		{{- end}}
 	}
@@ -32,7 +33,7 @@ func AddModNonUnrolledImpls() []ModArithFunc {
 func AddModUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc {
 		AddMod64,
-		{{- range $i := intRange 2 $limbCount}}
+		{{- range $i := intRange 2 21}}
 			AddModUnrolled{{mul $i $limbBits}},
 		{{- end}}
 	}
@@ -40,10 +41,21 @@ func AddModUnrolledImpls() []ModArithFunc {
 	return result
 }
 
-func SubModImpls() []ModArithFunc {
+func SubModNonUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc {
-		{{- range $i := intRange 1 $limbCount}}
+		{{- range $i := intRange 1 $limbCountPlusOne}}
 			SubMod{{mul $i $limbBits}},
+		{{- end}}
+	}
+
+	return result
+}
+
+
+func SubModUnrolledImpls() []ModArithFunc {
+	result := []ModArithFunc {
+		{{- range $i := intRange 2 21}}
+			SubModUnrolled{{mul $i $limbBits}},
 		{{- end}}
 	}
 
@@ -52,7 +64,7 @@ func SubModImpls() []ModArithFunc {
 
 func MulModMontImpls() []ModArithFunc {
 	result := []ModArithFunc {
-		{{- range $i := intRange 1 $limbCount}}
+		{{- range $i := intRange 1 $limbCountPlusOne}}
 			{{if gte $i $unrolledCutoff}}
 				MulModMontNonInterleaved,
 			{{- else }}

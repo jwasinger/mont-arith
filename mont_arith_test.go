@@ -209,11 +209,9 @@ func benchmarkAddMod(b *testing.B, preset *arith.ArithPreset, limbCount uint) {
 	}
 }
 
-// --------------------------------------
-
 func TestAddMod(t *testing.T) {
-	test := func(t *testing.T, preset *arith.ArithPreset, name string) {
-		for i := 1; i < 64; i++ {
+	test := func(t *testing.T, preset *arith.ArithPreset, name string, minLimbs, maxLimbs int) {
+		for i := minLimbs; i < maxLimbs; i++ {
 			// test x/y >= modulus
 			t.Run(fmt.Sprintf("/%s/%d-bit", name, i * 64), func(t *testing.T) {
 				testAddMod(t, preset, uint(i))
@@ -221,8 +219,22 @@ func TestAddMod(t *testing.T) {
 		}
 	}
 
-	test(t, arith.DefaultPreset(), "unrolled")
-	test(t, arith.NonUnrolledPreset(), "non-unrolled")
+	test(t, arith.DefaultPreset(), "unrolled", 1, 20)
+	test(t, arith.NonUnrolledPreset(), "non-unrolled", 1, 64)
+}
+
+func TestSubMod(t *testing.T) {
+	test := func(t *testing.T, preset *arith.ArithPreset, name string, minLimbs, maxLimbs int) {
+		for i := minLimbs; i < maxLimbs; i++ {
+			// test x/y >= modulus
+			t.Run(fmt.Sprintf("/%s/%d-bit", name, i * 64), func(t *testing.T) {
+				testSubMod(t, preset, uint(i))
+			})
+		}
+	}
+
+	test(t, arith.DefaultPreset(), "unrolled", 1, 20)
+	test(t, arith.NonUnrolledPreset(), "non-unrolled", 1, 64)
 }
 
 func TestMulModMont(t *testing.T) {
@@ -240,8 +252,8 @@ func TestMulModMont(t *testing.T) {
 }
 
 func BenchmarkMulModMont(b *testing.B) {
-	bench := func(b *testing.B, preset *arith.ArithPreset, name string) {
-		for i := 2; i < 3; i++ {
+	bench := func(b *testing.B, preset *arith.ArithPreset, name string, minLimbs, maxLimbs int) {
+		for i := minLimbs; i < maxLimbs; i++ {
 			// test x/y >= modulus
 			b.Run(fmt.Sprintf("%s/%d-bit", name, i * 64), func(b *testing.B) {
 				benchmarkMulModMont(b, preset, uint(i))
@@ -249,13 +261,12 @@ func BenchmarkMulModMont(b *testing.B) {
 		}
 	}
 
-	bench(b, arith.DefaultPreset(), "unrolled")
-	bench(b, arith.NonUnrolledPreset(), "non-unrolled")
+	bench(b, arith.DefaultPreset(), "goff", 1, 64)
 }
 
 func BenchmarkAddMod(b *testing.B) {
-	bench := func(b *testing.B, preset *arith.ArithPreset, name string) {
-		for i := 1; i < 20; i++ {
+	bench := func(b *testing.B, preset *arith.ArithPreset, name string, minLimbs, maxLimbs int) {
+		for i := minLimbs; i < maxLimbs; i++ {
 			// test x/y >= modulus
 			b.Run(fmt.Sprintf("%s/%d-bit", name, i * 64), func(b *testing.B) {
 				benchmarkAddMod(b, preset, uint(i))
@@ -263,6 +274,6 @@ func BenchmarkAddMod(b *testing.B) {
 		}
 	}
 
-	bench(b, arith.DefaultPreset(), "unrolled")
-	bench(b, arith.NonUnrolledPreset(), "non-unrolled")
+	//bench(b, arith.DefaultPreset(), "unrolled", 1, 128)
+	bench(b, arith.NonUnrolledPreset(), "non-unrolled", 128, 64)
 }
