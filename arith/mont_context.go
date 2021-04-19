@@ -104,27 +104,21 @@ func (m *MontArithContext) ModIsSet() bool {
 	return m.NumLimbs != 0
 }
 
-func (m *MontArithContext) SetMod(modulus []uint64) error {
-	/*
-		mod, success := new(big.Int).SetString(modulus, base)
-		if !success {
-			return nil, errors.New("SetString failed for modulus/base")
-		}
-	*/
+func (m *MontArithContext) ValueSize() uint {
+	return uint(len(m.Modulus)) * 8
+}
 
-	limbCount := uint(len(modulus))
-	var limbSize uint = 8
+func (m *MontArithContext) SetMod(modBytes []byte) error {
 
-	if limbCount == 0 {
-		return errors.New("can't have 0 as modulus")
+	if len(modBytes)%8 != 0 || len(modBytes) == 0 {
+		return errors.New("invalid modulus length")
 	}
 
-	mod := LimbsToInt(modulus)
-	/*
-		fmt.Println(mod.String())
-		fmt.Println(IntToLimbs(mod, m.NumLimbs))
-		fmt.Println(LimbsToLEBytes(IntToLimbs(mod, m.NumLimbs)))
-	*/
+	limbCount := uint(len(modBytes)) / 8
+
+	mod := LEBytesToInt(modBytes)
+
+	var limbSize uint = 8
 
 	// r val chosen as max representable value for limbCount + 1: 0x1000...000
 	rVal := new(big.Int)

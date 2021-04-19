@@ -11,4 +11,4 @@ test:
 	go test -v -run=.
 
 benchmark:
-	go test -bench=AddMod
+	go test -bench=.
