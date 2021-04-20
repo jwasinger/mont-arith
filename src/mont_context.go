@@ -105,11 +105,10 @@ func (m *MontArithContext) ModIsSet() bool {
 }
 
 func (m *MontArithContext) ValueSize() uint {
-	return uint(len(m.Modulus)) * 8
+	return uint(len(m.Modulus))
 }
 
 func (m *MontArithContext) SetMod(modBytes []byte) error {
-
 	if len(modBytes) % 8 != 0  || len(modBytes) == 0{
 		return errors.New("invalid modulus length")
 	}
@@ -150,7 +149,6 @@ func (m *MontArithContext) SetMod(modBytes []byte) error {
 
 	// mod % (1 << limb_count_bits)  == mod % (1 << limb_count_bytes * 8)
 	m.ModulusNonInterleaved = mod
-
 
 	m.Modulus = LimbsToLEBytes(IntToLimbs(mod, m.NumLimbs))
 
