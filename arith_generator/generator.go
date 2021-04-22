@@ -1,18 +1,18 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
-	"text/template"
-	"bytes"
 	"strings"
+	"text/template"
 )
 
 type TemplateParams struct {
 	LimbCount int
-	LimbBits int
+	LimbBits  int
 }
 
 func loadTextFile(file_name string) string {
@@ -55,7 +55,7 @@ var funcs = template.FuncMap{
 	// returns "[x]uint64 {0, 0, 0, ......, 0}"
 	"makeZeroedLimbs": func(numLimbs int) string {
 		result := fmt.Sprintf("[%d]uint64 {", numLimbs)
-		return result + strings.Repeat(" 0,", numLimbs - 1) + " 0}"
+		return result + strings.Repeat(" 0,", numLimbs-1) + " 0}"
 	},
 }
 
@@ -145,7 +145,6 @@ func genAddMod(minLimbs, maxLimbs int) {
 		panic(err)
 	}
 }
-
 
 func genSubModUnrolled(minLimbs, maxLimbs int) {
 	headerTemplateContent := loadTextFile("templates/addmodsubmodheader.go.template")
@@ -265,7 +264,7 @@ func genPresets(maxLimbs int) {
 
 func generateMulModMontImpl(limbCount int) {
 	params := TemplateParams{limbCount, 64}
-	buildTemplate(fmt.Sprintf("mulmodmont%d.go", limbCount * 64), "templates/mulmodmont.go.template", &params)
+	buildTemplate(fmt.Sprintf("mulmodmont%d.go", limbCount*64), "templates/mulmodmont.go.template", &params)
 }
 
 func genMulModMont() {

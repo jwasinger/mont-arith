@@ -1,9 +1,9 @@
 package mont_arith
 
 import (
-	"testing"
-	"math/big"
 	"fmt"
+	"math/big"
+	"testing"
 )
 
 func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
@@ -17,15 +17,14 @@ func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
 		panic("error")
 	}
 
-
 	// these inputs fail (TODO)
-/*
-	x := LimbsToInt(mod)
-	x = x.Sub(x, big.NewInt(10))
+	/*
+		x := LimbsToInt(mod)
+		x = x.Sub(x, big.NewInt(10))
 
-	y := LimbsToInt(mod)
-	y = y.Sub(y, big.NewInt(15))
-*/
+		y := LimbsToInt(mod)
+		y = y.Sub(y, big.NewInt(15))
+	*/
 
 	// these inputs pass
 	x := big.NewInt(10)
@@ -37,19 +36,19 @@ func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
 	y.Mul(y, montCtx.RVal())
 	y.Mod(y, LimbsToInt(mod))
 
-/*
-	fmt.Println("x/y/mod")
-	fmt.Println(x.String())
-	fmt.Println(y.String())
-	fmt.Println(LimbsToInt(mod))
-*/
+	/*
+		fmt.Println("x/y/mod")
+		fmt.Println(x.String())
+		fmt.Println(y.String())
+		fmt.Println(LimbsToInt(mod))
+	*/
 
 	expected := new(big.Int)
 	expected.Mul(x, y)
 	expected.Mul(expected, montCtx.RInv())
 	expected.Mod(expected, LimbsToInt(mod))
 
-	out_bytes := make([]byte, montCtx.NumLimbs * 8)
+	out_bytes := make([]byte, montCtx.NumLimbs*8)
 
 	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
 	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
@@ -82,7 +81,7 @@ func testAddMod(t *testing.T, preset *ArithPreset, limbCount uint) {
 	expected.Add(x, y)
 	expected.Mod(expected, LimbsToInt(mod))
 
-	out_bytes := make([]byte, montCtx.NumLimbs * 8)
+	out_bytes := make([]byte, montCtx.NumLimbs*8)
 
 	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
 	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
@@ -119,7 +118,7 @@ func testSubMod(t *testing.T, preset *ArithPreset, limbCount uint) {
 	expected.Sub(x, y)
 	expected.Mod(expected, LimbsToInt(mod))
 
-	out_bytes := make([]byte, montCtx.NumLimbs * 8)
+	out_bytes := make([]byte, montCtx.NumLimbs*8)
 
 	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
 	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
@@ -146,29 +145,29 @@ func benchmarkMulModMont(b *testing.B, preset *ArithPreset, limbCount uint) {
 	}
 
 	x := big.NewInt(2)
-	x.Lsh(x, (limbCount * 64) - 10)
+	x.Lsh(x, (limbCount*64)-10)
 
 	y := big.NewInt(2)
-	y.Lsh(y, (limbCount * 64) - 10)
+	y.Lsh(y, (limbCount*64)-10)
 
 	// convert x/y to montgomery
 
-/*
-	x.Mul(x, montCtx.r)
-	x.Mod(x, LimbsToInt(mod))
+	/*
+		x.Mul(x, montCtx.r)
+		x.Mod(x, LimbsToInt(mod))
 
-	y.Mul(y, montCtx.r)
-	y.Mod(y, LimbsToInt(mod))
-*/
+		y.Mul(y, montCtx.r)
+		y.Mod(y, LimbsToInt(mod))
+	*/
 
-/*
-	expected := new(big.Int)
-	expected.Mul(x, y)
-	expected.Mul(expected, montCtx.rInv)
-	expected.Mod(expected, LimbsToInt(mod))
-*/
+	/*
+		expected := new(big.Int)
+		expected.Mul(x, y)
+		expected.Mul(expected, montCtx.rInv)
+		expected.Mod(expected, LimbsToInt(mod))
+	*/
 
-	out_bytes := make([]byte, montCtx.NumLimbs * 8)
+	out_bytes := make([]byte, montCtx.NumLimbs*8)
 
 	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
 	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
@@ -196,7 +195,7 @@ func benchmarkAddMod(b *testing.B, preset *ArithPreset, limbCount uint) {
 	x := big.NewInt(3)
 	y := big.NewInt(4)
 
-	out_bytes := make([]byte, montCtx.NumLimbs * 8)
+	out_bytes := make([]byte, montCtx.NumLimbs*8)
 
 	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
 	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
@@ -212,7 +211,7 @@ func TestAddMod(t *testing.T) {
 	test := func(t *testing.T, preset *ArithPreset, name string, minLimbs, maxLimbs int) {
 		for i := minLimbs; i < maxLimbs; i++ {
 			// test x/y >= modulus
-			t.Run(fmt.Sprintf("/%s/%d-bit", name, i * 64), func(t *testing.T) {
+			t.Run(fmt.Sprintf("/%s/%d-bit", name, i*64), func(t *testing.T) {
 				testAddMod(t, preset, uint(i))
 			})
 		}
@@ -226,7 +225,7 @@ func TestSubMod(t *testing.T) {
 	test := func(t *testing.T, preset *ArithPreset, name string, minLimbs, maxLimbs int) {
 		for i := minLimbs; i < maxLimbs; i++ {
 			// test x/y >= modulus
-			t.Run(fmt.Sprintf("/%s/%d-bit", name, i * 64), func(t *testing.T) {
+			t.Run(fmt.Sprintf("/%s/%d-bit", name, i*64), func(t *testing.T) {
 				testSubMod(t, preset, uint(i))
 			})
 		}
@@ -240,7 +239,7 @@ func TestMulModMont(t *testing.T) {
 	test := func(t *testing.T, preset *ArithPreset, name string, minLimbs, maxLimbs int) {
 		for i := minLimbs; i <= maxLimbs; i++ {
 			// test x/y >= modulus
-			t.Run(fmt.Sprintf("%s/%d-bit", name, i * 64), func(t *testing.T) {
+			t.Run(fmt.Sprintf("%s/%d-bit", name, i*64), func(t *testing.T) {
 				testMulModMont(t, preset, uint(i))
 			})
 		}
@@ -254,7 +253,7 @@ func BenchmarkMulModMont(b *testing.B) {
 	bench := func(b *testing.B, preset *ArithPreset, minLimbs, maxLimbs int) {
 		for i := minLimbs; i <= maxLimbs; i++ {
 			// test x/y >= modulus
-			b.Run(fmt.Sprintf("%d-bit", i * 64), func(b *testing.B) {
+			b.Run(fmt.Sprintf("%d-bit", i*64), func(b *testing.B) {
 				benchmarkMulModMont(b, preset, uint(i))
 			})
 		}
@@ -267,7 +266,7 @@ func BenchmarkAddMod(b *testing.B) {
 	bench := func(b *testing.B, preset *ArithPreset, name string, minLimbs, maxLimbs int) {
 		for i := minLimbs; i <= maxLimbs; i++ {
 			// test x/y >= modulus
-			b.Run(fmt.Sprintf("%s/%d-bit", name, i * 64), func(b *testing.B) {
+			b.Run(fmt.Sprintf("%s/%d-bit", name, i*64), func(b *testing.B) {
 				benchmarkAddMod(b, preset, uint(i))
 			})
 		}

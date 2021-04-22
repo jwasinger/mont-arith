@@ -1,18 +1,18 @@
 package mont_arith
 
 import (
-	"math/big"
 	"encoding/binary"
+	"math/big"
 )
 
-/* 
-Methods for converting between Go big-int (64bit little-endian limbs, big-endian limb ordering) 
+/*
+Methods for converting between Go big-int (64bit little-endian limbs, big-endian limb ordering)
 and the bigint representation expected here: 64bit little-endian limbs, little-endian ordered
 */
 func LEBytesToInt(v []byte) *big.Int {
 	result := new(big.Int)
 
-	if len(v) % 8 != 0 {
+	if len(v)%8 != 0 {
 		panic("invalid val length for modext bytes")
 	}
 
@@ -20,8 +20,8 @@ func LEBytesToInt(v []byte) *big.Int {
 	copy(val, v)
 
 	// byteswap 8 bytes at a time
-	for i := 0; i < len(val) / 2; i++ {
-		val[i], val[len(val) - 1 - i] = val[len(val) - 1 - i], val[i]
+	for i := 0; i < len(val)/2; i++ {
+		val[i], val[len(val)-1-i] = val[len(val)-1-i], val[i]
 	}
 
 	result.SetBytes(val)
@@ -29,13 +29,13 @@ func LEBytesToInt(v []byte) *big.Int {
 }
 
 func LimbsToLEBytes(val []uint64) []byte {
-	result := make([]byte, len(val) * 8)
+	result := make([]byte, len(val)*8)
 
 	for i := 0; i < len(val); i++ {
 		startIdx := i * 8
 
 		for j := 0; j < 8; j++ {
-			result[startIdx + j] = byte(val[i] >> (j*8))
+			result[startIdx+j] = byte(val[i] >> (j * 8))
 		}
 	}
 
@@ -47,20 +47,20 @@ func IntToLimbs(val *big.Int, num_limbs uint) []uint64 {
 	val_bytes := val.Bytes()
 
 	// pad length to be a multiple of 64bits
-	if len(val_bytes) < 8 * int(num_limbs) {
-		pad_len := 8 * int(num_limbs) - len(val_bytes)
+	if len(val_bytes) < 8*int(num_limbs) {
+		pad_len := 8*int(num_limbs) - len(val_bytes)
 		pad := make([]byte, pad_len, pad_len)
 		val_bytes = append(pad, val_bytes...)
-	} else if len(val_bytes) > 8 * int(num_limbs) {
+	} else if len(val_bytes) > 8*int(num_limbs) {
 		panic("val too big to fit in specified number of limbs")
 	}
 
-	result := make([]uint64, len(val_bytes) / 8, len(val_bytes) / 8)
+	result := make([]uint64, len(val_bytes)/8, len(val_bytes)/8)
 
 	// place byteswapped (little-endian) val into result
 	for i := 0; i < len(result); i++ {
 		startIdx := (len(result) - (i + 1)) * 8
-		endIdx   := (len(result) - i) * 8
+		endIdx := (len(result) - i) * 8
 
 		// TODO: this assumes that the system is little-endian.  is that okay?
 		// on a LE system, this swaps big-endian to little-endian
@@ -72,10 +72,10 @@ func IntToLimbs(val *big.Int, num_limbs uint) []uint64 {
 
 // convert little-endian limbs to big.Int
 func LimbsToInt(limbs []uint64) *big.Int {
-	limbs_bytes := make([]byte, 8 * len(limbs), 8 * len(limbs))
+	limbs_bytes := make([]byte, 8*len(limbs), 8*len(limbs))
 	for i := 0; i < len(limbs); i++ {
 		startIdx := (len(limbs) - (i + 1)) * 8
-		endIdx   := (len(limbs) - i) * 8
+		endIdx := (len(limbs) - i) * 8
 
 		binary.BigEndian.PutUint64(limbs_bytes[startIdx:endIdx], limbs[i])
 	}
@@ -91,7 +91,6 @@ func MaxModulus(limbCount uint) []uint64 {
 	for i := uint(1); i < limbCount; i++ {
 		mod[i] = 0xffffffffffffffff
 	}
-
 
 	return mod
 }
@@ -129,7 +128,7 @@ func One(limbCount uint) []uint64 {
 func RSquared(modulus []uint64) []uint64 {
 	mod := LimbsToInt(modulus[:])
 	r := new(big.Int)
-	r.Exp(big.NewInt(2), big.NewInt(int64(len(modulus)) * 64), mod)
+	r.Exp(big.NewInt(2), big.NewInt(int64(len(modulus))*64), mod)
 	r.Mul(r, r)
 	r.Mod(r, mod)
 

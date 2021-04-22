@@ -1,34 +1,34 @@
 package mont_arith
 
 import (
-	"math/big"
 	"errors"
+	"math/big"
 )
 
-type ModArithFunc func (out, x, y []byte, m *MontArithContext) (error)
+type ModArithFunc func(out, x, y []byte, m *MontArithContext) error
 
 type MontArithContext struct {
-// TODO make most of these private and the arith operations methods of this struct
-    Modulus []byte
-    ModulusNonInterleaved *big.Int // just here for convenience
+	// TODO make most of these private and the arith operations methods of this struct
+	Modulus               []byte
+	ModulusNonInterleaved *big.Int // just here for convenience
 
-    MontParamInterleaved uint64
-    MontParamNonInterleaved *big.Int
+	MontParamInterleaved    uint64
+	MontParamNonInterleaved *big.Int
 
-    NumLimbs uint
+	NumLimbs uint
 
-    r *big.Int
-    rInv *big.Int
+	r    *big.Int
+	rInv *big.Int
 
-    // mask for mod by R: 0xfff...fff - (1 << NumLimbs * 64) - 1
-    mask *big.Int
+	// mask for mod by R: 0xfff...fff - (1 << NumLimbs * 64) - 1
+	mask *big.Int
 
-    // currently active addmod/submod/mulmodmont for a set NumLimbs
-    addModFunc ModArithFunc
-    subModFunc ModArithFunc
-    mulModMontFunc ModArithFunc
+	// currently active addmod/submod/mulmodmont for a set NumLimbs
+	addModFunc     ModArithFunc
+	subModFunc     ModArithFunc
+	mulModMontFunc ModArithFunc
 
-    arithImpl ArithPreset
+	arithImpl ArithPreset
 }
 
 func (m *MontArithContext) RVal() *big.Int {
@@ -66,7 +66,7 @@ func (m *MontArithContext) ToNorm(dst, src []uint64) {
 }
 
 func NewMontArithContext(preset *ArithPreset) *MontArithContext {
-	result := MontArithContext {
+	result := MontArithContext{
 		nil,
 		nil,
 		0,
@@ -109,7 +109,7 @@ func (m *MontArithContext) ValueSize() uint {
 }
 
 func (m *MontArithContext) SetMod(modBytes []byte) error {
-	if len(modBytes) % 8 != 0  || len(modBytes) == 0{
+	if len(modBytes)%8 != 0 || len(modBytes) == 0 {
 		return errors.New("invalid modulus length")
 	}
 
@@ -121,7 +121,7 @@ func (m *MontArithContext) SetMod(modBytes []byte) error {
 
 	// r val chosen as max representable value for limbCount + 1: 0x1000...000
 	rVal := new(big.Int)
-	rVal.Lsh(big.NewInt(1), limbCount * limbSize * 8)
+	rVal.Lsh(big.NewInt(1), limbCount*limbSize*8)
 
 	rValMask := new(big.Int)
 	rValMask.Sub(rVal, big.NewInt(1))
@@ -135,7 +135,6 @@ func (m *MontArithContext) SetMod(modBytes []byte) error {
 	}
 
 	//rVal.Mod(rVal, mod)
-
 
 	rInv := new(big.Int)
 	if rInv.ModInverse(rVal, mod) == nil {
@@ -155,9 +154,9 @@ func (m *MontArithContext) SetMod(modBytes []byte) error {
 	m.MontParamNonInterleaved = montParamNonInterleaved
 	m.MontParamInterleaved = montParamNonInterleaved.Uint64()
 
-	m.mulModMontFunc = m.arithImpl.MulModMontImpls[limbCount - 1]
-	m.addModFunc = m.arithImpl.AddModImpls[limbCount - 1]
-	m.subModFunc = m.arithImpl.SubModImpls[limbCount - 1]
+	m.mulModMontFunc = m.arithImpl.MulModMontImpls[limbCount-1]
+	m.addModFunc = m.arithImpl.AddModImpls[limbCount-1]
+	m.subModFunc = m.arithImpl.SubModImpls[limbCount-1]
 
 	return nil
 }
