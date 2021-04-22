@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"text/template"
-	"strings"
 	"bytes"
 )
 
@@ -53,10 +52,12 @@ var funcs = template.FuncMap{
 		return val * v2
 	},
 	// returns "[x]uint64 {0, 0, 0, ......, 0}"
+/*
 	"makeZeroedLimbs": func(numLimbs int) string {
 		result := fmt.Sprintf("[%d]uint64 {", numLimbs)
 		return result + strings.Repeat(" 0,", numLimbs - 1) + " 0}"
 	},
+*/
 }
 
 func buildTemplate(dest_path, template_path string, params *TemplateParams) {
@@ -78,7 +79,7 @@ func buildTemplate(dest_path, template_path string, params *TemplateParams) {
 	f.Close()
 }
 
-func genAddModUnrolledImpls(minLimbs, maxLimbs int) {
+func genAddModUnrolled(minLimbs, maxLimbs int) {
 	headerTemplateContent := loadTextFile("templates/header.go.template")
 	headerTemplate := template.Must(template.New("").Funcs(funcs).Parse(headerTemplateContent))
 
@@ -88,7 +89,7 @@ func genAddModUnrolledImpls(minLimbs, maxLimbs int) {
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
 
-	f, err := os.Create("arith/addmod_unrolled.go")
+	f, err := os.Create("addmod_unrolled.go")
 	if err != nil {
 		log.Fatal(err)
 		panic("")
@@ -112,14 +113,14 @@ func genAddModUnrolledImpls(minLimbs, maxLimbs int) {
 	}
 }
 
-func genAddModImpls(minLimbs, maxLimbs int) {
-	headerTemplateContent := loadTextFile("templates/header.go.template")
+func genAddMod(minLimbs, maxLimbs int) {
+	headerTemplateContent := loadTextFile("templates/addmodsubmodheader.go.template")
 	headerTemplate := template.Must(template.New("").Funcs(funcs).Parse(headerTemplateContent))
 
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
 
-	f, err := os.Create("arith/addmod_nonunrolled.go")
+	f, err := os.Create("addmod_nonunrolled.go")
 	if err != nil {
 		log.Fatal(err)
 		panic("")
@@ -147,7 +148,7 @@ func genAddModImpls(minLimbs, maxLimbs int) {
 }
 
 
-func genSubModUnrolledImpls(minLimbs, maxLimbs int) {
+func genSubModUnrolled(minLimbs, maxLimbs int) {
 	headerTemplateContent := loadTextFile("templates/header.go.template")
 	headerTemplate := template.Must(template.New("").Funcs(funcs).Parse(headerTemplateContent))
 
@@ -157,7 +158,7 @@ func genSubModUnrolledImpls(minLimbs, maxLimbs int) {
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
 
-	f, err := os.Create("arith/submod_unrolled.go")
+	f, err := os.Create("submod_unrolled.go")
 	if err != nil {
 		log.Fatal(err)
 		panic("")
@@ -181,14 +182,14 @@ func genSubModUnrolledImpls(minLimbs, maxLimbs int) {
 	}
 }
 
-func genSubModImpls(minLimbs, maxLimbs int) {
+func genSubMod(minLimbs, maxLimbs int) {
 	headerTemplateContent := loadTextFile("templates/header.go.template")
 	headerTemplate := template.Must(template.New("").Funcs(funcs).Parse(headerTemplateContent))
 
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
 
-	f, err := os.Create("arith/submod.go")
+	f, err := os.Create("submod.go")
 	if err != nil {
 		log.Fatal(err)
 		panic("")
@@ -199,12 +200,12 @@ func genSubModImpls(minLimbs, maxLimbs int) {
 		panic("")
 	}
 
-	addModNonUnrolledTemplateContent := loadTextFile("templates/submod.go.template")
-	addModNonUnrolledTemplate := template.Must(template.New("").Funcs(funcs).Parse(addModNonUnrolledTemplateContent))
+	subModNonUnrolledTemplateContent := loadTextFile("templates/submod.go.template")
+	subModNonUnrolledTemplate := template.Must(template.New("").Funcs(funcs).Parse(subModNonUnrolledTemplateContent))
 
 	for i := minLimbs; i <= maxLimbs; i++ {
 		params = TemplateParams{i, 64}
-		if err := addModNonUnrolledTemplate.Execute(buf, params); err != nil {
+		if err := subModNonUnrolledTemplate.Execute(buf, params); err != nil {
 			log.Fatal(err)
 			panic("")
 		}
@@ -215,27 +216,17 @@ func genSubModImpls(minLimbs, maxLimbs int) {
 	}
 }
 
-func generateLimbFuncList(maxLimbs int) {
+func genPresets(maxLimbs int) {
 	params := TemplateParams{maxLimbs, 64}
-	buildTemplate("arith/presets.go", "templates/presets.go.template", &params)
+	buildTemplate("presets.go", "templates/presets.go.template", &params)
 }
 
 func generateMulModMontImpl(limbCount int) {
 	params := TemplateParams{limbCount, 64}
-	buildTemplate(fmt.Sprintf("arith/mulmodmont%d.go", limbCount * 64), "templates/mulmodmont.go.template", &params)
+	buildTemplate(fmt.Sprintf("mulmodmont%d.go", limbCount * 64), "templates/mulmodmont.go.template", &params)
 }
 
-func generateSubModUnrolledImpl(limbCount int) {
-	params := TemplateParams{limbCount, 64}
-	buildTemplate(fmt.Sprintf("arith/submod%d_unrolled.go", limbCount * 64), "templates/submod_unrolled.go.template", &params)
-}
-
-func generateSubModImpl(limbCount int) {
-	params := TemplateParams{limbCount, 64}
-	buildTemplate(fmt.Sprintf("arith/submod%d.go", limbCount * 64), "templates/submod.go.template", &params)
-}
-
-func genMulModMontImpls() {
+func genMulModMont() {
 	var min_limbs int = 2
 	//var max_limbs int = 11
 	var max_limbs int = 11
@@ -246,12 +237,12 @@ func genMulModMontImpls() {
 }
 
 func main() {
-	generateLimbFuncList(64)
-	genMulModMontImpls()
+	genPresets(64)
 
-	genAddModImpls(2, 64)
-	genSubModImpls(2, 64)
+	genMulModMont()
+	genAddMod(2, 64)
+	genSubMod(2, 64)
 
-	genAddModUnrolledImpls(2, 64)
-	genSubModUnrolledImpls(2, 64)
+	genAddModUnrolled(2, 64)
+	genSubModUnrolled(2, 64)
 }

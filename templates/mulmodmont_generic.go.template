@@ -1,10 +1,3 @@
-package arith
-
-import (
-	"errors"
-	"math/big"
-)
-
 func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithContext) error {
 	// length x == y assumed
 
