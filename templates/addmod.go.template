@@ -1,9 +1,8 @@
-
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 {{ $limbBits := .LimbBits}}
 
-func SubModUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
+func AddModNonUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -19,14 +18,14 @@ func SubModUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []by
 	}
 
 	for i := 0; i < {{$limbCount}}; i++ {
-		tmp[i], c = bits.Sub64(x[i], y[i], c)
+		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
 
 	for i := 0; i < {{$limbCount}}; i++ {
-		z[i], c1 = bits.Add64(tmp[i], mod[i], c1)
+		z[i], c1 = bits.Sub64(tmp[i], mod[i], c1)
 	}
 
-	if c == 0 {
+	if c == 0 || c != 0 && c1 == 0 {
 		copy(z, tmp[:])
 	}
 

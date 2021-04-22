@@ -278,10 +278,6 @@ func DefaultPreset() *ArithPreset {
 	return &ArithPreset{AddModNonUnrolledImpls(), SubModNonUnrolledImpls(), MulModMontImpls()}
 }
 
-func UnrolledPreset() *ArithPreset {
-	return &ArithPreset{AddModUnrolledImpls(), SubModUnrolledImpls(), MulModMontImpls()}
-}
-
 func AddModNonUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc{
 		AddMod64,
@@ -353,77 +349,6 @@ func AddModNonUnrolledImpls() []ModArithFunc {
 	return result
 }
 
-func AddModUnrolledImpls() []ModArithFunc {
-	result := []ModArithFunc{
-		AddMod64,
-		AddModUnrolled128,
-		AddModUnrolled192,
-		AddModUnrolled256,
-		AddModUnrolled320,
-		AddModUnrolled384,
-		AddModUnrolled448,
-		AddModUnrolled512,
-		AddModUnrolled576,
-		AddModUnrolled640,
-		AddModUnrolled704,
-		AddModUnrolled768,
-		AddModUnrolled832,
-		AddModUnrolled896,
-		AddModUnrolled960,
-		AddModUnrolled1024,
-		AddModUnrolled1088,
-		AddModUnrolled1152,
-		AddModUnrolled1216,
-		AddModUnrolled1280,
-		AddModUnrolled1344,
-		AddModUnrolled1408,
-		AddModUnrolled1472,
-		AddModUnrolled1536,
-		AddModUnrolled1600,
-		AddModUnrolled1664,
-		AddModUnrolled1728,
-		AddModUnrolled1792,
-		AddModUnrolled1856,
-		AddModUnrolled1920,
-		AddModUnrolled1984,
-		AddModUnrolled2048,
-		AddModUnrolled2112,
-		AddModUnrolled2176,
-		AddModUnrolled2240,
-		AddModUnrolled2304,
-		AddModUnrolled2368,
-		AddModUnrolled2432,
-		AddModUnrolled2496,
-		AddModUnrolled2560,
-		AddModUnrolled2624,
-		AddModUnrolled2688,
-		AddModUnrolled2752,
-		AddModUnrolled2816,
-		AddModUnrolled2880,
-		AddModUnrolled2944,
-		AddModUnrolled3008,
-		AddModUnrolled3072,
-		AddModUnrolled3136,
-		AddModUnrolled3200,
-		AddModUnrolled3264,
-		AddModUnrolled3328,
-		AddModUnrolled3392,
-		AddModUnrolled3456,
-		AddModUnrolled3520,
-		AddModUnrolled3584,
-		AddModUnrolled3648,
-		AddModUnrolled3712,
-		AddModUnrolled3776,
-		AddModUnrolled3840,
-		AddModUnrolled3904,
-		AddModUnrolled3968,
-		AddModUnrolled4032,
-		AddModUnrolled4096,
-	}
-
-	return result
-}
-
 func SubModNonUnrolledImpls() []ModArithFunc {
 	result := []ModArithFunc{
 		SubMod64,
@@ -490,77 +415,6 @@ func SubModNonUnrolledImpls() []ModArithFunc {
 		SubMod3968,
 		SubMod4032,
 		SubMod4096,
-	}
-
-	return result
-}
-
-func SubModUnrolledImpls() []ModArithFunc {
-	result := []ModArithFunc{
-		SubMod64,
-		SubModUnrolled128,
-		SubModUnrolled192,
-		SubModUnrolled256,
-		SubModUnrolled320,
-		SubModUnrolled384,
-		SubModUnrolled448,
-		SubModUnrolled512,
-		SubModUnrolled576,
-		SubModUnrolled640,
-		SubModUnrolled704,
-		SubModUnrolled768,
-		SubModUnrolled832,
-		SubModUnrolled896,
-		SubModUnrolled960,
-		SubModUnrolled1024,
-		SubModUnrolled1088,
-		SubModUnrolled1152,
-		SubModUnrolled1216,
-		SubModUnrolled1280,
-		SubModUnrolled1344,
-		SubModUnrolled1408,
-		SubModUnrolled1472,
-		SubModUnrolled1536,
-		SubModUnrolled1600,
-		SubModUnrolled1664,
-		SubModUnrolled1728,
-		SubModUnrolled1792,
-		SubModUnrolled1856,
-		SubModUnrolled1920,
-		SubModUnrolled1984,
-		SubModUnrolled2048,
-		SubModUnrolled2112,
-		SubModUnrolled2176,
-		SubModUnrolled2240,
-		SubModUnrolled2304,
-		SubModUnrolled2368,
-		SubModUnrolled2432,
-		SubModUnrolled2496,
-		SubModUnrolled2560,
-		SubModUnrolled2624,
-		SubModUnrolled2688,
-		SubModUnrolled2752,
-		SubModUnrolled2816,
-		SubModUnrolled2880,
-		SubModUnrolled2944,
-		SubModUnrolled3008,
-		SubModUnrolled3072,
-		SubModUnrolled3136,
-		SubModUnrolled3200,
-		SubModUnrolled3264,
-		SubModUnrolled3328,
-		SubModUnrolled3392,
-		SubModUnrolled3456,
-		SubModUnrolled3520,
-		SubModUnrolled3584,
-		SubModUnrolled3648,
-		SubModUnrolled3712,
-		SubModUnrolled3776,
-		SubModUnrolled3840,
-		SubModUnrolled3904,
-		SubModUnrolled3968,
-		SubModUnrolled4032,
-		SubModUnrolled4096,
 	}
 
 	return result
