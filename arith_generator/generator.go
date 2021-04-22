@@ -88,7 +88,7 @@ func genAddModUnrolled(minLimbs, maxLimbs int) {
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
 
-	f, err := os.Create("addmod_unrolled.go")
+	f, err := os.Create("generated_addmod_unrolled.go")
 	if err != nil {
 		log.Fatal(err)
 		panic("")
@@ -119,7 +119,7 @@ func genAddMod(minLimbs, maxLimbs int) {
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
 
-	f, err := os.Create("addmod_nonunrolled.go")
+	f, err := os.Create("generated_addmod_nonunrolled.go")
 	if err != nil {
 		log.Fatal(err)
 		panic("")
@@ -156,7 +156,7 @@ func genSubModUnrolled(minLimbs, maxLimbs int) {
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
 
-	f, err := os.Create("submod_unrolled.go")
+	f, err := os.Create("generated_submod_unrolled.go")
 	if err != nil {
 		log.Fatal(err)
 		panic("")
@@ -187,7 +187,7 @@ func genSubMod(minLimbs, maxLimbs int) {
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
 
-	f, err := os.Create("submod.go")
+	f, err := os.Create("generated_submod.go")
 	if err != nil {
 		log.Fatal(err)
 		panic("")
@@ -221,7 +221,7 @@ func genMulMont(minLimbs, maxLimbs int) {
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
 
-	f, err := os.Create("mulmont.go")
+	f, err := os.Create("generated_mulmont.go")
 	if err != nil {
 		log.Fatal(err)
 		panic("")
@@ -259,7 +259,7 @@ func genMulMont(minLimbs, maxLimbs int) {
 
 func genPresets(maxLimbs int) {
 	params := TemplateParams{maxLimbs, 64}
-	buildTemplate("presets.go", "templates/presets.go.template", &params)
+	buildTemplate("generated_presets.go", "templates/presets.go.template", &params)
 }
 
 func generateMulModMontImpl(limbCount int) {
