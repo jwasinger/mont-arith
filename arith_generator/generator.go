@@ -7,6 +7,7 @@ import (
 	"os"
 	"text/template"
 	"bytes"
+	"strings"
 )
 
 type TemplateParams struct {
@@ -52,12 +53,10 @@ var funcs = template.FuncMap{
 		return val * v2
 	},
 	// returns "[x]uint64 {0, 0, 0, ......, 0}"
-/*
 	"makeZeroedLimbs": func(numLimbs int) string {
 		result := fmt.Sprintf("[%d]uint64 {", numLimbs)
 		return result + strings.Repeat(" 0,", numLimbs - 1) + " 0}"
 	},
-*/
 }
 
 func buildTemplate(dest_path, template_path string, params *TemplateParams) {
@@ -80,7 +79,7 @@ func buildTemplate(dest_path, template_path string, params *TemplateParams) {
 }
 
 func genAddModUnrolled(minLimbs, maxLimbs int) {
-	headerTemplateContent := loadTextFile("templates/header.go.template")
+	headerTemplateContent := loadTextFile("templates/addmodsubmodheader.go.template")
 	headerTemplate := template.Must(template.New("").Funcs(funcs).Parse(headerTemplateContent))
 
 	addModUnrolledTemplateContent := loadTextFile("templates/addmod_unrolled.go.template")
@@ -149,7 +148,7 @@ func genAddMod(minLimbs, maxLimbs int) {
 
 
 func genSubModUnrolled(minLimbs, maxLimbs int) {
-	headerTemplateContent := loadTextFile("templates/header.go.template")
+	headerTemplateContent := loadTextFile("templates/addmodsubmodheader.go.template")
 	headerTemplate := template.Must(template.New("").Funcs(funcs).Parse(headerTemplateContent))
 
 	addModUnrolledTemplateContent := loadTextFile("templates/submod_unrolled.go.template")
@@ -183,7 +182,7 @@ func genSubModUnrolled(minLimbs, maxLimbs int) {
 }
 
 func genSubMod(minLimbs, maxLimbs int) {
-	headerTemplateContent := loadTextFile("templates/header.go.template")
+	headerTemplateContent := loadTextFile("templates/addmodsubmodheader.go.template")
 	headerTemplate := template.Must(template.New("").Funcs(funcs).Parse(headerTemplateContent))
 
 	params := TemplateParams{0, 64}

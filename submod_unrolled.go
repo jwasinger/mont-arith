@@ -1,12 +1,16 @@
-package arith
+package mont_arith
 
 import (
-	"errors"
 	"math/bits"
 	"unsafe"
+	"errors"
 )
 
-func SubModUnrolled128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+func SubModUnrolled128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[2]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[2]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[2]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -15,7 +19,7 @@ func SubModUnrolled128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [2]uint64{0, 0}
+	tmp := [2]uint64 { 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -36,7 +40,12 @@ func SubModUnrolled128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[3]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[3]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[3]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -45,7 +54,7 @@ func SubModUnrolled192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [3]uint64{0, 0, 0}
+	tmp := [3]uint64 { 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -66,7 +75,12 @@ func SubModUnrolled192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[4]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[4]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[4]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -75,7 +89,7 @@ func SubModUnrolled256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [4]uint64{0, 0, 0, 0}
+	tmp := [4]uint64 { 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -96,7 +110,12 @@ func SubModUnrolled256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[5]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[5]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[5]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -105,7 +124,7 @@ func SubModUnrolled320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [5]uint64{0, 0, 0, 0, 0}
+	tmp := [5]uint64 { 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -126,7 +145,12 @@ func SubModUnrolled320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[6]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[6]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[6]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -135,7 +159,7 @@ func SubModUnrolled384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [6]uint64{0, 0, 0, 0, 0, 0}
+	tmp := [6]uint64 { 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -156,7 +180,12 @@ func SubModUnrolled384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[7]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[7]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[7]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -165,7 +194,7 @@ func SubModUnrolled448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [7]uint64{0, 0, 0, 0, 0, 0, 0}
+	tmp := [7]uint64 { 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -186,7 +215,12 @@ func SubModUnrolled448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[8]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[8]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[8]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -195,7 +229,7 @@ func SubModUnrolled512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [8]uint64{0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [8]uint64 { 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -216,7 +250,12 @@ func SubModUnrolled512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[9]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[9]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[9]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -225,7 +264,7 @@ func SubModUnrolled576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [9]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [9]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -246,7 +285,12 @@ func SubModUnrolled576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[10]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[10]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[10]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -255,7 +299,7 @@ func SubModUnrolled640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [10]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [10]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -276,7 +320,12 @@ func SubModUnrolled640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[11]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[11]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[11]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -285,7 +334,7 @@ func SubModUnrolled704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [11]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [11]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -306,7 +355,12 @@ func SubModUnrolled704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled768(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled768(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[12]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[12]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[12]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -315,7 +369,7 @@ func SubModUnrolled768(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [12]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [12]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -336,7 +390,12 @@ func SubModUnrolled768(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled832(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled832(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[13]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[13]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[13]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -345,7 +404,7 @@ func SubModUnrolled832(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [13]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [13]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -366,7 +425,12 @@ func SubModUnrolled832(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled896(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled896(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[14]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[14]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[14]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -375,7 +439,7 @@ func SubModUnrolled896(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [14]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [14]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -396,7 +460,12 @@ func SubModUnrolled896(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled960(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled960(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[15]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[15]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[15]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -405,7 +474,7 @@ func SubModUnrolled960(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [15]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [15]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -426,7 +495,12 @@ func SubModUnrolled960(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext
 	return nil
 }
 
-func SubModUnrolled1024(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1024(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[16]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[16]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[16]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -435,7 +509,7 @@ func SubModUnrolled1024(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [16]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [16]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -456,7 +530,12 @@ func SubModUnrolled1024(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1088(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1088(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[17]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[17]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[17]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -465,7 +544,7 @@ func SubModUnrolled1088(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [17]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [17]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -486,7 +565,12 @@ func SubModUnrolled1088(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1152(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1152(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[18]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[18]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[18]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -495,7 +579,7 @@ func SubModUnrolled1152(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [18]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [18]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -516,7 +600,12 @@ func SubModUnrolled1152(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1216(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1216(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[19]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[19]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[19]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -525,7 +614,7 @@ func SubModUnrolled1216(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [19]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [19]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -546,7 +635,12 @@ func SubModUnrolled1216(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1280(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1280(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[20]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[20]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[20]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -555,7 +649,7 @@ func SubModUnrolled1280(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [20]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [20]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -576,7 +670,12 @@ func SubModUnrolled1280(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1344(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1344(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[21]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[21]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[21]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -585,7 +684,7 @@ func SubModUnrolled1344(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [21]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [21]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -606,7 +705,12 @@ func SubModUnrolled1344(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1408(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1408(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[22]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[22]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[22]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -615,7 +719,7 @@ func SubModUnrolled1408(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [22]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [22]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -636,7 +740,12 @@ func SubModUnrolled1408(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1472(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1472(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[23]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[23]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[23]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -645,7 +754,7 @@ func SubModUnrolled1472(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [23]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [23]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -666,7 +775,12 @@ func SubModUnrolled1472(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1536(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1536(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[24]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[24]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[24]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -675,7 +789,7 @@ func SubModUnrolled1536(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [24]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [24]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -696,7 +810,12 @@ func SubModUnrolled1536(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1600(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1600(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[25]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[25]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[25]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -705,7 +824,7 @@ func SubModUnrolled1600(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [25]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [25]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -726,7 +845,12 @@ func SubModUnrolled1600(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1664(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1664(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[26]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[26]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[26]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -735,7 +859,7 @@ func SubModUnrolled1664(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [26]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [26]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -756,7 +880,12 @@ func SubModUnrolled1664(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1728(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1728(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[27]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[27]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[27]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -765,7 +894,7 @@ func SubModUnrolled1728(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [27]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [27]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -786,7 +915,12 @@ func SubModUnrolled1728(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1792(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1792(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[28]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[28]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[28]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -795,7 +929,7 @@ func SubModUnrolled1792(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [28]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [28]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -816,7 +950,12 @@ func SubModUnrolled1792(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1856(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1856(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[29]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[29]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[29]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -825,7 +964,7 @@ func SubModUnrolled1856(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [29]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [29]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -846,7 +985,12 @@ func SubModUnrolled1856(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1920(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1920(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[30]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[30]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[30]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -855,7 +999,7 @@ func SubModUnrolled1920(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [30]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [30]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -876,7 +1020,12 @@ func SubModUnrolled1920(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled1984(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled1984(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[31]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[31]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[31]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -885,7 +1034,7 @@ func SubModUnrolled1984(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [31]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [31]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -906,7 +1055,12 @@ func SubModUnrolled1984(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2048(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2048(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[32]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[32]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[32]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -915,7 +1069,7 @@ func SubModUnrolled2048(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [32]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [32]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -936,7 +1090,12 @@ func SubModUnrolled2048(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2112(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2112(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[33]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[33]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[33]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -945,7 +1104,7 @@ func SubModUnrolled2112(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [33]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [33]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -966,7 +1125,12 @@ func SubModUnrolled2112(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2176(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2176(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[34]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[34]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[34]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -975,7 +1139,7 @@ func SubModUnrolled2176(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [34]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [34]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -996,7 +1160,12 @@ func SubModUnrolled2176(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2240(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2240(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[35]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[35]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[35]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1005,7 +1174,7 @@ func SubModUnrolled2240(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [35]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [35]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1026,7 +1195,12 @@ func SubModUnrolled2240(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2304(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2304(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[36]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[36]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[36]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1035,7 +1209,7 @@ func SubModUnrolled2304(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [36]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [36]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1056,7 +1230,12 @@ func SubModUnrolled2304(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2368(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2368(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[37]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[37]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[37]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1065,7 +1244,7 @@ func SubModUnrolled2368(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [37]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [37]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1086,7 +1265,12 @@ func SubModUnrolled2368(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2432(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2432(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[38]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[38]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[38]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1095,7 +1279,7 @@ func SubModUnrolled2432(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [38]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [38]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1116,7 +1300,12 @@ func SubModUnrolled2432(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2496(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2496(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[39]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[39]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[39]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1125,7 +1314,7 @@ func SubModUnrolled2496(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [39]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [39]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1146,7 +1335,12 @@ func SubModUnrolled2496(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2560(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2560(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[40]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[40]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[40]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1155,7 +1349,7 @@ func SubModUnrolled2560(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [40]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [40]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1176,7 +1370,12 @@ func SubModUnrolled2560(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2624(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2624(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[41]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[41]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[41]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1185,7 +1384,7 @@ func SubModUnrolled2624(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [41]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [41]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1206,7 +1405,12 @@ func SubModUnrolled2624(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2688(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2688(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[42]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[42]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[42]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1215,7 +1419,7 @@ func SubModUnrolled2688(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [42]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [42]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1236,7 +1440,12 @@ func SubModUnrolled2688(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2752(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2752(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[43]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[43]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[43]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1245,7 +1454,7 @@ func SubModUnrolled2752(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [43]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [43]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1266,7 +1475,12 @@ func SubModUnrolled2752(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2816(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2816(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[44]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[44]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[44]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1275,7 +1489,7 @@ func SubModUnrolled2816(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [44]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [44]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1296,7 +1510,12 @@ func SubModUnrolled2816(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2880(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2880(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[45]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[45]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[45]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1305,7 +1524,7 @@ func SubModUnrolled2880(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [45]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [45]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1326,7 +1545,12 @@ func SubModUnrolled2880(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled2944(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled2944(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[46]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[46]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[46]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1335,7 +1559,7 @@ func SubModUnrolled2944(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [46]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [46]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1356,7 +1580,12 @@ func SubModUnrolled2944(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3008(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3008(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[47]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[47]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[47]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1365,7 +1594,7 @@ func SubModUnrolled3008(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [47]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [47]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1386,7 +1615,12 @@ func SubModUnrolled3008(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3072(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3072(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[48]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[48]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[48]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1395,7 +1629,7 @@ func SubModUnrolled3072(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [48]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [48]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1416,7 +1650,12 @@ func SubModUnrolled3072(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3136(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3136(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[49]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[49]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[49]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1425,7 +1664,7 @@ func SubModUnrolled3136(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [49]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [49]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1446,7 +1685,12 @@ func SubModUnrolled3136(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3200(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3200(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[50]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[50]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[50]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1455,7 +1699,7 @@ func SubModUnrolled3200(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [50]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [50]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1476,7 +1720,12 @@ func SubModUnrolled3200(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3264(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3264(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[51]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[51]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[51]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1485,7 +1734,7 @@ func SubModUnrolled3264(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [51]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [51]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1506,7 +1755,12 @@ func SubModUnrolled3264(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3328(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3328(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[52]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[52]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[52]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1515,7 +1769,7 @@ func SubModUnrolled3328(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [52]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [52]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1536,7 +1790,12 @@ func SubModUnrolled3328(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3392(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3392(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[53]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[53]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[53]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1545,7 +1804,7 @@ func SubModUnrolled3392(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [53]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [53]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1566,7 +1825,12 @@ func SubModUnrolled3392(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3456(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3456(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[54]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[54]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[54]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1575,7 +1839,7 @@ func SubModUnrolled3456(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [54]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [54]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1596,7 +1860,12 @@ func SubModUnrolled3456(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3520(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3520(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[55]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[55]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[55]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1605,7 +1874,7 @@ func SubModUnrolled3520(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [55]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [55]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1626,7 +1895,12 @@ func SubModUnrolled3520(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3584(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3584(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[56]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[56]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[56]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1635,7 +1909,7 @@ func SubModUnrolled3584(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [56]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [56]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1656,7 +1930,12 @@ func SubModUnrolled3584(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3648(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3648(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[57]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[57]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[57]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1665,7 +1944,7 @@ func SubModUnrolled3648(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [57]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [57]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1686,7 +1965,12 @@ func SubModUnrolled3648(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3712(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3712(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[58]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[58]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[58]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1695,7 +1979,7 @@ func SubModUnrolled3712(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [58]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [58]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1716,7 +2000,12 @@ func SubModUnrolled3712(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3776(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3776(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[59]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[59]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[59]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1725,7 +2014,7 @@ func SubModUnrolled3776(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [59]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [59]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1746,7 +2035,12 @@ func SubModUnrolled3776(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3840(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3840(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[60]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[60]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[60]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1755,7 +2049,7 @@ func SubModUnrolled3840(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [60]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [60]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1776,7 +2070,12 @@ func SubModUnrolled3840(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3904(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3904(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[61]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[61]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[61]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1785,7 +2084,7 @@ func SubModUnrolled3904(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [61]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [61]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1806,7 +2105,12 @@ func SubModUnrolled3904(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled3968(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled3968(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[62]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[62]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[62]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1815,7 +2119,7 @@ func SubModUnrolled3968(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [62]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [62]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1836,7 +2140,12 @@ func SubModUnrolled3968(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled4032(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled4032(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[63]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[63]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[63]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1845,7 +2154,7 @@ func SubModUnrolled4032(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [63]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [63]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1866,7 +2175,12 @@ func SubModUnrolled4032(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	return nil
 }
 
-func SubModUnrolled4096(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+
+
+
+
+
+func SubModUnrolled4096(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[64]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[64]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[64]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -1875,7 +2189,7 @@ func SubModUnrolled4096(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 	var c uint64 = 0
 	var c1 uint64 = 0
 
-	tmp := [64]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	tmp := [64]uint64 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	if x[0] >= mod[0] || y[0] >= mod[0] {
 		panic(errors.New("x/y must be smaller than modulus"))
@@ -1895,3 +2209,4 @@ func SubModUnrolled4096(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContex
 
 	return nil
 }
+

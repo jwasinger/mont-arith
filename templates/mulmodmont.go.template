@@ -1,4 +1,4 @@
-package arith
+package mont_arith
 
 import (
 	"math/bits"
