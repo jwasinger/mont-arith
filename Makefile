@@ -5,7 +5,7 @@ build:
 	bash -c "gofmt -w ."
 
 test:
-	go test -v -run=.
+	go test -run=.
 
 benchmark:
 	go test -bench=.

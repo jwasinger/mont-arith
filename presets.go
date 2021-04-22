@@ -274,11 +274,11 @@ func Asm384Preset() *ArithPreset {
 	return &ArithPreset{addModImpls, subModImpls, mulMontImpls}
 }
 
-func NonUnrolledPreset() *ArithPreset {
+func DefaultPreset() *ArithPreset {
 	return &ArithPreset{AddModNonUnrolledImpls(), SubModNonUnrolledImpls(), MulModMontImpls()}
 }
 
-func DefaultPreset() *ArithPreset {
+func UnrolledPreset() *ArithPreset {
 	return &ArithPreset{AddModUnrolledImpls(), SubModUnrolledImpls(), MulModMontImpls()}
 }
 
