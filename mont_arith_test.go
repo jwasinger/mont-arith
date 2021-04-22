@@ -217,6 +217,7 @@ func TestAddMod(t *testing.T) {
 		}
 	}
 
+	test(t, Asm384Preset(), "asm384", 1, 64)
 	test(t, DefaultPreset(), "unrolled", 1, 64)
 	test(t, NonUnrolledPreset(), "non-unrolled", 1, 64)
 }
@@ -231,6 +232,7 @@ func TestSubMod(t *testing.T) {
 		}
 	}
 
+	test(t, Asm384Preset(), "asm384", 1, 64)
 	test(t, DefaultPreset(), "unrolled", 1, 64)
 	test(t, NonUnrolledPreset(), "non-unrolled", 1, 64)
 }
@@ -246,6 +248,7 @@ func TestMulModMont(t *testing.T) {
 	}
 
 	test(t, DefaultPreset(), "unrolled", 1, 64)
+	test(t, Asm384Preset(), "asm384", 1, 64)
 	//test(t, NonUnrolledPreset(), "non-unrolled")
 }
 

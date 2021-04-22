@@ -5,7 +5,7 @@ import (
 	"unsafe"
 )
 
-func MulModMont384_asm(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+func MulMont384_asm(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[6]uint64)(unsafe.Pointer(&x_bytes[0]))
 	y := (*[6]uint64)(unsafe.Pointer(&y_bytes[0]))
 	z := (*[6]uint64)(unsafe.Pointer(&out_bytes[0]))
