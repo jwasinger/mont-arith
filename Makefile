@@ -1,14 +1,11 @@
 .PHONY: build
 
 build:
-	rm -rf build
-	mkdir build 
-	cp src/* build/
-	./evmmax-arith-generator
-	bash -c "gofmt -w build/*"
+	./arith_generator/arith_generator
+	bash -c "gofmt -w ."
 
 test:
-	cd build && go test -v -run=.
+	go test -run=.
 
 benchmark:
-	cd build && go test -bench=.
+	go test -bench=.

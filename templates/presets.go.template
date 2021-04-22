@@ -1,0 +1,119 @@
+package mont_arith
+
+{{ $limbCount := .LimbCount}}
+{{ $limbBits := .LimbBits}}
+{{ $unrolledCutoff := 11}}
+{{ $limbCountPlusOne := add .LimbCount 1}}
+
+type ArithPreset struct {
+	AddModImpls []ModArithFunc
+	SubModImpls []ModArithFunc
+	MulModMontImpls []ModArithFunc
+}
+
+// Preset same as default except it uses blst's go-asm impl of the arithmetic at 384bit widths
+func Asm384Preset() *ArithPreset {
+	addModImpls := []ModArithFunc {
+		AddMod64,
+		{{- range $i := intRange 2 $limbCountPlusOne}}
+		{{- if eq $i 6 }}
+			AddMod384_asm,
+		{{- else }}
+			AddModNonUnrolled{{mul $i $limbBits}},
+		{{- end }}
+		{{- end}}
+	}
+
+	subModImpls := []ModArithFunc {
+		SubMod64,
+		{{- range $i := intRange 2 $limbCountPlusOne}}
+		{{- if eq $i 6 }}
+			SubMod384_asm,
+		{{- else }}
+			SubMod{{mul $i $limbBits}},
+		{{- end }}
+		{{- end}}
+	}
+	mulMontImpls := []ModArithFunc {
+		{{- range $i := intRange 1 $limbCountPlusOne}}
+			{{- if eq $i 6}}
+				MulMont384_asm,
+			{{- else }}
+
+			{{if gte $i $unrolledCutoff}}
+				MulModMontNonInterleaved,
+			{{- else }}
+				MulModMont{{mul $i $limbBits}},
+			{{- end}}
+			{{- end}}
+		{{- end}}
+	}
+
+	return &ArithPreset{addModImpls, subModImpls, mulMontImpls}
+}
+
+func DefaultPreset() *ArithPreset {
+	return &ArithPreset{AddModNonUnrolledImpls(), SubModNonUnrolledImpls(), MulModMontImpls()}
+}
+
+func UnrolledPreset() *ArithPreset {
+	return &ArithPreset{AddModUnrolledImpls(), SubModUnrolledImpls(), MulModMontImpls()}
+}
+
+func AddModNonUnrolledImpls() []ModArithFunc {
+	result := []ModArithFunc {
+		AddMod64,
+		{{- range $i := intRange 2 $limbCountPlusOne}}
+			AddModNonUnrolled{{mul $i $limbBits}},
+		{{- end}}
+	}
+
+	return result
+}
+
+func AddModUnrolledImpls() []ModArithFunc {
+	result := []ModArithFunc {
+		AddMod64,
+		{{- range $i := intRange 2 $limbCountPlusOne}}
+			AddModUnrolled{{mul $i $limbBits}},
+		{{- end}}
+	}
+
+	return result
+}
+
+func SubModNonUnrolledImpls() []ModArithFunc {
+	result := []ModArithFunc {
+		{{- range $i := intRange 1 $limbCountPlusOne}}
+			SubMod{{mul $i $limbBits}},
+		{{- end}}
+	}
+
+	return result
+}
+
+
+func SubModUnrolledImpls() []ModArithFunc {
+	result := []ModArithFunc {
+		SubMod64,
+		{{- range $i := intRange 2 $limbCountPlusOne}}
+			SubModUnrolled{{mul $i $limbBits}},
+		{{- end}}
+	}
+
+	return result
+}
+
+func MulModMontImpls() []ModArithFunc {
+	result := []ModArithFunc {
+		{{- range $i := intRange 1 $limbCountPlusOne}}
+			{{if gte $i $unrolledCutoff}}
+				MulModMontNonInterleaved,
+			{{- else }}
+				MulModMont{{mul $i $limbBits}},
+			{{- end}}
+		{{- end}}
+	}
+
+	return result
+}

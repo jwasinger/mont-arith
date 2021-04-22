@@ -1,0 +1,88 @@
+
+{{ $limbCount := .LimbCount}}
+{{ $lastLimb := sub $limbCount 1}}
+{{ $limbBits := .LimbBits}}
+
+var Zero{{$limbCount}}Limbs []uint64 = make([]uint64, {{$limbCount}}, {{$limbCount}})
+
+
+/* NOTE: addmod/submod/mulmodmont assume:
+	len(z) == len(x) == len(y) == len(mod)
+*/
+
+func MulModMont{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
+	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
+	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
+	z := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&out_bytes[0]))[:]
+	mod := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+    	var t [{{$limbCount}}]uint64
+	var c [{{max $limbCount 3}}]uint64
+	var sub_val []uint64 = mod
+	modinv := ctx.MontParamInterleaved
+
+	if x[0] >= mod[0] || y[0] >= mod[0] {
+		panic(errors.New("x/y must be smaller than modulus"))
+	}
+
+	{{- range $j := intRange 0 $limbCount}}
+		// round {{$j}}
+		{{- if eq $j 0}}
+			v := x[{{$j}}]
+			c[1], c[0] = bits.Mul64(v, y[0])
+			m := c[0] * modinv
+			c[2] = madd0(m, mod[0], c[0])
+			{{- range $i := intRange 1 $limbCount }}
+				c[1], c[0] = madd1(v, y[{{$i}}], c[1])
+				{{- if eq $i $lastLimb }}
+					t[{{$lastLimb}}], t[{{sub $i 1}}]  = madd3(m, mod[{{$i}}], c[0], c[2], c[1])
+				{{- else}}
+					c[2], t[{{sub $i 1}}] = madd2(m, mod[{{$i}}], c[2], c[0])
+				{{- end}}
+			{{- end}}
+		{{- else if eq $j $lastLimb}}
+			v = x[{{$j}}]
+			c[1], c[0] = madd1(v, y[0], t[0])
+			m = c[0] * modinv
+			c[2] = madd0(m, mod[0], c[0])
+			{{- range $i := intRange 1 $limbCount}}
+				c[1], c[0] = madd2(v, y[{{$i}}],  c[1], t[{{$i}}])
+				{{- if eq $i $lastLimb}}
+					z[{{$lastLimb}}], z[{{sub $i 1}}] = madd3(m, mod[{{$i}}], c[0], c[2], c[1])
+				{{- else}}
+					c[2], z[{{sub $i 1}}] = madd2(m, mod[{{$i}}],  c[2], c[0])
+				{{- end}}
+			{{- end}}
+		{{- else}}
+			v = x[{{$j}}]
+			c[1], c[0] = madd1(v, y[0], t[0])
+			m = c[0] * modinv
+			c[2] = madd0(m, mod[0], c[0])
+			{{- range $i := intRange 1 $limbCount}}
+				c[1], c[0] = madd2(v, y[{{$i}}], c[1], t[{{$i}}])
+				{{- if eq $i $lastLimb}}
+					t[{{$lastLimb}}], t[{{sub $i 1}}] = madd3(m, mod[{{$i}}], c[0], c[2], c[1])
+				{{- else}}
+					c[2], t[{{sub $i 1}}] = madd2(m, mod[{{$i}}], c[2], c[0])
+				{{- end}}
+			{{- end}}
+		{{-  end }}
+	{{- end }}
+
+	_, c[1] = bits.Sub64(z[0], mod[0], 0)
+    {{- range $i := intRange 1 $limbCount }}
+	    _, c[1] = bits.Sub64(z[{{$i}}], mod[{{$i}}], 0)
+    {{- end }}
+
+	if c[1] != 0 { // unnecessary sub
+		sub_val = Zero{{$limbCount}}Limbs
+	}
+
+	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
+
+    {{- range $i := intRange 1 $limbCount }}
+	    _, c[1] = bits.Sub64(z[{{$i}}], sub_val[{{$i}}], 0)
+    {{- end }}
+
+	return nil
+}
+
