@@ -23,9 +23,7 @@ func MulModMont128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -70,9 +68,7 @@ func MulModMont192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -132,9 +128,7 @@ func MulModMont256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -213,9 +207,7 @@ func MulModMont320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -317,9 +309,7 @@ func MulModMont384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -448,9 +438,7 @@ func MulModMont448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -610,9 +598,7 @@ func MulModMont512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -807,9 +793,7 @@ func MulModMont576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -1043,9 +1027,7 @@ func MulModMont640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -1322,9 +1304,7 @@ func MulModMont704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])

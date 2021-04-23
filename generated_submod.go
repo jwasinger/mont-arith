@@ -1,7 +1,6 @@
 package mont_arith
 
 import (
-	"errors"
 	"math/bits"
 	"unsafe"
 )
@@ -14,10 +13,6 @@ func SubMod128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [2]uint64{0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	z[0], c1 = bits.Add64(tmp[0], mod[0], 0)
@@ -38,10 +33,6 @@ func SubMod192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [3]uint64{0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -64,10 +55,6 @@ func SubMod256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [4]uint64{0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -92,10 +79,6 @@ func SubMod320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [5]uint64{0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -122,10 +105,6 @@ func SubMod384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [6]uint64{0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -154,10 +133,6 @@ func SubMod448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [7]uint64{0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -188,10 +163,6 @@ func SubMod512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [8]uint64{0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -224,10 +195,6 @@ func SubMod576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [9]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -262,10 +229,6 @@ func SubMod640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [10]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -302,10 +265,6 @@ func SubMod704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [11]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -344,10 +303,6 @@ func SubMod768(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [12]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -388,10 +343,6 @@ func SubMod832(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [13]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -434,10 +385,6 @@ func SubMod896(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [14]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -482,10 +429,6 @@ func SubMod960(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error 
 
 	var c, c1 uint64
 	tmp := [15]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -532,10 +475,6 @@ func SubMod1024(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [16]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -584,10 +523,6 @@ func SubMod1088(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [17]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -638,10 +573,6 @@ func SubMod1152(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [18]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -694,10 +625,6 @@ func SubMod1216(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [19]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -752,10 +679,6 @@ func SubMod1280(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [20]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -812,10 +735,6 @@ func SubMod1344(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [21]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -874,10 +793,6 @@ func SubMod1408(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [22]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -938,10 +853,6 @@ func SubMod1472(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [23]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1004,10 +915,6 @@ func SubMod1536(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [24]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1072,10 +979,6 @@ func SubMod1600(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [25]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1142,10 +1045,6 @@ func SubMod1664(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [26]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1214,10 +1113,6 @@ func SubMod1728(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [27]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1288,10 +1183,6 @@ func SubMod1792(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [28]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1364,10 +1255,6 @@ func SubMod1856(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [29]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1442,10 +1329,6 @@ func SubMod1920(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [30]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1522,10 +1405,6 @@ func SubMod1984(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [31]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1604,10 +1483,6 @@ func SubMod2048(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [32]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1688,10 +1563,6 @@ func SubMod2112(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [33]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1774,10 +1645,6 @@ func SubMod2176(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [34]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1862,10 +1729,6 @@ func SubMod2240(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [35]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -1952,10 +1815,6 @@ func SubMod2304(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [36]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -2044,10 +1903,6 @@ func SubMod2368(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [37]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -2138,10 +1993,6 @@ func SubMod2432(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [38]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -2234,10 +2085,6 @@ func SubMod2496(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [39]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -2332,10 +2179,6 @@ func SubMod2560(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [40]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -2432,10 +2275,6 @@ func SubMod2624(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [41]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -2534,10 +2373,6 @@ func SubMod2688(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [42]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -2638,10 +2473,6 @@ func SubMod2752(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [43]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -2744,10 +2575,6 @@ func SubMod2816(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [44]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -2852,10 +2679,6 @@ func SubMod2880(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [45]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -2962,10 +2785,6 @@ func SubMod2944(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [46]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -3074,10 +2893,6 @@ func SubMod3008(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [47]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -3188,10 +3003,6 @@ func SubMod3072(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [48]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -3304,10 +3115,6 @@ func SubMod3136(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [49]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -3422,10 +3229,6 @@ func SubMod3200(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [50]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -3542,10 +3345,6 @@ func SubMod3264(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [51]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -3664,10 +3463,6 @@ func SubMod3328(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [52]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -3788,10 +3583,6 @@ func SubMod3392(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [53]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -3914,10 +3705,6 @@ func SubMod3456(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [54]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -4042,10 +3829,6 @@ func SubMod3520(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [55]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -4172,10 +3955,6 @@ func SubMod3584(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [56]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -4304,10 +4083,6 @@ func SubMod3648(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [57]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -4438,10 +4213,6 @@ func SubMod3712(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [58]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -4574,10 +4345,6 @@ func SubMod3776(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [59]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -4712,10 +4479,6 @@ func SubMod3840(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [60]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -4852,10 +4615,6 @@ func SubMod3904(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [61]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -4994,10 +4753,6 @@ func SubMod3968(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [62]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -5138,10 +4893,6 @@ func SubMod4032(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [63]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)
@@ -5284,10 +5035,6 @@ func SubMod4096(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error
 
 	var c, c1 uint64
 	tmp := [64]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 	tmp[0], c = bits.Sub64(x[0], y[0], 0)
 	tmp[1], c = bits.Sub64(x[1], y[1], c)
 	tmp[2], c = bits.Sub64(x[2], y[2], c)

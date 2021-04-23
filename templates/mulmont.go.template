@@ -20,9 +20,7 @@ func MulModMont{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, 
 	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
+	// TODO assert x < mod and y < mod
 
 	{{- range $j := intRange 0 $limbCount}}
 		// round {{$j}}

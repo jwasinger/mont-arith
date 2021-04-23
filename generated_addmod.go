@@ -1,7 +1,6 @@
 package mont_arith
 
 import (
-	"errors"
 	"math/bits"
 	"unsafe"
 )
@@ -16,10 +15,6 @@ func AddModNonUnrolled128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 	var c1 uint64 = 0
 
 	tmp := [2]uint64{0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 2; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -47,10 +42,6 @@ func AddModNonUnrolled192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 
 	tmp := [3]uint64{0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 3; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -76,10 +67,6 @@ func AddModNonUnrolled256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 	var c1 uint64 = 0
 
 	tmp := [4]uint64{0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 4; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -107,10 +94,6 @@ func AddModNonUnrolled320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 
 	tmp := [5]uint64{0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 5; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -136,10 +119,6 @@ func AddModNonUnrolled384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 	var c1 uint64 = 0
 
 	tmp := [6]uint64{0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 6; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -167,10 +146,6 @@ func AddModNonUnrolled448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 
 	tmp := [7]uint64{0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 7; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -196,10 +171,6 @@ func AddModNonUnrolled512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 	var c1 uint64 = 0
 
 	tmp := [8]uint64{0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 8; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -227,10 +198,6 @@ func AddModNonUnrolled576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 
 	tmp := [9]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 9; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -256,10 +223,6 @@ func AddModNonUnrolled640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 	var c1 uint64 = 0
 
 	tmp := [10]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 10; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -287,10 +250,6 @@ func AddModNonUnrolled704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 
 	tmp := [11]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 11; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -316,10 +275,6 @@ func AddModNonUnrolled768(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 	var c1 uint64 = 0
 
 	tmp := [12]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 12; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -347,10 +302,6 @@ func AddModNonUnrolled832(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 
 	tmp := [13]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 13; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -376,10 +327,6 @@ func AddModNonUnrolled896(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 	var c1 uint64 = 0
 
 	tmp := [14]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 14; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -407,10 +354,6 @@ func AddModNonUnrolled960(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCont
 
 	tmp := [15]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 15; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -436,10 +379,6 @@ func AddModNonUnrolled1024(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [16]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 16; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -467,10 +406,6 @@ func AddModNonUnrolled1088(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [17]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 17; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -496,10 +431,6 @@ func AddModNonUnrolled1152(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [18]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 18; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -527,10 +458,6 @@ func AddModNonUnrolled1216(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [19]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 19; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -556,10 +483,6 @@ func AddModNonUnrolled1280(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [20]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 20; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -587,10 +510,6 @@ func AddModNonUnrolled1344(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [21]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 21; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -616,10 +535,6 @@ func AddModNonUnrolled1408(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [22]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 22; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -647,10 +562,6 @@ func AddModNonUnrolled1472(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [23]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 23; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -676,10 +587,6 @@ func AddModNonUnrolled1536(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [24]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 24; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -707,10 +614,6 @@ func AddModNonUnrolled1600(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [25]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 25; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -736,10 +639,6 @@ func AddModNonUnrolled1664(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [26]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 26; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -767,10 +666,6 @@ func AddModNonUnrolled1728(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [27]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 27; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -796,10 +691,6 @@ func AddModNonUnrolled1792(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [28]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 28; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -827,10 +718,6 @@ func AddModNonUnrolled1856(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [29]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 29; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -856,10 +743,6 @@ func AddModNonUnrolled1920(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [30]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 30; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -887,10 +770,6 @@ func AddModNonUnrolled1984(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [31]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 31; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -916,10 +795,6 @@ func AddModNonUnrolled2048(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [32]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 32; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -947,10 +822,6 @@ func AddModNonUnrolled2112(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [33]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 33; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -976,10 +847,6 @@ func AddModNonUnrolled2176(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [34]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 34; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1007,10 +874,6 @@ func AddModNonUnrolled2240(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [35]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 35; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1036,10 +899,6 @@ func AddModNonUnrolled2304(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [36]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 36; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1067,10 +926,6 @@ func AddModNonUnrolled2368(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [37]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 37; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1096,10 +951,6 @@ func AddModNonUnrolled2432(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [38]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 38; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1127,10 +978,6 @@ func AddModNonUnrolled2496(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [39]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 39; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1156,10 +1003,6 @@ func AddModNonUnrolled2560(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [40]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 40; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1187,10 +1030,6 @@ func AddModNonUnrolled2624(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [41]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 41; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1216,10 +1055,6 @@ func AddModNonUnrolled2688(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [42]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 42; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1247,10 +1082,6 @@ func AddModNonUnrolled2752(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [43]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 43; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1276,10 +1107,6 @@ func AddModNonUnrolled2816(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [44]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 44; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1307,10 +1134,6 @@ func AddModNonUnrolled2880(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [45]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 45; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1336,10 +1159,6 @@ func AddModNonUnrolled2944(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [46]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 46; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1367,10 +1186,6 @@ func AddModNonUnrolled3008(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [47]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 47; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1396,10 +1211,6 @@ func AddModNonUnrolled3072(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [48]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 48; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1427,10 +1238,6 @@ func AddModNonUnrolled3136(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [49]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 49; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1456,10 +1263,6 @@ func AddModNonUnrolled3200(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [50]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 50; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1487,10 +1290,6 @@ func AddModNonUnrolled3264(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [51]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 51; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1516,10 +1315,6 @@ func AddModNonUnrolled3328(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [52]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 52; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1547,10 +1342,6 @@ func AddModNonUnrolled3392(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [53]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 53; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1576,10 +1367,6 @@ func AddModNonUnrolled3456(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [54]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 54; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1607,10 +1394,6 @@ func AddModNonUnrolled3520(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [55]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 55; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1636,10 +1419,6 @@ func AddModNonUnrolled3584(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [56]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 56; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1667,10 +1446,6 @@ func AddModNonUnrolled3648(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [57]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 57; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1696,10 +1471,6 @@ func AddModNonUnrolled3712(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [58]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 58; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1727,10 +1498,6 @@ func AddModNonUnrolled3776(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [59]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 59; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1756,10 +1523,6 @@ func AddModNonUnrolled3840(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [60]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 60; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1787,10 +1550,6 @@ func AddModNonUnrolled3904(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [61]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 61; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1816,10 +1575,6 @@ func AddModNonUnrolled3968(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [62]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 62; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
@@ -1847,10 +1602,6 @@ func AddModNonUnrolled4032(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 
 	tmp := [63]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < 63; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -1876,10 +1627,6 @@ func AddModNonUnrolled4096(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithCon
 	var c1 uint64 = 0
 
 	tmp := [64]uint64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
 
 	for i := 0; i < 64; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
