@@ -206,8 +206,8 @@ func TestAddMod(t *testing.T) {
 		}
 	}
 
-	test(t, Asm384Preset(), "asm384", 1, 64)
-	test(t, DefaultPreset(), "non-unrolled", 1, 64)
+	test(t, Asm384Preset(), "asm384", 1, 128)
+	test(t, DefaultPreset(), "non-unrolled", 1, 128)
 }
 
 func TestSubMod(t *testing.T) {
@@ -220,8 +220,8 @@ func TestSubMod(t *testing.T) {
 		}
 	}
 
-	test(t, Asm384Preset(), "asm384", 1, 64)
-	test(t, DefaultPreset(), "non-unrolled", 1, 64)
+	test(t, Asm384Preset(), "asm384", 1, 128)
+	test(t, DefaultPreset(), "non-unrolled", 1, 128)
 }
 
 func TestMulModMont(t *testing.T) {
@@ -234,7 +234,7 @@ func TestMulModMont(t *testing.T) {
 		}
 	}
 
-	test(t, DefaultPreset(), "non-unrolled", 1, 64)
+	test(t, DefaultPreset(), "non-unrolled", 1, 128)
 }
 
 func BenchmarkMulModMont(b *testing.B) {
@@ -247,7 +247,7 @@ func BenchmarkMulModMont(b *testing.B) {
 		}
 	}
 
-	bench(b, DefaultPreset(), 1, 64)
+	bench(b, DefaultPreset(), 1, 128)
 }
 
 func BenchmarkAddMod(b *testing.B) {
@@ -260,5 +260,5 @@ func BenchmarkAddMod(b *testing.B) {
 		}
 	}
 
-	bench(b, DefaultPreset(), "non-unrolled", 1, 64)
+	bench(b, DefaultPreset(), "non-unrolled", 1, 128)
 }

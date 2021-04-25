@@ -21,6 +21,7 @@ func AddModNonUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes [
 		z[i], c1 = bits.Sub64(tmp[i], mod[i], c1)
 	}
 
+	// sub was unnecessary
 	if c == 0 || c != 0 && c1 == 0 {
 		copy(z, tmp[:])
 	}

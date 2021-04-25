@@ -73,6 +73,70 @@ func Asm384Preset() *ArithPreset {
 		AddModNonUnrolled3968,
 		AddModNonUnrolled4032,
 		AddModNonUnrolled4096,
+		AddModNonUnrolled4160,
+		AddModNonUnrolled4224,
+		AddModNonUnrolled4288,
+		AddModNonUnrolled4352,
+		AddModNonUnrolled4416,
+		AddModNonUnrolled4480,
+		AddModNonUnrolled4544,
+		AddModNonUnrolled4608,
+		AddModNonUnrolled4672,
+		AddModNonUnrolled4736,
+		AddModNonUnrolled4800,
+		AddModNonUnrolled4864,
+		AddModNonUnrolled4928,
+		AddModNonUnrolled4992,
+		AddModNonUnrolled5056,
+		AddModNonUnrolled5120,
+		AddModNonUnrolled5184,
+		AddModNonUnrolled5248,
+		AddModNonUnrolled5312,
+		AddModNonUnrolled5376,
+		AddModNonUnrolled5440,
+		AddModNonUnrolled5504,
+		AddModNonUnrolled5568,
+		AddModNonUnrolled5632,
+		AddModNonUnrolled5696,
+		AddModNonUnrolled5760,
+		AddModNonUnrolled5824,
+		AddModNonUnrolled5888,
+		AddModNonUnrolled5952,
+		AddModNonUnrolled6016,
+		AddModNonUnrolled6080,
+		AddModNonUnrolled6144,
+		AddModNonUnrolled6208,
+		AddModNonUnrolled6272,
+		AddModNonUnrolled6336,
+		AddModNonUnrolled6400,
+		AddModNonUnrolled6464,
+		AddModNonUnrolled6528,
+		AddModNonUnrolled6592,
+		AddModNonUnrolled6656,
+		AddModNonUnrolled6720,
+		AddModNonUnrolled6784,
+		AddModNonUnrolled6848,
+		AddModNonUnrolled6912,
+		AddModNonUnrolled6976,
+		AddModNonUnrolled7040,
+		AddModNonUnrolled7104,
+		AddModNonUnrolled7168,
+		AddModNonUnrolled7232,
+		AddModNonUnrolled7296,
+		AddModNonUnrolled7360,
+		AddModNonUnrolled7424,
+		AddModNonUnrolled7488,
+		AddModNonUnrolled7552,
+		AddModNonUnrolled7616,
+		AddModNonUnrolled7680,
+		AddModNonUnrolled7744,
+		AddModNonUnrolled7808,
+		AddModNonUnrolled7872,
+		AddModNonUnrolled7936,
+		AddModNonUnrolled8000,
+		AddModNonUnrolled8064,
+		AddModNonUnrolled8128,
+		AddModNonUnrolled8192,
 	}
 
 	subModImpls := []ModArithFunc{
@@ -140,6 +204,70 @@ func Asm384Preset() *ArithPreset {
 		SubMod3968,
 		SubMod4032,
 		SubMod4096,
+		SubMod4160,
+		SubMod4224,
+		SubMod4288,
+		SubMod4352,
+		SubMod4416,
+		SubMod4480,
+		SubMod4544,
+		SubMod4608,
+		SubMod4672,
+		SubMod4736,
+		SubMod4800,
+		SubMod4864,
+		SubMod4928,
+		SubMod4992,
+		SubMod5056,
+		SubMod5120,
+		SubMod5184,
+		SubMod5248,
+		SubMod5312,
+		SubMod5376,
+		SubMod5440,
+		SubMod5504,
+		SubMod5568,
+		SubMod5632,
+		SubMod5696,
+		SubMod5760,
+		SubMod5824,
+		SubMod5888,
+		SubMod5952,
+		SubMod6016,
+		SubMod6080,
+		SubMod6144,
+		SubMod6208,
+		SubMod6272,
+		SubMod6336,
+		SubMod6400,
+		SubMod6464,
+		SubMod6528,
+		SubMod6592,
+		SubMod6656,
+		SubMod6720,
+		SubMod6784,
+		SubMod6848,
+		SubMod6912,
+		SubMod6976,
+		SubMod7040,
+		SubMod7104,
+		SubMod7168,
+		SubMod7232,
+		SubMod7296,
+		SubMod7360,
+		SubMod7424,
+		SubMod7488,
+		SubMod7552,
+		SubMod7616,
+		SubMod7680,
+		SubMod7744,
+		SubMod7808,
+		SubMod7872,
+		SubMod7936,
+		SubMod8000,
+		SubMod8064,
+		SubMod8128,
+		SubMod8192,
 	}
 	mulMontImpls := []ModArithFunc{
 
@@ -161,6 +289,134 @@ func Asm384Preset() *ArithPreset {
 		MulModMont576,
 
 		MulModMont640,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
 
 		MulModMontNonInterleaved,
 
@@ -344,6 +600,70 @@ func AddModNonUnrolledImpls() []ModArithFunc {
 		AddModNonUnrolled3968,
 		AddModNonUnrolled4032,
 		AddModNonUnrolled4096,
+		AddModNonUnrolled4160,
+		AddModNonUnrolled4224,
+		AddModNonUnrolled4288,
+		AddModNonUnrolled4352,
+		AddModNonUnrolled4416,
+		AddModNonUnrolled4480,
+		AddModNonUnrolled4544,
+		AddModNonUnrolled4608,
+		AddModNonUnrolled4672,
+		AddModNonUnrolled4736,
+		AddModNonUnrolled4800,
+		AddModNonUnrolled4864,
+		AddModNonUnrolled4928,
+		AddModNonUnrolled4992,
+		AddModNonUnrolled5056,
+		AddModNonUnrolled5120,
+		AddModNonUnrolled5184,
+		AddModNonUnrolled5248,
+		AddModNonUnrolled5312,
+		AddModNonUnrolled5376,
+		AddModNonUnrolled5440,
+		AddModNonUnrolled5504,
+		AddModNonUnrolled5568,
+		AddModNonUnrolled5632,
+		AddModNonUnrolled5696,
+		AddModNonUnrolled5760,
+		AddModNonUnrolled5824,
+		AddModNonUnrolled5888,
+		AddModNonUnrolled5952,
+		AddModNonUnrolled6016,
+		AddModNonUnrolled6080,
+		AddModNonUnrolled6144,
+		AddModNonUnrolled6208,
+		AddModNonUnrolled6272,
+		AddModNonUnrolled6336,
+		AddModNonUnrolled6400,
+		AddModNonUnrolled6464,
+		AddModNonUnrolled6528,
+		AddModNonUnrolled6592,
+		AddModNonUnrolled6656,
+		AddModNonUnrolled6720,
+		AddModNonUnrolled6784,
+		AddModNonUnrolled6848,
+		AddModNonUnrolled6912,
+		AddModNonUnrolled6976,
+		AddModNonUnrolled7040,
+		AddModNonUnrolled7104,
+		AddModNonUnrolled7168,
+		AddModNonUnrolled7232,
+		AddModNonUnrolled7296,
+		AddModNonUnrolled7360,
+		AddModNonUnrolled7424,
+		AddModNonUnrolled7488,
+		AddModNonUnrolled7552,
+		AddModNonUnrolled7616,
+		AddModNonUnrolled7680,
+		AddModNonUnrolled7744,
+		AddModNonUnrolled7808,
+		AddModNonUnrolled7872,
+		AddModNonUnrolled7936,
+		AddModNonUnrolled8000,
+		AddModNonUnrolled8064,
+		AddModNonUnrolled8128,
+		AddModNonUnrolled8192,
 	}
 
 	return result
@@ -415,6 +735,70 @@ func SubModNonUnrolledImpls() []ModArithFunc {
 		SubMod3968,
 		SubMod4032,
 		SubMod4096,
+		SubMod4160,
+		SubMod4224,
+		SubMod4288,
+		SubMod4352,
+		SubMod4416,
+		SubMod4480,
+		SubMod4544,
+		SubMod4608,
+		SubMod4672,
+		SubMod4736,
+		SubMod4800,
+		SubMod4864,
+		SubMod4928,
+		SubMod4992,
+		SubMod5056,
+		SubMod5120,
+		SubMod5184,
+		SubMod5248,
+		SubMod5312,
+		SubMod5376,
+		SubMod5440,
+		SubMod5504,
+		SubMod5568,
+		SubMod5632,
+		SubMod5696,
+		SubMod5760,
+		SubMod5824,
+		SubMod5888,
+		SubMod5952,
+		SubMod6016,
+		SubMod6080,
+		SubMod6144,
+		SubMod6208,
+		SubMod6272,
+		SubMod6336,
+		SubMod6400,
+		SubMod6464,
+		SubMod6528,
+		SubMod6592,
+		SubMod6656,
+		SubMod6720,
+		SubMod6784,
+		SubMod6848,
+		SubMod6912,
+		SubMod6976,
+		SubMod7040,
+		SubMod7104,
+		SubMod7168,
+		SubMod7232,
+		SubMod7296,
+		SubMod7360,
+		SubMod7424,
+		SubMod7488,
+		SubMod7552,
+		SubMod7616,
+		SubMod7680,
+		SubMod7744,
+		SubMod7808,
+		SubMod7872,
+		SubMod7936,
+		SubMod8000,
+		SubMod8064,
+		SubMod8128,
+		SubMod8192,
 	}
 
 	return result
@@ -442,6 +826,134 @@ func MulModMontImpls() []ModArithFunc {
 		MulModMont576,
 
 		MulModMont640,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
+
+		MulModMontNonInterleaved,
 
 		MulModMontNonInterleaved,
 

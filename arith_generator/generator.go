@@ -210,9 +210,9 @@ func genMulModMont() {
 }
 
 func main() {
-	genPresets(64)
+	genPresets(128)
 
 	genMulMont(2, 11)
-	genAddMod(2, 64)
-	genSubMod(2, 64)
+	genAddMod(2, 128)
+	genSubMod(2, 128)
 }
