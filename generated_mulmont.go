@@ -20,7 +20,6 @@ func MulModMont128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	mod := (*[2]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 	var t [2]uint64
 	var c [3]uint64
-	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
 	// TODO assert x < mod and y < mod
@@ -39,15 +38,15 @@ func MulModMont128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	c[1], c[0] = madd2(v, y[1], c[1], t[1])
 	z[1], z[0] = madd3(m, mod[1], c[0], c[2], c[1])
 
-	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], 0)
-
-	if c[1] != 0 { // unnecessary sub
-		sub_val = Zero2Limbs
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 2; i++ {
+		t[i], c[0] = bits.Sub64(z[i], mod[i], c[0])
 	}
 
-	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
-	_, c[1] = bits.Sub64(z[1], sub_val[1], 0)
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
 
 	return nil
 }
@@ -65,7 +64,6 @@ func MulModMont192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	mod := (*[3]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 	var t [3]uint64
 	var c [3]uint64
-	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
 	// TODO assert x < mod and y < mod
@@ -97,17 +95,15 @@ func MulModMont192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	c[1], c[0] = madd2(v, y[2], c[1], t[2])
 	z[2], z[1] = madd3(m, mod[2], c[0], c[2], c[1])
 
-	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], 0)
-	_, c[1] = bits.Sub64(z[2], mod[2], 0)
-
-	if c[1] != 0 { // unnecessary sub
-		sub_val = Zero3Limbs
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 3; i++ {
+		t[i], c[0] = bits.Sub64(z[i], mod[i], c[0])
 	}
 
-	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
-	_, c[1] = bits.Sub64(z[1], sub_val[1], 0)
-	_, c[1] = bits.Sub64(z[2], sub_val[2], 0)
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
 
 	return nil
 }
@@ -125,7 +121,6 @@ func MulModMont256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	mod := (*[4]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 	var t [4]uint64
 	var c [4]uint64
-	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
 	// TODO assert x < mod and y < mod
@@ -174,19 +169,15 @@ func MulModMont256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	c[1], c[0] = madd2(v, y[3], c[1], t[3])
 	z[3], z[2] = madd3(m, mod[3], c[0], c[2], c[1])
 
-	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], 0)
-	_, c[1] = bits.Sub64(z[2], mod[2], 0)
-	_, c[1] = bits.Sub64(z[3], mod[3], 0)
-
-	if c[1] != 0 { // unnecessary sub
-		sub_val = Zero4Limbs
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 4; i++ {
+		t[i], c[0] = bits.Sub64(z[i], mod[i], c[0])
 	}
 
-	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
-	_, c[1] = bits.Sub64(z[1], sub_val[1], 0)
-	_, c[1] = bits.Sub64(z[2], sub_val[2], 0)
-	_, c[1] = bits.Sub64(z[3], sub_val[3], 0)
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
 
 	return nil
 }
@@ -204,7 +195,6 @@ func MulModMont320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	mod := (*[5]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 	var t [5]uint64
 	var c [5]uint64
-	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
 	// TODO assert x < mod and y < mod
@@ -274,21 +264,15 @@ func MulModMont320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	c[1], c[0] = madd2(v, y[4], c[1], t[4])
 	z[4], z[3] = madd3(m, mod[4], c[0], c[2], c[1])
 
-	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], 0)
-	_, c[1] = bits.Sub64(z[2], mod[2], 0)
-	_, c[1] = bits.Sub64(z[3], mod[3], 0)
-	_, c[1] = bits.Sub64(z[4], mod[4], 0)
-
-	if c[1] != 0 { // unnecessary sub
-		sub_val = Zero5Limbs
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 5; i++ {
+		t[i], c[0] = bits.Sub64(z[i], mod[i], c[0])
 	}
 
-	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
-	_, c[1] = bits.Sub64(z[1], sub_val[1], 0)
-	_, c[1] = bits.Sub64(z[2], sub_val[2], 0)
-	_, c[1] = bits.Sub64(z[3], sub_val[3], 0)
-	_, c[1] = bits.Sub64(z[4], sub_val[4], 0)
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
 
 	return nil
 }
@@ -306,7 +290,6 @@ func MulModMont384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	mod := (*[6]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 	var t [6]uint64
 	var c [6]uint64
-	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
 	// TODO assert x < mod and y < mod
@@ -401,23 +384,15 @@ func MulModMont384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	c[1], c[0] = madd2(v, y[5], c[1], t[5])
 	z[5], z[4] = madd3(m, mod[5], c[0], c[2], c[1])
 
-	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], 0)
-	_, c[1] = bits.Sub64(z[2], mod[2], 0)
-	_, c[1] = bits.Sub64(z[3], mod[3], 0)
-	_, c[1] = bits.Sub64(z[4], mod[4], 0)
-	_, c[1] = bits.Sub64(z[5], mod[5], 0)
-
-	if c[1] != 0 { // unnecessary sub
-		sub_val = Zero6Limbs
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 6; i++ {
+		t[i], c[0] = bits.Sub64(z[i], mod[i], c[0])
 	}
 
-	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
-	_, c[1] = bits.Sub64(z[1], sub_val[1], 0)
-	_, c[1] = bits.Sub64(z[2], sub_val[2], 0)
-	_, c[1] = bits.Sub64(z[3], sub_val[3], 0)
-	_, c[1] = bits.Sub64(z[4], sub_val[4], 0)
-	_, c[1] = bits.Sub64(z[5], sub_val[5], 0)
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
 
 	return nil
 }
@@ -435,7 +410,6 @@ func MulModMont448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	mod := (*[7]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 	var t [7]uint64
 	var c [7]uint64
-	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
 	// TODO assert x < mod and y < mod
@@ -559,25 +533,15 @@ func MulModMont448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	c[1], c[0] = madd2(v, y[6], c[1], t[6])
 	z[6], z[5] = madd3(m, mod[6], c[0], c[2], c[1])
 
-	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], 0)
-	_, c[1] = bits.Sub64(z[2], mod[2], 0)
-	_, c[1] = bits.Sub64(z[3], mod[3], 0)
-	_, c[1] = bits.Sub64(z[4], mod[4], 0)
-	_, c[1] = bits.Sub64(z[5], mod[5], 0)
-	_, c[1] = bits.Sub64(z[6], mod[6], 0)
-
-	if c[1] != 0 { // unnecessary sub
-		sub_val = Zero7Limbs
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 7; i++ {
+		t[i], c[0] = bits.Sub64(z[i], mod[i], c[0])
 	}
 
-	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
-	_, c[1] = bits.Sub64(z[1], sub_val[1], 0)
-	_, c[1] = bits.Sub64(z[2], sub_val[2], 0)
-	_, c[1] = bits.Sub64(z[3], sub_val[3], 0)
-	_, c[1] = bits.Sub64(z[4], sub_val[4], 0)
-	_, c[1] = bits.Sub64(z[5], sub_val[5], 0)
-	_, c[1] = bits.Sub64(z[6], sub_val[6], 0)
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
 
 	return nil
 }
@@ -595,7 +559,6 @@ func MulModMont512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	mod := (*[8]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 	var t [8]uint64
 	var c [8]uint64
-	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
 	// TODO assert x < mod and y < mod
@@ -752,27 +715,15 @@ func MulModMont512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	c[1], c[0] = madd2(v, y[7], c[1], t[7])
 	z[7], z[6] = madd3(m, mod[7], c[0], c[2], c[1])
 
-	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], 0)
-	_, c[1] = bits.Sub64(z[2], mod[2], 0)
-	_, c[1] = bits.Sub64(z[3], mod[3], 0)
-	_, c[1] = bits.Sub64(z[4], mod[4], 0)
-	_, c[1] = bits.Sub64(z[5], mod[5], 0)
-	_, c[1] = bits.Sub64(z[6], mod[6], 0)
-	_, c[1] = bits.Sub64(z[7], mod[7], 0)
-
-	if c[1] != 0 { // unnecessary sub
-		sub_val = Zero8Limbs
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 8; i++ {
+		t[i], c[0] = bits.Sub64(z[i], mod[i], c[0])
 	}
 
-	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
-	_, c[1] = bits.Sub64(z[1], sub_val[1], 0)
-	_, c[1] = bits.Sub64(z[2], sub_val[2], 0)
-	_, c[1] = bits.Sub64(z[3], sub_val[3], 0)
-	_, c[1] = bits.Sub64(z[4], sub_val[4], 0)
-	_, c[1] = bits.Sub64(z[5], sub_val[5], 0)
-	_, c[1] = bits.Sub64(z[6], sub_val[6], 0)
-	_, c[1] = bits.Sub64(z[7], sub_val[7], 0)
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
 
 	return nil
 }
@@ -790,7 +741,6 @@ func MulModMont576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	mod := (*[9]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 	var t [9]uint64
 	var c [9]uint64
-	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
 	// TODO assert x < mod and y < mod
@@ -984,29 +934,15 @@ func MulModMont576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	c[1], c[0] = madd2(v, y[8], c[1], t[8])
 	z[8], z[7] = madd3(m, mod[8], c[0], c[2], c[1])
 
-	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], 0)
-	_, c[1] = bits.Sub64(z[2], mod[2], 0)
-	_, c[1] = bits.Sub64(z[3], mod[3], 0)
-	_, c[1] = bits.Sub64(z[4], mod[4], 0)
-	_, c[1] = bits.Sub64(z[5], mod[5], 0)
-	_, c[1] = bits.Sub64(z[6], mod[6], 0)
-	_, c[1] = bits.Sub64(z[7], mod[7], 0)
-	_, c[1] = bits.Sub64(z[8], mod[8], 0)
-
-	if c[1] != 0 { // unnecessary sub
-		sub_val = Zero9Limbs
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 9; i++ {
+		t[i], c[0] = bits.Sub64(z[i], mod[i], c[0])
 	}
 
-	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
-	_, c[1] = bits.Sub64(z[1], sub_val[1], 0)
-	_, c[1] = bits.Sub64(z[2], sub_val[2], 0)
-	_, c[1] = bits.Sub64(z[3], sub_val[3], 0)
-	_, c[1] = bits.Sub64(z[4], sub_val[4], 0)
-	_, c[1] = bits.Sub64(z[5], sub_val[5], 0)
-	_, c[1] = bits.Sub64(z[6], sub_val[6], 0)
-	_, c[1] = bits.Sub64(z[7], sub_val[7], 0)
-	_, c[1] = bits.Sub64(z[8], sub_val[8], 0)
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
 
 	return nil
 }
@@ -1024,7 +960,6 @@ func MulModMont640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	mod := (*[10]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 	var t [10]uint64
 	var c [10]uint64
-	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
 	// TODO assert x < mod and y < mod
@@ -1259,31 +1194,15 @@ func MulModMont640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	c[1], c[0] = madd2(v, y[9], c[1], t[9])
 	z[9], z[8] = madd3(m, mod[9], c[0], c[2], c[1])
 
-	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], 0)
-	_, c[1] = bits.Sub64(z[2], mod[2], 0)
-	_, c[1] = bits.Sub64(z[3], mod[3], 0)
-	_, c[1] = bits.Sub64(z[4], mod[4], 0)
-	_, c[1] = bits.Sub64(z[5], mod[5], 0)
-	_, c[1] = bits.Sub64(z[6], mod[6], 0)
-	_, c[1] = bits.Sub64(z[7], mod[7], 0)
-	_, c[1] = bits.Sub64(z[8], mod[8], 0)
-	_, c[1] = bits.Sub64(z[9], mod[9], 0)
-
-	if c[1] != 0 { // unnecessary sub
-		sub_val = Zero10Limbs
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 10; i++ {
+		t[i], c[0] = bits.Sub64(z[i], mod[i], c[0])
 	}
 
-	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
-	_, c[1] = bits.Sub64(z[1], sub_val[1], 0)
-	_, c[1] = bits.Sub64(z[2], sub_val[2], 0)
-	_, c[1] = bits.Sub64(z[3], sub_val[3], 0)
-	_, c[1] = bits.Sub64(z[4], sub_val[4], 0)
-	_, c[1] = bits.Sub64(z[5], sub_val[5], 0)
-	_, c[1] = bits.Sub64(z[6], sub_val[6], 0)
-	_, c[1] = bits.Sub64(z[7], sub_val[7], 0)
-	_, c[1] = bits.Sub64(z[8], sub_val[8], 0)
-	_, c[1] = bits.Sub64(z[9], sub_val[9], 0)
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
 
 	return nil
 }
@@ -1301,7 +1220,6 @@ func MulModMont704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	mod := (*[11]uint64)(unsafe.Pointer(&ctx.Modulus[0]))[:]
 	var t [11]uint64
 	var c [11]uint64
-	var sub_val []uint64 = mod
 	modinv := ctx.MontParamInterleaved
 
 	// TODO assert x < mod and y < mod
@@ -1581,37 +1499,20 @@ func MulModMont704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	c[1], c[0] = madd2(v, y[10], c[1], t[10])
 	z[10], z[9] = madd3(m, mod[10], c[0], c[2], c[1])
 
-	_, c[1] = bits.Sub64(z[0], mod[0], 0)
-	_, c[1] = bits.Sub64(z[1], mod[1], 0)
-	_, c[1] = bits.Sub64(z[2], mod[2], 0)
-	_, c[1] = bits.Sub64(z[3], mod[3], 0)
-	_, c[1] = bits.Sub64(z[4], mod[4], 0)
-	_, c[1] = bits.Sub64(z[5], mod[5], 0)
-	_, c[1] = bits.Sub64(z[6], mod[6], 0)
-	_, c[1] = bits.Sub64(z[7], mod[7], 0)
-	_, c[1] = bits.Sub64(z[8], mod[8], 0)
-	_, c[1] = bits.Sub64(z[9], mod[9], 0)
-	_, c[1] = bits.Sub64(z[10], mod[10], 0)
-
-	if c[1] != 0 { // unnecessary sub
-		sub_val = Zero11Limbs
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 11; i++ {
+		t[i], c[0] = bits.Sub64(z[i], mod[i], c[0])
 	}
 
-	_, c[1] = bits.Sub64(z[0], sub_val[0], 0)
-	_, c[1] = bits.Sub64(z[1], sub_val[1], 0)
-	_, c[1] = bits.Sub64(z[2], sub_val[2], 0)
-	_, c[1] = bits.Sub64(z[3], sub_val[3], 0)
-	_, c[1] = bits.Sub64(z[4], sub_val[4], 0)
-	_, c[1] = bits.Sub64(z[5], sub_val[5], 0)
-	_, c[1] = bits.Sub64(z[6], sub_val[6], 0)
-	_, c[1] = bits.Sub64(z[7], sub_val[7], 0)
-	_, c[1] = bits.Sub64(z[8], sub_val[8], 0)
-	_, c[1] = bits.Sub64(z[9], sub_val[9], 0)
-	_, c[1] = bits.Sub64(z[10], sub_val[10], 0)
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
 
 	return nil
 }
 
+// NOTE: this assumes that x and y are in Montgomery form and can produce unexpected results when they are not
 func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithContext) error {
 	// length x == y assumed
 
@@ -1633,6 +1534,10 @@ func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithCo
 	x.Mul(x, m.ModulusNonInterleaved)
 	x.Add(x, product)
 	x.Rsh(x, m.NumLimbs*64)
+
+	if x.Cmp(m.ModulusNonInterleaved) >= 0 {
+		x.Sub(x, m.ModulusNonInterleaved)
+	}
 
 	copy(out_bytes, LimbsToLEBytes(IntToLimbs(x, m.NumLimbs)))
 
