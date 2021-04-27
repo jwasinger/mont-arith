@@ -12,10 +12,6 @@ func SubMod{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx 
 	var c, c1 uint64
 	tmp := {{ makeZeroedLimbs $limbCount}}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	{{- range $i := intRange 0 $limbCount }}
 		{{- if eq $i 0}}
 			tmp[{{$i}}], c = bits.Sub64(x[{{$i}}], y[{{$i}}], 0)

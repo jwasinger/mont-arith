@@ -13,10 +13,6 @@ func AddModNonUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes [
 
 	tmp := {{ makeZeroedLimbs $limbCount}}
 
-	if x[0] >= mod[0] || y[0] >= mod[0] {
-		panic(errors.New("x/y must be smaller than modulus"))
-	}
-
 	for i := 0; i < {{$limbCount}}; i++ {
 		tmp[i], c = bits.Add64(x[i], y[i], c)
 	}
@@ -25,6 +21,7 @@ func AddModNonUnrolled{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes [
 		z[i], c1 = bits.Sub64(tmp[i], mod[i], c1)
 	}
 
+	// sub was unnecessary
 	if c == 0 || c != 0 && c1 == 0 {
 		copy(z, tmp[:])
 	}

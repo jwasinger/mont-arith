@@ -111,6 +111,8 @@ func (m *MontArithContext) ValueSize() uint {
 func (m *MontArithContext) SetMod(modBytes []byte) error {
 	if len(modBytes)%8 != 0 || len(modBytes) == 0 {
 		return errors.New("invalid modulus length")
+	} else if len(modBytes) > 256*8 {
+		return errors.New("modulus must fit within 2048 bytes")
 	}
 
 	limbCount := uint(len(modBytes)) / 8

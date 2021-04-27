@@ -1,3 +1,5 @@
+
+// NOTE: this assumes that x and y are in Montgomery form and can produce unexpected results when they are not
 func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithContext) error {
 	// length x == y assumed
 
@@ -19,6 +21,10 @@ func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithCo
 	x.Mul(x, m.ModulusNonInterleaved)
 	x.Add(x, product)
 	x.Rsh(x, m.NumLimbs*64)
+
+	if x.Cmp(m.ModulusNonInterleaved) >= 0 {
+		x.Sub(x, m.ModulusNonInterleaved)
+	}
 
 	copy(out_bytes, LimbsToLEBytes(IntToLimbs(x, m.NumLimbs)))
 

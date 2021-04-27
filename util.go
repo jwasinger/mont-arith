@@ -95,6 +95,15 @@ func MaxModulus(limbCount uint) []uint64 {
 	return mod
 }
 
+// utility for unit testing.  returns  (1 << (((limbCount - 1) * limbBits) + limbBits / 2)) - 1
+func GenTestModulus(limbCount uint) []uint64 {
+	mod_int := big.NewInt(1)
+	mod_int.Lsh(mod_int, (((limbCount - 1) * 64) + 32))
+	mod_int.Sub(mod_int, big.NewInt(1))
+
+	return IntToLimbs(mod_int, limbCount)
+}
+
 func LimbsEq(x, y []uint64) bool {
 	if len(x) != len(y) {
 		panic("unequally-sized elements")
