@@ -5,7 +5,6 @@ build:
 	go build
 	cd ..
 	./arith_generator/arith_generator
-	bash -c "gofmt -w ."
 
 test:
 	go test -run=.

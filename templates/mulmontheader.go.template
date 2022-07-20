@@ -6,7 +6,6 @@ import (
 	"math/big"
 	"errors"
 	"math/bits"
-	"unsafe"
 )
 
 func MulModMont64(out, x, y []uint, ctx *MontArithContext) error {

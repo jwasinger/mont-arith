@@ -2,6 +2,7 @@ package mont_arith
 
 import (
 	"errors"
+	"fmt"
 	"math/big"
 )
 
@@ -110,7 +111,8 @@ func (m *MontArithContext) ValueSize() uint {
 
 func (m *MontArithContext) SetMod(mod []uint) error {
 	// XXX proper handling
-	if len(mod) == 0 || len(mod) > 11 {
+	if len(mod) == 0 || len(mod) > 12 {
+		fmt.Println(len(mod))
 		panic("invalid mod length")
 	}
 
