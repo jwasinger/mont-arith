@@ -1,3 +1,5 @@
+{{ $limbCount := .LimbCount}}
+
 package mont_arith
 
 import (
@@ -6,4 +8,3 @@ import (
 	"math/bits"
 	"unsafe"
 )
-

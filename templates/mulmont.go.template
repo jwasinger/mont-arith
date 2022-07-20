@@ -10,6 +10,7 @@ var Zero{{$limbCount}}Limbs []uint64 = make([]uint64, {{$limbCount}}, {{$limbCou
 	len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
 	x := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[{{$limbCount}}]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -18,8 +19,6 @@ func MulModMont{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, 
     	var t [{{$limbCount}}]uint64
 	var c [{{max $limbCount 3}}]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 
 	{{- range $j := intRange 0 $limbCount}}
 		// round {{$j}}

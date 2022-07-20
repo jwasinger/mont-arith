@@ -7,8 +7,6 @@ import (
 )
 
 func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
-	// TODO this is an edge-case that i haven't solved that breaks goff mulmodmont (but not the asm from blst)
-	// mod := MaxModulus(limbCount)
 	mod := GenTestModulus(limbCount)
 
 	modBytes := LimbsToLEBytes(mod)
@@ -19,7 +17,6 @@ func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
 		panic("error")
 	}
 
-	// these inputs fail (TODO)
 	x := LimbsToInt(mod)
 	x = x.Sub(x, big.NewInt(10))
 

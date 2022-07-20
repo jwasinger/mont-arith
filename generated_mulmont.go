@@ -13,6 +13,7 @@ var Zero2Limbs []uint64 = make([]uint64, 2, 2)
 len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[2]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[2]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -21,8 +22,6 @@ func MulModMont128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var t [2]uint64
 	var c [3]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -57,6 +56,7 @@ var Zero3Limbs []uint64 = make([]uint64, 3, 3)
 len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[3]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[3]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -65,8 +65,6 @@ func MulModMont192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var t [3]uint64
 	var c [3]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -114,6 +112,7 @@ var Zero4Limbs []uint64 = make([]uint64, 4, 4)
 len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[4]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[4]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -122,8 +121,6 @@ func MulModMont256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var t [4]uint64
 	var c [4]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -188,6 +185,7 @@ var Zero5Limbs []uint64 = make([]uint64, 5, 5)
 len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[5]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[5]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -196,8 +194,6 @@ func MulModMont320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var t [5]uint64
 	var c [5]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -283,6 +279,7 @@ var Zero6Limbs []uint64 = make([]uint64, 6, 6)
 len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[6]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[6]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -291,8 +288,6 @@ func MulModMont384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var t [6]uint64
 	var c [6]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -403,6 +398,7 @@ var Zero7Limbs []uint64 = make([]uint64, 7, 7)
 len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[7]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[7]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -411,8 +407,6 @@ func MulModMont448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var t [7]uint64
 	var c [7]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -552,6 +546,7 @@ var Zero8Limbs []uint64 = make([]uint64, 8, 8)
 len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[8]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[8]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -560,8 +555,6 @@ func MulModMont512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var t [8]uint64
 	var c [8]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -734,6 +727,7 @@ var Zero9Limbs []uint64 = make([]uint64, 9, 9)
 len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[9]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[9]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -742,8 +736,6 @@ func MulModMont576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var t [9]uint64
 	var c [9]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -953,6 +945,7 @@ var Zero10Limbs []uint64 = make([]uint64, 10, 10)
 len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[10]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[10]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -961,8 +954,6 @@ func MulModMont640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var t [10]uint64
 	var c [10]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
@@ -1213,6 +1204,7 @@ var Zero11Limbs []uint64 = make([]uint64, 11, 11)
 len(z) == len(x) == len(y) == len(mod)
 */
 
+// NOTE: assumes x < mod and y < mod
 func MulModMont704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	x := (*[11]uint64)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[11]uint64)(unsafe.Pointer(&y_bytes[0]))[:]
@@ -1221,8 +1213,6 @@ func MulModMont704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) er
 	var t [11]uint64
 	var c [11]uint64
 	modinv := ctx.MontParamInterleaved
-
-	// TODO assert x < mod and y < mod
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul64(v, y[0])
