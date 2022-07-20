@@ -10,21 +10,67 @@ import (
 
 type mulMontFunc func(out, x, y, mod nat, modinv Word) error
 var montgomeryFixedWidth []mulMontFunc = []mulMontFunc {
-    MulModMont64,
-        MulModMont128,
-        MulModMont192,
-        MulModMont256,
-        MulModMont320,
-        MulModMont384,
-        MulModMont448,
-        MulModMont512,
-        MulModMont576,
-        MulModMont640,
-        MulModMont704,
-        MulModMont768,
+    mulModMont64,
+        mulModMont128,
+        mulModMont192,
+        mulModMont256,
+        mulModMont320,
+        mulModMont384,
+        mulModMont448,
+        mulModMont512,
+        mulModMont576,
+        mulModMont640,
+        mulModMont704,
+        mulModMont768,
 }
 
-func MulModMont64(out, x, y, mod nat, modinv Word) error {
+// madd0 hi = a*b + c (discards lo bits)
+func madd0(a, b, c Word) (Word) {
+	var carry, lo uint
+	hi, lo := bits.Mul(uint(a), uint(b))
+	_, carry = bits.Add(lo, uint(c), 0)
+	hi, _ = bits.Add(hi, 0, carry)
+	return Word(hi)
+}
+
+// madd1 hi, lo = a*b + c
+func madd1(a, b, c Word) (Word, Word) {
+	var carry uint
+	hi, lo := bits.Mul(uint(a), uint(b))
+	lo, carry = bits.Add(uint(lo), uint(c), 0)
+	hi, _ = bits.Add(hi, 0, carry)
+	return Word(hi), Word(lo)
+}
+
+// madd2 hi, lo = a*b + c + d
+func madd2(a, b, c, d Word) (Word, Word) {
+	var carry uint
+    var c_uint uint
+	hi, lo := bits.Mul(uint(a), uint(b))
+	c_uint, carry = bits.Add(uint(c), uint(d), 0)
+    c = Word(c_uint)
+	hi, _ = bits.Add(hi, 0, carry)
+	lo, carry = bits.Add(lo, uint(c), 0)
+	hi, _ = bits.Add(hi, 0, carry)
+	return Word(hi), Word(lo)
+}
+
+func madd3(a, b, c, d, e Word) (Word, Word) {
+	var carry uint
+    var c_uint uint
+	hi, lo := bits.Mul(uint(a), uint(b))
+	c_uint, carry = bits.Add(uint(c), uint(d), 0)
+	hi, _ = bits.Add(hi, 0, carry)
+	lo, carry = bits.Add(lo, c_uint, 0)
+	hi, _ = bits.Add(hi, uint(e), carry)
+	return Word(hi), Word(lo)
+}
+
+/*
+ * begin mulmont implementations
+ */
+
+func mulModMont64(out, x, y, mod nat, modinv Word) error {
 	var product [2]uint
 	var c Word
 
@@ -52,7 +98,7 @@ var Zero2Limbs []uint = make([]uint, 2, 2)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont128(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont128(z, x, y, mod nat, modinv Word) (error) {
     var t [2]Word
 	var c [3]Word
 		// round 0
@@ -100,7 +146,7 @@ var Zero3Limbs []uint = make([]uint, 3, 3)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont192(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont192(z, x, y, mod nat, modinv Word) (error) {
     var t [3]Word
 	var c [3]Word
 		// round 0
@@ -161,7 +207,7 @@ var Zero4Limbs []uint = make([]uint, 4, 4)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont256(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont256(z, x, y, mod nat, modinv Word) (error) {
     var t [4]Word
 	var c [4]Word
 		// round 0
@@ -239,7 +285,7 @@ var Zero5Limbs []uint = make([]uint, 5, 5)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont320(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont320(z, x, y, mod nat, modinv Word) (error) {
     var t [5]Word
 	var c [5]Word
 		// round 0
@@ -338,7 +384,7 @@ var Zero6Limbs []uint = make([]uint, 6, 6)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont384(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont384(z, x, y, mod nat, modinv Word) (error) {
     var t [6]Word
 	var c [6]Word
 		// round 0
@@ -462,7 +508,7 @@ var Zero7Limbs []uint = make([]uint, 7, 7)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont448(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont448(z, x, y, mod nat, modinv Word) (error) {
     var t [7]Word
 	var c [7]Word
 		// round 0
@@ -615,7 +661,7 @@ var Zero8Limbs []uint = make([]uint, 8, 8)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont512(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont512(z, x, y, mod nat, modinv Word) (error) {
     var t [8]Word
 	var c [8]Word
 		// round 0
@@ -801,7 +847,7 @@ var Zero9Limbs []uint = make([]uint, 9, 9)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont576(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont576(z, x, y, mod nat, modinv Word) (error) {
     var t [9]Word
 	var c [9]Word
 		// round 0
@@ -1024,7 +1070,7 @@ var Zero10Limbs []uint = make([]uint, 10, 10)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont640(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont640(z, x, y, mod nat, modinv Word) (error) {
     var t [10]Word
 	var c [10]Word
 		// round 0
@@ -1288,7 +1334,7 @@ var Zero11Limbs []uint = make([]uint, 11, 11)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont704(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont704(z, x, y, mod nat, modinv Word) (error) {
     var t [11]Word
 	var c [11]Word
 		// round 0
@@ -1597,7 +1643,7 @@ var Zero12Limbs []uint = make([]uint, 12, 12)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont768(z, x, y, mod nat, modinv Word) (error) {
+func mulModMont768(z, x, y, mod nat, modinv Word) (error) {
     var t [12]Word
 	var c [12]Word
 		// round 0
