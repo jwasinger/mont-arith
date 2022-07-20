@@ -3,21 +3,17 @@
 package mont_arith
 
 import (
-	"math/big"
-	"errors"
 	"math/bits"
 )
 
-func MulModMont64(out, x, y []uint, ctx *MontArithContext) error {
-	mod := ctx.Modulus
-
+func MulModMont64(out, x, y, mod nat, modinv Word) error {
 	var product [2]uint
-	var c uint
+	var c Word
 
-	product[1], product[0] = bits.Mul(x[0], y[0])
-	m := product[0] * ctx.MontParamInterleaved
-	c, product[0] = madd1(m, mod[0], product[0])
-	out[0] = c + product[1]
+	product[1], product[0] = bits.Mul(uint(x[0]), uint(y[0]))
+	m := Word(product[0]) * modinv
+	c, _ = madd1(m, mod[0], Word(product[0]))
+	out[0] = c + Word(product[1])
 
 	if out[0] > mod[0] {
 		out[0] = c - mod[0]
@@ -29,23 +25,23 @@ func MulModMont64(out, x, y []uint, ctx *MontArithContext) error {
 
 
 
-
 var Zero2Limbs []uint = make([]uint, 2, 2)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont128(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [2]uint
-	var c [3]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont128(z, x, y, mod nat, modinv Word) (error) {
+    var t [2]Word
+	var c [3]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -61,7 +57,9 @@ func MulModMont128(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 2; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -75,23 +73,23 @@ func MulModMont128(z, x, y []uint, ctx *MontArithContext) (error) {
 
 
 
-
 var Zero3Limbs []uint = make([]uint, 3, 3)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont192(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [3]uint
-	var c [3]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont192(z, x, y, mod nat, modinv Word) (error) {
+    var t [3]Word
+	var c [3]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -120,7 +118,9 @@ func MulModMont192(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 3; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -134,23 +134,23 @@ func MulModMont192(z, x, y []uint, ctx *MontArithContext) (error) {
 
 
 
-
 var Zero4Limbs []uint = make([]uint, 4, 4)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont256(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [4]uint
-	var c [4]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont256(z, x, y, mod nat, modinv Word) (error) {
+    var t [4]Word
+	var c [4]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -196,7 +196,9 @@ func MulModMont256(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 4; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -210,23 +212,23 @@ func MulModMont256(z, x, y []uint, ctx *MontArithContext) (error) {
 
 
 
-
 var Zero5Limbs []uint = make([]uint, 5, 5)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont320(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [5]uint
-	var c [5]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont320(z, x, y, mod nat, modinv Word) (error) {
+    var t [5]Word
+	var c [5]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -293,7 +295,9 @@ func MulModMont320(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 5; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -307,23 +311,23 @@ func MulModMont320(z, x, y []uint, ctx *MontArithContext) (error) {
 
 
 
-
 var Zero6Limbs []uint = make([]uint, 6, 6)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont384(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [6]uint
-	var c [6]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont384(z, x, y, mod nat, modinv Word) (error) {
+    var t [6]Word
+	var c [6]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -415,7 +419,9 @@ func MulModMont384(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 6; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -429,23 +435,23 @@ func MulModMont384(z, x, y []uint, ctx *MontArithContext) (error) {
 
 
 
-
 var Zero7Limbs []uint = make([]uint, 7, 7)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont448(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [7]uint
-	var c [7]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont448(z, x, y, mod nat, modinv Word) (error) {
+    var t [7]Word
+	var c [7]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -566,7 +572,9 @@ func MulModMont448(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 7; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -580,23 +588,23 @@ func MulModMont448(z, x, y []uint, ctx *MontArithContext) (error) {
 
 
 
-
 var Zero8Limbs []uint = make([]uint, 8, 8)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont512(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [8]uint
-	var c [8]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont512(z, x, y, mod nat, modinv Word) (error) {
+    var t [8]Word
+	var c [8]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -750,7 +758,9 @@ func MulModMont512(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 8; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -764,23 +774,23 @@ func MulModMont512(z, x, y []uint, ctx *MontArithContext) (error) {
 
 
 
-
 var Zero9Limbs []uint = make([]uint, 9, 9)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont576(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [9]uint
-	var c [9]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont576(z, x, y, mod nat, modinv Word) (error) {
+    var t [9]Word
+	var c [9]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -971,7 +981,9 @@ func MulModMont576(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 9; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -985,23 +997,23 @@ func MulModMont576(z, x, y []uint, ctx *MontArithContext) (error) {
 
 
 
-
 var Zero10Limbs []uint = make([]uint, 10, 10)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont640(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [10]uint
-	var c [10]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont640(z, x, y, mod nat, modinv Word) (error) {
+    var t [10]Word
+	var c [10]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -1233,7 +1245,9 @@ func MulModMont640(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 10; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -1247,23 +1261,23 @@ func MulModMont640(z, x, y []uint, ctx *MontArithContext) (error) {
 
 
 
-
 var Zero11Limbs []uint = make([]uint, 11, 11)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont704(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [11]uint
-	var c [11]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont704(z, x, y, mod nat, modinv Word) (error) {
+    var t [11]Word
+	var c [11]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -1540,7 +1554,9 @@ func MulModMont704(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 11; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -1554,23 +1570,23 @@ func MulModMont704(z, x, y []uint, ctx *MontArithContext) (error) {
 
 
 
-
 var Zero12Limbs []uint = make([]uint, 12, 12)
-
 
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont768(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [12]uint
-	var c [12]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont768(z, x, y, mod nat, modinv Word) (error) {
+    var t [12]Word
+	var c [12]Word
 		// round 0
 			v := x[0]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 				c[1], c[0] = madd1(v, y[1], c[1])
@@ -1896,7 +1912,9 @@ func MulModMont768(z, x, y []uint, ctx *MontArithContext) (error) {
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < 12; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
@@ -1906,14 +1924,15 @@ func MulModMont768(z, x, y []uint, ctx *MontArithContext) (error) {
 	return nil
 }
 
+/*
 
 // NOTE: this assumes that x and y are in Montgomery form and can produce unexpected results when they are not
-func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithContext) error {
+func MulModMontNonInterleaved(outLimbs, xLimbs, yLimbs, modLimbs nat, modinv Word) error {
 	// length x == y assumed
 
 	product := new(big.Int)
-	x := LEBytesToInt(x_bytes)
-	y := LEBytesToInt(y_bytes)
+	x := LimbsToInt(xLimbs)
+	y := LimbsToInt(yLimbs)
 
 	if x.Cmp(m.ModulusNonInterleaved) > 0 || y.Cmp(m.ModulusNonInterleaved) > 0 {
 		return errors.New("x/y >= modulus")
@@ -1938,3 +1957,4 @@ func MulModMontNonInterleaved(out_bytes, x_bytes, y_bytes []byte, m *MontArithCo
 
 	return nil
 }
+*/

@@ -1,6 +1,0 @@
-package mont_arith
-
-import (
-	"math/bits"
-	"unsafe"
-)

@@ -6,14 +6,14 @@ import (
 	"math/big"
 )
 
-type ModArithFunc func(out, x, y []uint, m *MontArithContext) error
+type ModArithFunc func(out, x, y, mod nat, modinv Word) error
 
 type MontArithContext struct {
 	// TODO make most of these private and the arith operations methods of this struct
-	Modulus               []uint
+	Modulus               nat
 	ModulusNonInterleaved *big.Int // just here for convenience XXX better naming
 
-	MontParamInterleaved    uint
+	MontParamInterleaved    Word
 	MontParamNonInterleaved *big.Int
 
 	NumLimbs uint
@@ -40,7 +40,7 @@ func (m *MontArithContext) RInv() *big.Int {
 	return m.rInv
 }
 
-func (m *MontArithContext) ToMont(dst, src []uint) {
+func (m *MontArithContext) ToMont(dst, src nat) {
 	if len(dst) != len(src) || uint(len(dst)) != m.NumLimbs {
 		panic("dst and src length must be equal to number of limbs for modulus")
 	}
@@ -53,7 +53,7 @@ func (m *MontArithContext) ToMont(dst, src []uint) {
 	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
 }
 
-func (m *MontArithContext) ToNorm(dst, src []uint) {
+func (m *MontArithContext) ToNorm(dst, src nat) {
 	if len(dst) != len(src) || uint(len(dst)) != m.NumLimbs {
 		panic("dst and src length must be equal to number of limbs for modulus")
 	}
@@ -87,18 +87,8 @@ func NewMontArithContext(preset *ArithPreset) *MontArithContext {
 
 	return &result
 }
-
-func (m *MontArithContext) AddMod(out, x, y []uint) {
-	// pass m explicitly b/c mulModMontWrapperFunc is a struct member
-	m.addModFunc(out, x, y, m)
-}
-
-func (m *MontArithContext) SubMod(out, x, y []uint) {
-	m.subModFunc(out, x, y, m)
-}
-
-func (m *MontArithContext) MulModMont(out, x, y []uint) {
-	m.mulModMontFunc(out, x, y, m)
+func (m *MontArithContext) MulModMont(out, x, y nat) {
+	m.mulModMontFunc(out, x, y, m.Modulus, m.MontParamInterleaved)
 }
 
 func (m *MontArithContext) ModIsSet() bool {
@@ -109,7 +99,7 @@ func (m *MontArithContext) ValueSize() uint {
 	return uint(len(m.Modulus))
 }
 
-func (m *MontArithContext) SetMod(mod []uint) error {
+func (m *MontArithContext) SetMod(mod nat) error {
 	// XXX proper handling
 	if len(mod) == 0 || len(mod) > 12 {
 		fmt.Println(len(mod))
@@ -151,7 +141,7 @@ func (m *MontArithContext) SetMod(mod []uint) error {
 	m.Modulus = IntToLimbs(modInt, m.NumLimbs)
 
 	m.MontParamNonInterleaved = montParamNonInterleaved
-	m.MontParamInterleaved = uint(montParamNonInterleaved.Uint64())
+	m.MontParamInterleaved = Word(montParamNonInterleaved.Uint64())
 
 	m.mulModMontFunc = m.arithImpl.MulModMontImpls[limbCount-1]
 	m.addModFunc = nil // m.arithImpl.AddModImpls[limbCount-1]

@@ -32,7 +32,7 @@ func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
 	expected.Mul(expected, montCtx.RInv())
 	expected.Mod(expected, LimbsToInt(mod))
 
-	outLimbs := make([]uint, montCtx.NumLimbs)
+	outLimbs := make(nat, montCtx.NumLimbs)
 	xLimbs := IntToLimbs(x, montCtx.NumLimbs)
 	yLimbs := IntToLimbs(y, montCtx.NumLimbs)
 
@@ -61,7 +61,7 @@ func benchmarkMulModMont(b *testing.B, preset *ArithPreset, limbCount uint) {
 
 	// convert x/y to montgomery
 
-	outLimbs := make([]uint, montCtx.NumLimbs)
+	outLimbs := make(nat, montCtx.NumLimbs)
 	xLimbs := IntToLimbs(x, limbCount)
 	yLimbs := IntToLimbs(y, limbCount)
 

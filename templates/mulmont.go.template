@@ -1,27 +1,27 @@
-
 {{ $limbCount := .LimbCount}}
 {{ $lastLimb := sub $limbCount 1}}
 {{ $limbBits := .LimbBits}}
 
 var Zero{{$limbCount}}Limbs []uint = make([]uint, {{$limbCount}}, {{$limbCount}})
 
-
 /* NOTE: addmod/submod/mulmodmont assume:
 	len(z) == len(x) == len(y) == len(mod)
+    and
+    x < mod, y < mod
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont{{mul $limbCount $limbBits}}(z, x, y []uint, ctx *MontArithContext) (error) {
-    var t [{{$limbCount}}]uint
-	var c [{{max $limbCount 3}}]uint
-	modinv := ctx.MontParamInterleaved
-    mod := ctx.Modulus
+func MulModMont{{mul $limbCount $limbBits}}(z, x, y, mod nat, modinv Word) (error) {
+    var t [{{$limbCount}}]Word
+	var c [{{max $limbCount 3}}]Word
 
 	{{- range $j := intRange 0 $limbCount}}
 		// round {{$j}}
 		{{- if eq $j 0}}
 			v := x[{{$j}}]
-			c[1], c[0] = bits.Mul(v, y[0])
+			c1_uint, c0_uint := bits.Mul(uint(v), uint(y[0]))
+            c[0] = Word(c0_uint)
+            c[1] = Word(c1_uint)
 			m := c[0] * modinv
 			c[2] = madd0(m, mod[0], c[0])
 			{{- range $i := intRange 1 $limbCount }}
@@ -64,7 +64,9 @@ func MulModMont{{mul $limbCount $limbBits}}(z, x, y []uint, ctx *MontArithContex
 	// final subtraction, overwriting z if z > mod
 	c[0] = 0
 	for i := 0; i < {{$limbCount}}; i++ {
-		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+		tUint, cUint := bits.Sub(uint(z[i]), uint(mod[i]), uint(c[0]))
+        t[i] = Word(tUint)
+        c[0] = Word(cUint)
 	}
 
 	if c[0] == 0 {
