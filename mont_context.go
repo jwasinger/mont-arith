@@ -10,7 +10,7 @@ type ModArithFunc func(out, x, y []uint, m *MontArithContext) error
 type MontArithContext struct {
 	// TODO make most of these private and the arith operations methods of this struct
 	Modulus               []uint
-	ModulusNonInterleaved *big.Int // just here for convenience
+	ModulusNonInterleaved *big.Int // just here for convenience XXX better naming
 
 	MontParamInterleaved    uint
 	MontParamNonInterleaved *big.Int
@@ -114,15 +114,7 @@ func (m *MontArithContext) SetMod(mod []uint) error {
 		panic("invalid mod length")
 	}
 
-	/*
-		if len(modBytes)%8 != 0 || len(modBytes) == 0 {
-			return errors.New("invalid modulus length")
-		} else if len(modBytes) > 256*8 {
-			return errors.New("modulus must fit within 2048 bytes")
-		}
-	*/
-
-	var limbCount uint = len(mod)
+	var limbCount uint = uint(len(mod))
 	var limbSize uint = 8
 
 	// r val chosen as max representable value for limbCount + 1: 0x1000...000
@@ -132,18 +124,17 @@ func (m *MontArithContext) SetMod(mod []uint) error {
 	rValMask := new(big.Int)
 	rValMask.Sub(rVal, big.NewInt(1))
 
+	modInt := LimbsToInt(mod)
 	montParamNonInterleaved := new(big.Int)
-	montParamNonInterleaved = montParamNonInterleaved.Mul(mod, big.NewInt(-1))
+	montParamNonInterleaved = montParamNonInterleaved.Mul(modInt, big.NewInt(-1))
 	montParamNonInterleaved.Mod(montParamNonInterleaved, rVal)
 
 	if montParamNonInterleaved.ModInverse(montParamNonInterleaved, rVal) == nil {
 		return errors.New("modinverse failed")
 	}
 
-	//rVal.Mod(rVal, mod)
-
 	rInv := new(big.Int)
-	if rInv.ModInverse(rVal, mod) == nil {
+	if rInv.ModInverse(rVal, modInt) == nil {
 		return errors.New("modinverse to compute rInv failed")
 	}
 
@@ -153,16 +144,16 @@ func (m *MontArithContext) SetMod(mod []uint) error {
 	m.mask = rValMask
 
 	// mod % (1 << limb_count_bits)  == mod % (1 << limb_count_bytes * 8)
-	m.ModulusNonInterleaved = mod
+	m.ModulusNonInterleaved = modInt
 
-	m.Modulus = LimbsToLEBytes(IntToLimbs(mod, m.NumLimbs))
+	m.Modulus = IntToLimbs(modInt, m.NumLimbs)
 
 	m.MontParamNonInterleaved = montParamNonInterleaved
 	m.MontParamInterleaved = uint(montParamNonInterleaved.Uint64())
 
 	m.mulModMontFunc = m.arithImpl.MulModMontImpls[limbCount-1]
-	m.addModFunc = m.arithImpl.AddModImpls[limbCount-1]
-	m.subModFunc = m.arithImpl.SubModImpls[limbCount-1]
+	m.addModFunc = nil // m.arithImpl.AddModImpls[limbCount-1]
+	m.subModFunc = nil // m.arithImpl.SubModImpls[limbCount-1]
 
 	return nil
 }

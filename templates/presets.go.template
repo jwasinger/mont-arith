@@ -13,7 +13,8 @@ type ArithPreset struct {
 
 func MulModMontImpls() []ModArithFunc {
 	result := []ModArithFunc {
-		{{- range $i := intRange 1 $limbCountPlusOne}}
+        MulModMont64,
+		{{- range $i := intRange 2 $limbCountPlusOne}}
             MulModMont{{mul $i $limbBits}},
 		{{- end}}
 	}

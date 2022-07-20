@@ -7,6 +7,24 @@ import (
 	"unsafe"
 )
 
+func MulModMont64(out, x, y []uint, ctx *MontArithContext) error {
+	mod := ctx.Modulus
+
+	var product [2]uint
+	var c uint
+
+	product[1], product[0] = bits.Mul(x[0], y[0])
+	m := product[0] * ctx.MontParamInterleaved
+	c, product[0] = madd1(m, mod[0], product[0])
+	out[0] = c + product[1]
+
+	if out[0] > mod[0] {
+		out[0] = c - mod[0]
+	}
+
+	return nil
+}
+
 var Zero1Limbs []uint = make([]uint, 1, 1)
 
 /* NOTE: addmod/submod/mulmodmont assume:

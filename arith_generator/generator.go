@@ -85,7 +85,7 @@ func genMulMont(maxLimbs int) {
 	params := TemplateParams{0, 64}
 	buf := new(bytes.Buffer)
 
-	f, err := os.Create("generated_arith/generated_mulmont.go")
+	f, err := os.Create("generated_mulmont.go")
 	if err != nil {
 		log.Fatal(err)
 		panic("")
@@ -123,7 +123,7 @@ func genMulMont(maxLimbs int) {
 
 func genPresets(maxLimbs int) {
 	params := TemplateParams{maxLimbs, 64}
-	buildTemplate("generated_arith/generated_presets.go", "templates/presets.go.template", &params)
+	buildTemplate("generated_presets.go", "templates/presets.go.template", &params)
 }
 
 func main() {
