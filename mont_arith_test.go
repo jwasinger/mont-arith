@@ -31,12 +31,12 @@ func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
 	expected.Mod(expected, LimbsToInt(mod))
 
 	outLimbs := make([]uint, montCtx.NumLimbs)
-    xLimbs := IntToLimbs(x)
-    yLimbs := IntToLimbs(y)
+	xLimbs := IntToLimbs(x)
+	yLimbs := IntToLimbs(y)
 
 	montCtx.MulModMont(out, x, y)
 
-    result = LimbsToInt(outLimbs)
+	result = LimbsToInt(outLimbs)
 	if result.Cmp(expected) != 0 {
 		t.Fatalf("result (%x) != expected (%x)\n", out, expected)
 	}
@@ -58,8 +58,8 @@ func testAddMod(t *testing.T, preset *ArithPreset, limbCount uint) {
 	expected.Add(x, y)
 	expected.Mod(expected, LimbsToInt(mod))
 
-    xLimbs := IntToLimbs(x)
-    yLimbs := IntToLimbs(y)
+	xLimbs := IntToLimbs(x)
+	yLimbs := IntToLimbs(y)
 	outLimbs := make([]uint, montCtx.NumLimbs)
 	montCtx.AddMod(outLimbs, xLimbs, yLimbs)
 
@@ -88,8 +88,8 @@ func testSubMod(t *testing.T, preset *ArithPreset, limbCount uint) {
 	expected.Mod(expected, LimbsToInt(mod))
 
 	outLimbs := make([]byte, montCtx.NumLimbs*8)
-    xLimbs := IntToLimbs(x)
-    yLimbs := IntToLimbs(y)
+	xLimbs := IntToLimbs(x)
+	yLimbs := IntToLimbs(y)
 
 	montCtx.SubMod(outLimbs, xLimbs, yLimbs)
 

@@ -45,7 +45,7 @@ func madd3(a, b, c, d, e uint) (hi uint, lo uint) {
 	return
 }
 
-func SubMod64(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+func SubMod64(out_bytes, x_bytes, y_bytes []uint, ctx *MontArithContext) error {
 	x := (*[1]uint)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[1]uint)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[1]uint)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -68,7 +68,7 @@ func SubMod64(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	return nil
 }
 
-func AddMod64(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+func AddMod64(out_bytes, x_bytes, y_bytes []uint, ctx *MontArithContext) error {
 	x := (*[1]uint)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[1]uint)(unsafe.Pointer(&y_bytes[0]))[:]
 	z := (*[1]uint)(unsafe.Pointer(&out_bytes[0]))[:]
@@ -90,7 +90,7 @@ func AddMod64(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
 	return nil
 }
 
-func MulModMont64(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
+func MulModMont64(out_bytes, x_bytes, y_bytes []uint, ctx *MontArithContext) error {
 	x := (*[1]uint)(unsafe.Pointer(&x_bytes[0]))[:]
 	y := (*[1]uint)(unsafe.Pointer(&y_bytes[0]))[:]
 	out := (*[1]uint)(unsafe.Pointer(&out_bytes[0]))[:]

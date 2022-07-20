@@ -11,14 +11,11 @@ var Zero{{$limbCount}}Limbs []uint = make([]uint, {{$limbCount}}, {{$limbCount}}
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont{{mul $limbCount $limbBits}}(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) (error) {
-	x := (*[{{$limbCount}}]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[{{$limbCount}}]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[{{$limbCount}}]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[{{$limbCount}}]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
-    	var t [{{$limbCount}}]uint
+func MulModMont{{mul $limbCount $limbBits}}(z, x, y []uint, ctx *MontArithContext) (error) {
+    var t [{{$limbCount}}]uint
 	var c [{{max $limbCount 3}}]uint
 	modinv := ctx.MontParamInterleaved
+    mod := ctx.Modulus
 
 	{{- range $j := intRange 0 $limbCount}}
 		// round {{$j}}

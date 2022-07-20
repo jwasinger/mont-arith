@@ -7,6 +7,37 @@ import (
 	"unsafe"
 )
 
+var Zero1Limbs []uint = make([]uint, 1, 1)
+
+/* NOTE: addmod/submod/mulmodmont assume:
+len(z) == len(x) == len(y) == len(mod)
+*/
+
+// NOTE: assumes x < mod and y < mod
+func MulModMont64(z, x, y []uint, ctx *MontArithContext) error {
+	var t [1]uint
+	var c [3]uint
+	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
+	// round 0
+	v := x[0]
+	c[1], c[0] = bits.Mul(v, y[0])
+	m := c[0] * modinv
+	c[2] = madd0(m, mod[0], c[0])
+
+	// final subtraction, overwriting z if z > mod
+	c[0] = 0
+	for i := 0; i < 1; i++ {
+		t[i], c[0] = bits.Sub(z[i], mod[i], c[0])
+	}
+
+	if c[0] == 0 {
+		copy(z, t[:])
+	}
+
+	return nil
+}
+
 var Zero2Limbs []uint = make([]uint, 2, 2)
 
 /* NOTE: addmod/submod/mulmodmont assume:
@@ -14,14 +45,11 @@ len(z) == len(x) == len(y) == len(mod)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont128(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
-	x := (*[2]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[2]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[2]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[2]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+func MulModMont128(z, x, y []uint, ctx *MontArithContext) error {
 	var t [2]uint
 	var c [3]uint
 	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul(v, y[0])
@@ -57,14 +85,11 @@ len(z) == len(x) == len(y) == len(mod)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont192(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
-	x := (*[3]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[3]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[3]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[3]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+func MulModMont192(z, x, y []uint, ctx *MontArithContext) error {
 	var t [3]uint
 	var c [3]uint
 	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul(v, y[0])
@@ -113,14 +138,11 @@ len(z) == len(x) == len(y) == len(mod)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont256(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
-	x := (*[4]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[4]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[4]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[4]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+func MulModMont256(z, x, y []uint, ctx *MontArithContext) error {
 	var t [4]uint
 	var c [4]uint
 	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul(v, y[0])
@@ -186,14 +208,11 @@ len(z) == len(x) == len(y) == len(mod)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont320(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
-	x := (*[5]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[5]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[5]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[5]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+func MulModMont320(z, x, y []uint, ctx *MontArithContext) error {
 	var t [5]uint
 	var c [5]uint
 	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul(v, y[0])
@@ -280,14 +299,11 @@ len(z) == len(x) == len(y) == len(mod)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont384(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
-	x := (*[6]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[6]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[6]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[6]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+func MulModMont384(z, x, y []uint, ctx *MontArithContext) error {
 	var t [6]uint
 	var c [6]uint
 	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul(v, y[0])
@@ -399,14 +415,11 @@ len(z) == len(x) == len(y) == len(mod)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont448(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
-	x := (*[7]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[7]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[7]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[7]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+func MulModMont448(z, x, y []uint, ctx *MontArithContext) error {
 	var t [7]uint
 	var c [7]uint
 	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul(v, y[0])
@@ -547,14 +560,11 @@ len(z) == len(x) == len(y) == len(mod)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont512(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
-	x := (*[8]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[8]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[8]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[8]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+func MulModMont512(z, x, y []uint, ctx *MontArithContext) error {
 	var t [8]uint
 	var c [8]uint
 	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul(v, y[0])
@@ -728,14 +738,11 @@ len(z) == len(x) == len(y) == len(mod)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont576(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
-	x := (*[9]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[9]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[9]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[9]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+func MulModMont576(z, x, y []uint, ctx *MontArithContext) error {
 	var t [9]uint
 	var c [9]uint
 	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul(v, y[0])
@@ -946,14 +953,11 @@ len(z) == len(x) == len(y) == len(mod)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont640(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
-	x := (*[10]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[10]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[10]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[10]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+func MulModMont640(z, x, y []uint, ctx *MontArithContext) error {
 	var t [10]uint
 	var c [10]uint
 	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul(v, y[0])
@@ -1205,14 +1209,11 @@ len(z) == len(x) == len(y) == len(mod)
 */
 
 // NOTE: assumes x < mod and y < mod
-func MulModMont704(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) error {
-	x := (*[11]uint)(unsafe.Pointer(&x_bytes[0]))[:]
-	y := (*[11]uint)(unsafe.Pointer(&y_bytes[0]))[:]
-	z := (*[11]uint)(unsafe.Pointer(&out_bytes[0]))[:]
-	mod := (*[11]uint)(unsafe.Pointer(&ctx.Modulus[0]))[:]
+func MulModMont704(z, x, y []uint, ctx *MontArithContext) error {
 	var t [11]uint
 	var c [11]uint
 	modinv := ctx.MontParamInterleaved
+	mod := ctx.Modulus
 	// round 0
 	v := x[0]
 	c[1], c[0] = bits.Mul(v, y[0])

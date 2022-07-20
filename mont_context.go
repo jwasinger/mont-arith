@@ -5,11 +5,11 @@ import (
 	"math/big"
 )
 
-type ModArithFunc func(out, x, y []byte, m *MontArithContext) error
+type ModArithFunc func(out, x, y []uint, m *MontArithContext) error
 
 type MontArithContext struct {
 	// TODO make most of these private and the arith operations methods of this struct
-	Modulus               []byte
+	Modulus               []uint
 	ModulusNonInterleaved *big.Int // just here for convenience
 
 	MontParamInterleaved    uint
@@ -47,7 +47,7 @@ func (m *MontArithContext) ToMont(dst, src []uint) {
 	dst_val := new(big.Int)
 	src_val := LimbsToInt(src)
 	dst_val.Mul(src_val, m.r)
-	dst_val.Mod(dst_val, LEBytesToInt(m.Modulus))
+	dst_val.Mod(dst_val, LimbsToInt(m.Modulus))
 
 	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
 }
@@ -60,7 +60,7 @@ func (m *MontArithContext) ToNorm(dst, src []uint) {
 	dst_val := new(big.Int)
 	src_val := LimbsToInt(src)
 	dst_val.Mul(src_val, m.rInv)
-	dst_val.Mod(dst_val, LEBytesToInt(m.Modulus))
+	dst_val.Mod(dst_val, LimbsToInt(m.Modulus))
 
 	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
 }
@@ -109,6 +109,11 @@ func (m *MontArithContext) ValueSize() uint {
 }
 
 func (m *MontArithContext) SetMod(mod []uint) error {
+	// XXX proper handling
+	if len(mod) == 0 || len(mod) > 11 {
+		panic("invalid mod length")
+	}
+
 	/*
 		if len(modBytes)%8 != 0 || len(modBytes) == 0 {
 			return errors.New("invalid modulus length")
@@ -117,7 +122,7 @@ func (m *MontArithContext) SetMod(mod []uint) error {
 		}
 	*/
 
-	limbCount := len(mod)
+	var limbCount uint = len(mod)
 	var limbSize uint = 8
 
 	// r val chosen as max representable value for limbCount + 1: 0x1000...000
