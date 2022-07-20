@@ -12,7 +12,7 @@ type MontArithContext struct {
 	Modulus               []byte
 	ModulusNonInterleaved *big.Int // just here for convenience
 
-	MontParamInterleaved    uint64
+	MontParamInterleaved    uint
 	MontParamNonInterleaved *big.Int
 
 	NumLimbs uint
@@ -39,7 +39,7 @@ func (m *MontArithContext) RInv() *big.Int {
 	return m.rInv
 }
 
-func (m *MontArithContext) ToMont(dst, src []uint64) {
+func (m *MontArithContext) ToMont(dst, src []uint) {
 	if len(dst) != len(src) || uint(len(dst)) != m.NumLimbs {
 		panic("dst and src length must be equal to number of limbs for modulus")
 	}
@@ -52,7 +52,7 @@ func (m *MontArithContext) ToMont(dst, src []uint64) {
 	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
 }
 
-func (m *MontArithContext) ToNorm(dst, src []uint64) {
+func (m *MontArithContext) ToNorm(dst, src []uint) {
 	if len(dst) != len(src) || uint(len(dst)) != m.NumLimbs {
 		panic("dst and src length must be equal to number of limbs for modulus")
 	}
@@ -154,7 +154,7 @@ func (m *MontArithContext) SetMod(modBytes []byte) error {
 	m.Modulus = LimbsToLEBytes(IntToLimbs(mod, m.NumLimbs))
 
 	m.MontParamNonInterleaved = montParamNonInterleaved
-	m.MontParamInterleaved = montParamNonInterleaved.Uint64()
+	m.MontParamInterleaved = uint(montParamNonInterleaved.Uint64())
 
 	m.mulModMontFunc = m.arithImpl.MulModMontImpls[limbCount-1]
 	m.addModFunc = m.arithImpl.AddModImpls[limbCount-1]

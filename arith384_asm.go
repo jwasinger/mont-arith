@@ -10,7 +10,7 @@ func MulMont384_asm(out_bytes, x_bytes, y_bytes []byte, ctx *MontArithContext) e
 	y := (*[6]uint64)(unsafe.Pointer(&y_bytes[0]))
 	z := (*[6]uint64)(unsafe.Pointer(&out_bytes[0]))
 	mod := (*[6]uint64)(unsafe.Pointer(&ctx.Modulus[0]))
-	arith384_asm.MulMod384(z, x, y, mod, ctx.MontParamInterleaved)
+	arith384_asm.MulMod384(z, x, y, mod, uint64(ctx.MontParamInterleaved))
 
 	return nil
 }
