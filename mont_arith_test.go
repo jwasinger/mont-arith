@@ -9,19 +9,14 @@ import (
 func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
 	mod := GenTestModulus(limbCount)
 
-	modBytes := LimbsToLEBytes(mod)
 	montCtx := NewMontArithContext(preset)
 
-	err := montCtx.SetMod(modBytes)
+	err := montCtx.SetMod(mod)
 	if err != nil {
 		panic("error")
 	}
-
-	x := LimbsToInt(mod)
-	x = x.Sub(x, big.NewInt(10))
-
-	y := LimbsToInt(mod)
-	y = y.Sub(y, big.NewInt(15))
+	x := LimbsToInt(mod).Sub(x, big.NewInt(10))
+	y := LimbsToInt(mod).Sub(y, big.NewInt(15))
 
 	// convert to montgomery form
 	x.Mul(x, montCtx.RVal())
@@ -35,68 +30,56 @@ func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
 	expected.Mul(expected, montCtx.RInv())
 	expected.Mod(expected, LimbsToInt(mod))
 
-	out_bytes := make([]byte, montCtx.NumLimbs*8)
+	outLimbs := make([]uint, montCtx.NumLimbs)
+    xLimbs := IntToLimbs(x)
+    yLimbs := IntToLimbs(y)
 
-	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
+	montCtx.MulModMont(out, x, y)
 
-	montCtx.MulModMont(out_bytes, x_bytes, y_bytes)
-
-	result := LEBytesToInt(out_bytes)
+    result = LimbsToInt(outLimbs)
 	if result.Cmp(expected) != 0 {
-		t.Fatalf("result (%x) != expected (%x)\n", result, expected)
+		t.Fatalf("result (%x) != expected (%x)\n", out, expected)
 	}
 }
 
 func testAddMod(t *testing.T, preset *ArithPreset, limbCount uint) {
 	mod := MaxModulus(limbCount)
-	modBytes := LimbsToLEBytes(mod)
 	montCtx := NewMontArithContext(preset)
 
-	err := montCtx.SetMod(modBytes)
+	err := montCtx.SetMod(mod)
 	if err != nil {
-		panic("error")
+		panic(err)
 	}
 
-	x := LimbsToInt(mod)
-	x = x.Sub(x, big.NewInt(10))
-
-	y := LimbsToInt(mod)
-	y = y.Sub(y, big.NewInt(15))
+	x := LimbsToInt(mod).Sub(x, big.NewInt(10))
+	y := LimbsToInt(mod).Sub(y, big.NewInt(15))
 
 	expected := new(big.Int)
 	expected.Add(x, y)
 	expected.Mod(expected, LimbsToInt(mod))
 
-	out_bytes := make([]byte, montCtx.NumLimbs*8)
+    xLimbs := IntToLimbs(x)
+    yLimbs := IntToLimbs(y)
+	outLimbs := make([]uint, montCtx.NumLimbs)
+	montCtx.AddMod(outLimbs, xLimbs, yLimbs)
 
-	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
-
-	montCtx.AddMod(out_bytes, x_bytes, y_bytes)
-
-	result := LEBytesToInt(out_bytes)
-
-	if result.Cmp(expected) != 0 {
-		t.Fatalf("%x != %x", result, expected)
+	result := LimbsToInt(outLimbs)
+	if out.Cmp(expected) != 0 {
+		t.Fatalf("%x != %x", out, expected)
 	}
 }
 
 func testSubMod(t *testing.T, preset *ArithPreset, limbCount uint) {
 	mod := MaxModulus(limbCount)
-	modBytes := LimbsToLEBytes(mod)
 	montCtx := NewMontArithContext(preset)
 
-	err := montCtx.SetMod(modBytes)
+	err := montCtx.SetMod(mod)
 	if err != nil {
 		panic("error")
 	}
 
-	x := LimbsToInt(mod)
-	x = x.Sub(x, big.NewInt(10))
-
-	y := LimbsToInt(mod)
-	y = y.Sub(y, big.NewInt(15))
+	x := LimbsToInt(mod).Sub(x, big.NewInt(10))
+	y := LimbsToInt(mod).Sub(y, big.NewInt(16))
 
 	// convert x/y to montgomery
 
@@ -104,17 +87,15 @@ func testSubMod(t *testing.T, preset *ArithPreset, limbCount uint) {
 	expected.Sub(x, y)
 	expected.Mod(expected, LimbsToInt(mod))
 
-	out_bytes := make([]byte, montCtx.NumLimbs*8)
+	outLimbs := make([]byte, montCtx.NumLimbs*8)
+    xLimbs := IntToLimbs(x)
+    yLimbs := IntToLimbs(y)
 
-	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
+	montCtx.SubMod(outLimbs, xLimbs, yLimbs)
 
-	montCtx.SubMod(out_bytes, x_bytes, y_bytes)
-
-	result := LEBytesToInt(out_bytes)
+	result := LimbsToInt(outLimbs)
 
 	if result.Cmp(expected) != 0 {
-
 		t.Fatal()
 	}
 
@@ -122,10 +103,9 @@ func testSubMod(t *testing.T, preset *ArithPreset, limbCount uint) {
 
 func benchmarkMulModMont(b *testing.B, preset *ArithPreset, limbCount uint) {
 	mod := MaxModulus(limbCount)
-	modBytes := LimbsToLEBytes(mod)
 	montCtx := NewMontArithContext(preset)
 
-	err := montCtx.SetMod(modBytes)
+	err := montCtx.SetMod(mod)
 	if err != nil {
 		panic("error")
 	}
@@ -138,33 +118,14 @@ func benchmarkMulModMont(b *testing.B, preset *ArithPreset, limbCount uint) {
 
 	// convert x/y to montgomery
 
-	/*
-		x.Mul(x, montCtx.r)
-		x.Mod(x, LimbsToInt(mod))
-
-		y.Mul(y, montCtx.r)
-		y.Mod(y, LimbsToInt(mod))
-	*/
-
-	/*
-		expected := new(big.Int)
-		expected.Mul(x, y)
-		expected.Mul(expected, montCtx.rInv)
-		expected.Mod(expected, LimbsToInt(mod))
-	*/
-
-	out_bytes := make([]byte, montCtx.NumLimbs*8)
-
-	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
-
-	x_int := LEBytesToInt(x_bytes)
-	_ = x_int
+	outLimbs := make([]uint, montCtx.NumLimbs)
+	xLimbs := LimbsToLEBytes(IntToLimbs(x, limbCount))
+	yLimbs := LimbsToLEBytes(IntToLimbs(y, limbCount))
 
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		montCtx.MulModMont(out_bytes, x_bytes, y_bytes)
+		montCtx.MulModMont(outLimbs, xLimbs, yLimbs)
 	}
 }
 
@@ -181,15 +142,14 @@ func benchmarkAddMod(b *testing.B, preset *ArithPreset, limbCount uint) {
 	x := big.NewInt(3)
 	y := big.NewInt(4)
 
-	out_bytes := make([]byte, montCtx.NumLimbs*8)
-
-	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
+	outLimbs := make([]uint, montCtx.NumLimbs)
+	xLimbs := LimbsToLEBytes(IntToLimbs(x, limbCount))
+	yLimbs := LimbsToLEBytes(IntToLimbs(y, limbCount))
 
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		montCtx.AddMod(out_bytes, x_bytes, y_bytes)
+		montCtx.AddMod(outLimbs, xLimbs, yLimbs)
 	}
 }
 

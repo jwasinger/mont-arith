@@ -87,16 +87,16 @@ func NewMontArithContext(preset *ArithPreset) *MontArithContext {
 	return &result
 }
 
-func (m *MontArithContext) AddMod(out, x, y []byte) {
+func (m *MontArithContext) AddMod(out, x, y []uint) {
 	// pass m explicitly b/c mulModMontWrapperFunc is a struct member
 	m.addModFunc(out, x, y, m)
 }
 
-func (m *MontArithContext) SubMod(out, x, y []byte) {
+func (m *MontArithContext) SubMod(out, x, y []uint) {
 	m.subModFunc(out, x, y, m)
 }
 
-func (m *MontArithContext) MulModMont(out, x, y []byte) {
+func (m *MontArithContext) MulModMont(out, x, y []uint) {
 	m.mulModMontFunc(out, x, y, m)
 }
 
@@ -108,17 +108,16 @@ func (m *MontArithContext) ValueSize() uint {
 	return uint(len(m.Modulus))
 }
 
-func (m *MontArithContext) SetMod(modBytes []byte) error {
-	if len(modBytes)%8 != 0 || len(modBytes) == 0 {
-		return errors.New("invalid modulus length")
-	} else if len(modBytes) > 256*8 {
-		return errors.New("modulus must fit within 2048 bytes")
-	}
+func (m *MontArithContext) SetMod(mod []uint) error {
+	/*
+		if len(modBytes)%8 != 0 || len(modBytes) == 0 {
+			return errors.New("invalid modulus length")
+		} else if len(modBytes) > 256*8 {
+			return errors.New("modulus must fit within 2048 bytes")
+		}
+	*/
 
-	limbCount := uint(len(modBytes)) / 8
-
-	mod := LEBytesToInt(modBytes)
-
+	limbCount := len(mod)
 	var limbSize uint = 8
 
 	// r val chosen as max representable value for limbCount + 1: 0x1000...000
