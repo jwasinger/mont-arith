@@ -6,10 +6,10 @@ import (
 	"testing"
 )
 
-func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
+func testMulModMont(t *testing.T, limbCount uint) {
 	mod := GenTestModulus(limbCount)
 
-	montCtx := NewMontArithContext(preset)
+	montCtx := NewMontArithContext()
 
 	err := montCtx.SetMod(mod)
 	if err != nil {
@@ -44,9 +44,9 @@ func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
 	}
 }
 
-func benchmarkMulModMont(b *testing.B, preset *ArithPreset, limbCount uint) {
+func benchmarkMulModMont(b *testing.B, limbCount uint) {
 	mod := MaxModulus(limbCount)
-	montCtx := NewMontArithContext(preset)
+	montCtx := NewMontArithContext()
 
 	err := montCtx.SetMod(mod)
 	if err != nil {
@@ -73,27 +73,27 @@ func benchmarkMulModMont(b *testing.B, preset *ArithPreset, limbCount uint) {
 }
 
 func TestMulModMont(t *testing.T) {
-	test := func(t *testing.T, preset *ArithPreset, name string, minLimbs, maxLimbs int) {
+	test := func(t *testing.T, name string, minLimbs, maxLimbs int) {
 		for i := minLimbs; i <= maxLimbs; i++ {
 			// test x/y >= modulus
 			t.Run(fmt.Sprintf("%s/%d-bit", name, i*64), func(t *testing.T) {
-				testMulModMont(t, preset, uint(i))
+				testMulModMont(t, uint(i))
 			})
 		}
 	}
 
-	test(t, DefaultPreset(), "non-unrolled", 1, 12)
+	test(t, "non-unrolled", 1, 12)
 }
 
 func BenchmarkMulModMont(b *testing.B) {
-	bench := func(b *testing.B, preset *ArithPreset, minLimbs, maxLimbs int) {
+	bench := func(b *testing.B, minLimbs, maxLimbs int) {
 		for i := minLimbs; i <= maxLimbs; i++ {
 			// test x/y >= modulus
 			b.Run(fmt.Sprintf("%d-bit", i*64), func(b *testing.B) {
-				benchmarkMulModMont(b, preset, uint(i))
+				benchmarkMulModMont(b, uint(i))
 			})
 		}
 	}
 
-	bench(b, DefaultPreset(), 1, 12)
+	bench(b, 1, 12)
 }

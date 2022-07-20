@@ -82,7 +82,7 @@ func genMulMont(maxLimbs int) {
 	headerTemplateContent := loadTextFile("templates/mulmontheader.go.template")
 	headerTemplate := template.Must(template.New("").Funcs(funcs).Parse(headerTemplateContent))
 
-	params := TemplateParams{0, 64}
+	params := TemplateParams{maxLimbs, 64}
 	buf := new(bytes.Buffer)
 
 	f, err := os.Create("generated_mulmont.go")
@@ -121,13 +121,7 @@ func genMulMont(maxLimbs int) {
 	}
 }
 
-func genPresets(maxLimbs int) {
-	params := TemplateParams{maxLimbs, 64}
-	buildTemplate("generated_presets.go", "templates/presets.go.template", &params)
-}
-
 func main() {
 	maxLimbs := 12
-	genPresets(maxLimbs)
 	genMulMont(maxLimbs)
 }

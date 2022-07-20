@@ -6,8 +6,6 @@ import (
 	"math/big"
 )
 
-type ModArithFunc func(out, x, y, mod nat, modinv Word) error
-
 type MontArithContext struct {
 	// TODO make most of these private and the arith operations methods of this struct
 	Modulus               nat
@@ -23,13 +21,7 @@ type MontArithContext struct {
 
 	// mask for mod by R: 0xfff...fff - (1 << NumLimbs * 64) - 1
 	mask *big.Int
-
-	// currently active addmod/submod/mulmodmont for a set NumLimbs
-	addModFunc     ModArithFunc
-	subModFunc     ModArithFunc
-	mulModMontFunc ModArithFunc
-
-	arithImpl ArithPreset
+    montMul mulMontFunc
 }
 
 func (m *MontArithContext) RVal() *big.Int {
@@ -66,7 +58,7 @@ func (m *MontArithContext) ToNorm(dst, src nat) {
 	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
 }
 
-func NewMontArithContext(preset *ArithPreset) *MontArithContext {
+func NewMontArithContext() *MontArithContext {
 	result := MontArithContext{
 		nil,
 		nil,
@@ -78,17 +70,14 @@ func NewMontArithContext(preset *ArithPreset) *MontArithContext {
 		nil,
 		nil,
 
-		nil,
-		nil,
-		nil,
-
-		*preset,
+        nil,
 	}
 
 	return &result
 }
+
 func (m *MontArithContext) MulModMont(out, x, y nat) {
-	m.mulModMontFunc(out, x, y, m.Modulus, m.MontParamInterleaved)
+	m.montMul(out, x, y, m.Modulus, m.MontParamInterleaved)
 }
 
 func (m *MontArithContext) ModIsSet() bool {
@@ -100,7 +89,7 @@ func (m *MontArithContext) ValueSize() uint {
 }
 
 func (m *MontArithContext) SetMod(mod nat) error {
-	// XXX proper handling
+	// XXX proper handling without hardcoding
 	if len(mod) == 0 || len(mod) > 12 {
 		fmt.Println(len(mod))
 		panic("invalid mod length")
@@ -142,10 +131,7 @@ func (m *MontArithContext) SetMod(mod nat) error {
 
 	m.MontParamNonInterleaved = montParamNonInterleaved
 	m.MontParamInterleaved = Word(montParamNonInterleaved.Uint64())
-
-	m.mulModMontFunc = m.arithImpl.MulModMontImpls[limbCount-1]
-	m.addModFunc = nil // m.arithImpl.AddModImpls[limbCount-1]
-	m.subModFunc = nil // m.arithImpl.SubModImpls[limbCount-1]
+    m.montMul = montgomeryFixedWidth[len(mod) - 1]
 
 	return nil
 }

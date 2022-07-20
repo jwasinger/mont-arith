@@ -1,10 +1,20 @@
 {{ $limbCount := .LimbCount}}
+{{ $limbCountPlusOne := add .LimbCount 1}}
+{{ $limbBits := .LimbBits}}
 
 package mont_arith
 
 import (
 	"math/bits"
 )
+
+type mulMontFunc func(out, x, y, mod nat, modinv Word) error
+var montgomeryFixedWidth []mulMontFunc = []mulMontFunc {
+    MulModMont64,
+    {{- range $i := intRange 2 $limbCountPlusOne}}
+        MulModMont{{mul $i $limbBits}},
+    {{- end}}
+}
 
 func MulModMont64(out, x, y, mod nat, modinv Word) error {
 	var product [2]uint
