@@ -2,17 +2,16 @@ package mont_arith
 
 import (
 	"errors"
+	"fmt"
 	"math/big"
 )
 
-type ModArithFunc func(out, x, y []byte, m *MontArithContext) error
-
 type MontArithContext struct {
 	// TODO make most of these private and the arith operations methods of this struct
-	Modulus               []byte
-	ModulusNonInterleaved *big.Int // just here for convenience
+	Modulus               nat
+	ModulusNonInterleaved *big.Int // just here for convenience XXX better naming
 
-	MontParamInterleaved    uint64
+	MontParamInterleaved    Word
 	MontParamNonInterleaved *big.Int
 
 	NumLimbs uint
@@ -22,13 +21,7 @@ type MontArithContext struct {
 
 	// mask for mod by R: 0xfff...fff - (1 << NumLimbs * 64) - 1
 	mask *big.Int
-
-	// currently active addmod/submod/mulmodmont for a set NumLimbs
-	addModFunc     ModArithFunc
-	subModFunc     ModArithFunc
-	mulModMontFunc ModArithFunc
-
-	arithImpl ArithPreset
+    montMul mulMontFunc
 }
 
 func (m *MontArithContext) RVal() *big.Int {
@@ -39,33 +32,26 @@ func (m *MontArithContext) RInv() *big.Int {
 	return m.rInv
 }
 
-func (m *MontArithContext) ToMont(dst, src []uint64) {
-	if len(dst) != len(src) || uint(len(dst)) != m.NumLimbs {
-		panic("dst and src length must be equal to number of limbs for modulus")
-	}
-
+func (m *MontArithContext) ToMont(val nat) nat {
 	dst_val := new(big.Int)
-	src_val := LimbsToInt(src)
+	src_val := LimbsToInt(val)
 	dst_val.Mul(src_val, m.r)
-	dst_val.Mod(dst_val, LEBytesToInt(m.Modulus))
+	dst_val.Mod(dst_val, LimbsToInt(m.Modulus))
 
-	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
+	//copy(dst, IntToLimbs(dst_val, m.NumLimbs))
+    return IntToLimbs(dst_val, m.NumLimbs)
 }
 
-func (m *MontArithContext) ToNorm(dst, src []uint64) {
-	if len(dst) != len(src) || uint(len(dst)) != m.NumLimbs {
-		panic("dst and src length must be equal to number of limbs for modulus")
-	}
-
+func (m *MontArithContext) ToNorm(val nat) nat {
 	dst_val := new(big.Int)
-	src_val := LimbsToInt(src)
+	src_val := LimbsToInt(val)
 	dst_val.Mul(src_val, m.rInv)
-	dst_val.Mod(dst_val, LEBytesToInt(m.Modulus))
+	dst_val.Mod(dst_val, LimbsToInt(m.Modulus))
 
-	copy(dst, IntToLimbs(dst_val, m.NumLimbs))
+	return IntToLimbs(dst_val, m.NumLimbs)
 }
 
-func NewMontArithContext(preset *ArithPreset) *MontArithContext {
+func NewMontArithContext() *MontArithContext {
 	result := MontArithContext{
 		nil,
 		nil,
@@ -77,27 +63,14 @@ func NewMontArithContext(preset *ArithPreset) *MontArithContext {
 		nil,
 		nil,
 
-		nil,
-		nil,
-		nil,
-
-		*preset,
+        nil,
 	}
 
 	return &result
 }
 
-func (m *MontArithContext) AddMod(out, x, y []byte) {
-	// pass m explicitly b/c mulModMontWrapperFunc is a struct member
-	m.addModFunc(out, x, y, m)
-}
-
-func (m *MontArithContext) SubMod(out, x, y []byte) {
-	m.subModFunc(out, x, y, m)
-}
-
-func (m *MontArithContext) MulModMont(out, x, y []byte) {
-	m.mulModMontFunc(out, x, y, m)
+func (m *MontArithContext) MulModMont(out, x, y nat) {
+	m.montMul(out, x, y, m.Modulus, m.MontParamInterleaved)
 }
 
 func (m *MontArithContext) ModIsSet() bool {
@@ -108,17 +81,14 @@ func (m *MontArithContext) ValueSize() uint {
 	return uint(len(m.Modulus))
 }
 
-func (m *MontArithContext) SetMod(modBytes []byte) error {
-	if len(modBytes)%8 != 0 || len(modBytes) == 0 {
-		return errors.New("invalid modulus length")
-	} else if len(modBytes) > 256*8 {
-		return errors.New("modulus must fit within 2048 bytes")
+func (m *MontArithContext) SetMod(mod nat) error {
+	// XXX proper handling without hardcoding
+	if len(mod) == 0 || len(mod) > 12 {
+		fmt.Println(len(mod))
+		panic("invalid mod length")
 	}
 
-	limbCount := uint(len(modBytes)) / 8
-
-	mod := LEBytesToInt(modBytes)
-
+	var limbCount uint = uint(len(mod))
 	var limbSize uint = 8
 
 	// r val chosen as max representable value for limbCount + 1: 0x1000...000
@@ -128,18 +98,17 @@ func (m *MontArithContext) SetMod(modBytes []byte) error {
 	rValMask := new(big.Int)
 	rValMask.Sub(rVal, big.NewInt(1))
 
+	modInt := LimbsToInt(mod)
 	montParamNonInterleaved := new(big.Int)
-	montParamNonInterleaved = montParamNonInterleaved.Mul(mod, big.NewInt(-1))
+	montParamNonInterleaved = montParamNonInterleaved.Mul(modInt, big.NewInt(-1))
 	montParamNonInterleaved.Mod(montParamNonInterleaved, rVal)
 
 	if montParamNonInterleaved.ModInverse(montParamNonInterleaved, rVal) == nil {
 		return errors.New("modinverse failed")
 	}
 
-	//rVal.Mod(rVal, mod)
-
 	rInv := new(big.Int)
-	if rInv.ModInverse(rVal, mod) == nil {
+	if rInv.ModInverse(rVal, modInt) == nil {
 		return errors.New("modinverse to compute rInv failed")
 	}
 
@@ -149,16 +118,13 @@ func (m *MontArithContext) SetMod(modBytes []byte) error {
 	m.mask = rValMask
 
 	// mod % (1 << limb_count_bits)  == mod % (1 << limb_count_bytes * 8)
-	m.ModulusNonInterleaved = mod
+	m.ModulusNonInterleaved = modInt
 
-	m.Modulus = LimbsToLEBytes(IntToLimbs(mod, m.NumLimbs))
+	m.Modulus = IntToLimbs(modInt, m.NumLimbs)
 
 	m.MontParamNonInterleaved = montParamNonInterleaved
-	m.MontParamInterleaved = montParamNonInterleaved.Uint64()
-
-	m.mulModMontFunc = m.arithImpl.MulModMontImpls[limbCount-1]
-	m.addModFunc = m.arithImpl.AddModImpls[limbCount-1]
-	m.subModFunc = m.arithImpl.SubModImpls[limbCount-1]
+	m.MontParamInterleaved = Word(montParamNonInterleaved.Uint64())
+    m.montMul = montgomeryFixedWidth[len(mod) - 1]
 
 	return nil
 }

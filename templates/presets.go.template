@@ -11,82 +11,17 @@ type ArithPreset struct {
 	MulModMontImpls []ModArithFunc
 }
 
-// Preset same as default except it uses blst's go-asm impl of the arithmetic at 384bit widths
-func Asm384Preset() *ArithPreset {
-	addModImpls := []ModArithFunc {
-		AddMod64,
+func MulModMontImpls() []ModArithFunc {
+	result := []ModArithFunc {
+        MulModMont64,
 		{{- range $i := intRange 2 $limbCountPlusOne}}
-		{{- if eq $i 6 }}
-			AddMod384_asm,
-		{{- else }}
-			AddModNonUnrolled{{mul $i $limbBits}},
-		{{- end }}
+            MulModMont{{mul $i $limbBits}},
 		{{- end}}
 	}
 
-	subModImpls := []ModArithFunc {
-		SubMod64,
-		{{- range $i := intRange 2 $limbCountPlusOne}}
-		{{- if eq $i 6 }}
-			SubMod384_asm,
-		{{- else }}
-			SubMod{{mul $i $limbBits}},
-		{{- end }}
-		{{- end}}
-	}
-	mulMontImpls := []ModArithFunc {
-		{{- range $i := intRange 1 $limbCountPlusOne}}
-			{{- if eq $i 6}}
-				MulMont384_asm,
-			{{- else }}
-
-			{{if gte $i $unrolledCutoff}}
-				MulModMontNonInterleaved,
-			{{- else }}
-				MulModMont{{mul $i $limbBits}},
-			{{- end}}
-			{{- end}}
-		{{- end}}
-	}
-
-	return &ArithPreset{addModImpls, subModImpls, mulMontImpls}
+	return result
 }
 
 func DefaultPreset() *ArithPreset {
-	return &ArithPreset{AddModNonUnrolledImpls(), SubModNonUnrolledImpls(), MulModMontImpls()}
-}
-
-func AddModNonUnrolledImpls() []ModArithFunc {
-	result := []ModArithFunc {
-		AddMod64,
-		{{- range $i := intRange 2 $limbCountPlusOne}}
-			AddModNonUnrolled{{mul $i $limbBits}},
-		{{- end}}
-	}
-
-	return result
-}
-
-func SubModNonUnrolledImpls() []ModArithFunc {
-	result := []ModArithFunc {
-		{{- range $i := intRange 1 $limbCountPlusOne}}
-			SubMod{{mul $i $limbBits}},
-		{{- end}}
-	}
-
-	return result
-}
-
-func MulModMontImpls() []ModArithFunc {
-	result := []ModArithFunc {
-		{{- range $i := intRange 1 $limbCountPlusOne}}
-			{{if gte $i $unrolledCutoff}}
-				MulModMontNonInterleaved,
-			{{- else }}
-				MulModMont{{mul $i $limbBits}},
-			{{- end}}
-		{{- end}}
-	}
-
-	return result
+	return &ArithPreset{nil, nil, MulModMontImpls()}
 }

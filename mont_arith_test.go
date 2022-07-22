@@ -3,26 +3,21 @@ package mont_arith
 import (
 	"fmt"
 	"math/big"
+    "math/rand"
 	"testing"
 )
 
-func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
-	// TODO this is an edge-case that i haven't solved that breaks goff mulmodmont (but not the asm from blst)
-	// mod := MaxModulus(limbCount)
+func testMulModMont(t *testing.T, limbCount uint) {
 	mod := GenTestModulus(limbCount)
 
-	modBytes := LimbsToLEBytes(mod)
-	montCtx := NewMontArithContext(preset)
+	montCtx := NewMontArithContext()
 
-	err := montCtx.SetMod(modBytes)
+	err := montCtx.SetMod(mod)
 	if err != nil {
 		panic("error")
 	}
-
-	// these inputs fail (TODO)
 	x := LimbsToInt(mod)
 	x = x.Sub(x, big.NewInt(10))
-
 	y := LimbsToInt(mod)
 	y = y.Sub(y, big.NewInt(15))
 
@@ -38,97 +33,57 @@ func testMulModMont(t *testing.T, preset *ArithPreset, limbCount uint) {
 	expected.Mul(expected, montCtx.RInv())
 	expected.Mod(expected, LimbsToInt(mod))
 
-	out_bytes := make([]byte, montCtx.NumLimbs*8)
+	outLimbs := make(nat, montCtx.NumLimbs)
+	xLimbs := IntToLimbs(x, montCtx.NumLimbs)
+	yLimbs := IntToLimbs(y, montCtx.NumLimbs)
 
-	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
+	montCtx.MulModMont(outLimbs, xLimbs, yLimbs)
 
-	montCtx.MulModMont(out_bytes, x_bytes, y_bytes)
-
-	result := LEBytesToInt(out_bytes)
+	result := LimbsToInt(outLimbs)
 	if result.Cmp(expected) != 0 {
 		t.Fatalf("result (%x) != expected (%x)\n", result, expected)
 	}
 }
 
-func testAddMod(t *testing.T, preset *ArithPreset, limbCount uint) {
-	mod := MaxModulus(limbCount)
-	modBytes := LimbsToLEBytes(mod)
-	montCtx := NewMontArithContext(preset)
+func randBigInt(r *rand.Rand, modulus *big.Int, limbCount uint) *big.Int {
+    resBytes := make([]byte, limbCount * 8)
+    for i := 0; i < int(limbCount) * 8; i++ {
+        resBytes[i] = byte(r.Int())
+    }
 
-	err := montCtx.SetMod(modBytes)
-	if err != nil {
-		panic("error")
-	}
-
-	x := LimbsToInt(mod)
-	x = x.Sub(x, big.NewInt(10))
-
-	y := LimbsToInt(mod)
-	y = y.Sub(y, big.NewInt(15))
-
-	expected := new(big.Int)
-	expected.Add(x, y)
-	expected.Mod(expected, LimbsToInt(mod))
-
-	out_bytes := make([]byte, montCtx.NumLimbs*8)
-
-	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
-
-	montCtx.AddMod(out_bytes, x_bytes, y_bytes)
-
-	result := LEBytesToInt(out_bytes)
-
-	if result.Cmp(expected) != 0 {
-		t.Fatalf("%x != %x", result, expected)
-	}
+    res := new(big.Int).SetBytes(resBytes)
+    return res.Mod(res, modulus)
 }
 
-func testSubMod(t *testing.T, preset *ArithPreset, limbCount uint) {
-	mod := MaxModulus(limbCount)
-	modBytes := LimbsToLEBytes(mod)
-	montCtx := NewMontArithContext(preset)
+func TestMulModMontBLS12831(t *testing.T) {
+	montCtx := NewMontArithContext()
+    modInt, _ := new(big.Int).SetString("1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab", 16)
 
-	err := montCtx.SetMod(modBytes)
-	if err != nil {
-		panic("error")
-	}
+    var limbCount uint = 6
+    mod := IntToLimbs(modInt, limbCount)
+    montCtx.SetMod(mod)
 
-	x := LimbsToInt(mod)
-	x = x.Sub(x, big.NewInt(10))
+    s := rand.NewSource(42)
+    r := rand.New(s)
 
-	y := LimbsToInt(mod)
-	y = y.Sub(y, big.NewInt(15))
+    x := IntToLimbs(randBigInt(r, LimbsToInt(montCtx.Modulus), limbCount), limbCount)
+    montX := montCtx.ToMont(x)
+    if !Eq(montCtx.ToNorm(montX), x) {
+        panic("mont form should have correct normal form")
+    }
 
-	// convert x/y to montgomery
-
-	expected := new(big.Int)
-	expected.Sub(x, y)
-	expected.Mod(expected, LimbsToInt(mod))
-
-	out_bytes := make([]byte, montCtx.NumLimbs*8)
-
-	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
-
-	montCtx.SubMod(out_bytes, x_bytes, y_bytes)
-
-	result := LEBytesToInt(out_bytes)
-
-	if result.Cmp(expected) != 0 {
-
-		t.Fatal()
-	}
-
+    y := IntToLimbs(randBigInt(r, LimbsToInt(montCtx.Modulus), limbCount), limbCount)
+    montY := montCtx.ToMont(y)
+    if !Eq(montCtx.ToNorm(montY), y) {
+        panic("mont form should have correct normal form")
+    }
 }
 
-func benchmarkMulModMont(b *testing.B, preset *ArithPreset, limbCount uint) {
+func benchmarkMulModMont(b *testing.B, limbCount uint) {
 	mod := MaxModulus(limbCount)
-	modBytes := LimbsToLEBytes(mod)
-	montCtx := NewMontArithContext(preset)
+	montCtx := NewMontArithContext()
 
-	err := montCtx.SetMod(modBytes)
+	err := montCtx.SetMod(mod)
 	if err != nil {
 		panic("error")
 	}
@@ -141,124 +96,39 @@ func benchmarkMulModMont(b *testing.B, preset *ArithPreset, limbCount uint) {
 
 	// convert x/y to montgomery
 
-	/*
-		x.Mul(x, montCtx.r)
-		x.Mod(x, LimbsToInt(mod))
-
-		y.Mul(y, montCtx.r)
-		y.Mod(y, LimbsToInt(mod))
-	*/
-
-	/*
-		expected := new(big.Int)
-		expected.Mul(x, y)
-		expected.Mul(expected, montCtx.rInv)
-		expected.Mod(expected, LimbsToInt(mod))
-	*/
-
-	out_bytes := make([]byte, montCtx.NumLimbs*8)
-
-	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
-
-	x_int := LEBytesToInt(x_bytes)
-	_ = x_int
+	outLimbs := make(nat, montCtx.NumLimbs)
+	xLimbs := IntToLimbs(x, limbCount)
+	yLimbs := IntToLimbs(y, limbCount)
 
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		montCtx.MulModMont(out_bytes, x_bytes, y_bytes)
+		montCtx.MulModMont(outLimbs, xLimbs, yLimbs)
 	}
-}
-
-func benchmarkAddMod(b *testing.B, preset *ArithPreset, limbCount uint) {
-	mod := MaxModulus(limbCount)
-	modBytes := LimbsToLEBytes(mod)
-	montCtx := NewMontArithContext(preset)
-
-	err := montCtx.SetMod(modBytes)
-	if err != nil {
-		panic("error")
-	}
-
-	x := big.NewInt(3)
-	y := big.NewInt(4)
-
-	out_bytes := make([]byte, montCtx.NumLimbs*8)
-
-	x_bytes := LimbsToLEBytes(IntToLimbs(x, limbCount))
-	y_bytes := LimbsToLEBytes(IntToLimbs(y, limbCount))
-
-	b.ResetTimer()
-
-	for i := 0; i < b.N; i++ {
-		montCtx.AddMod(out_bytes, x_bytes, y_bytes)
-	}
-}
-
-func TestAddMod(t *testing.T) {
-	test := func(t *testing.T, preset *ArithPreset, name string, minLimbs, maxLimbs int) {
-		for i := minLimbs; i < maxLimbs; i++ {
-			// test x/y >= modulus
-			t.Run(fmt.Sprintf("/%s/%d-bit", name, i*64), func(t *testing.T) {
-				testAddMod(t, preset, uint(i))
-			})
-		}
-	}
-
-	test(t, Asm384Preset(), "asm384", 1, 128)
-	test(t, DefaultPreset(), "non-unrolled", 1, 128)
-}
-
-func TestSubMod(t *testing.T) {
-	test := func(t *testing.T, preset *ArithPreset, name string, minLimbs, maxLimbs int) {
-		for i := minLimbs; i < maxLimbs; i++ {
-			// test x/y >= modulus
-			t.Run(fmt.Sprintf("/%s/%d-bit", name, i*64), func(t *testing.T) {
-				testSubMod(t, preset, uint(i))
-			})
-		}
-	}
-
-	test(t, Asm384Preset(), "asm384", 1, 128)
-	test(t, DefaultPreset(), "non-unrolled", 1, 128)
 }
 
 func TestMulModMont(t *testing.T) {
-	test := func(t *testing.T, preset *ArithPreset, name string, minLimbs, maxLimbs int) {
+	test := func(t *testing.T, name string, minLimbs, maxLimbs int) {
 		for i := minLimbs; i <= maxLimbs; i++ {
 			// test x/y >= modulus
 			t.Run(fmt.Sprintf("%s/%d-bit", name, i*64), func(t *testing.T) {
-				testMulModMont(t, preset, uint(i))
+				testMulModMont(t, uint(i))
 			})
 		}
 	}
 
-	test(t, DefaultPreset(), "non-unrolled", 1, 128)
+	test(t, "non-unrolled", 1, 12)
 }
 
 func BenchmarkMulModMont(b *testing.B) {
-	bench := func(b *testing.B, preset *ArithPreset, minLimbs, maxLimbs int) {
+	bench := func(b *testing.B, minLimbs, maxLimbs int) {
 		for i := minLimbs; i <= maxLimbs; i++ {
 			// test x/y >= modulus
 			b.Run(fmt.Sprintf("%d-bit", i*64), func(b *testing.B) {
-				benchmarkMulModMont(b, preset, uint(i))
+				benchmarkMulModMont(b, uint(i))
 			})
 		}
 	}
 
-	bench(b, DefaultPreset(), 1, 128)
-}
-
-func BenchmarkAddMod(b *testing.B) {
-	bench := func(b *testing.B, preset *ArithPreset, name string, minLimbs, maxLimbs int) {
-		for i := minLimbs; i <= maxLimbs; i++ {
-			// test x/y >= modulus
-			b.Run(fmt.Sprintf("%s/%d-bit", name, i*64), func(b *testing.B) {
-				benchmarkAddMod(b, preset, uint(i))
-			})
-		}
-	}
-
-	bench(b, DefaultPreset(), "non-unrolled", 1, 128)
+	bench(b, 1, 12)
 }
